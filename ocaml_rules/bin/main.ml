@@ -1,8 +1,15 @@
 open Ocaml_rules
-open Domain
+open Model
+open Utils 
 open Rules
-open Utils
 open Simulation
+
+let all_rules = [
+  curiosity_spiral;
+  important_issue_not_understood;
+  insignificant_issue_consumes_time;
+]
+
 
 let () =
   let meeting = {
@@ -12,7 +19,7 @@ let () =
     drift = Focused;
   } in
 
-  let participants = [
+   let participants = [
     { role = SM; interested = true; understands = false };
     { role = Developer; interested = false; understands = false };
   ] in
@@ -23,8 +30,39 @@ let () =
     understood_by = [Technical];
   } in
 
-  let (m, i) = simulate meeting participants issue in
-  Printf.printf "Meeting duration: %d\n" m.duration_min;
-  Printf.printf "Deep dive: %b\n" m.deep_dive;
-  Printf.printf "Drift: %s\n" (string_of_drift m.drift);
-  Printf.printf "Issue status: %s\n" (string_of_issue_status i.status);
+  let result = simulate all_rules meeting participants issue in
+  Printf.printf "Meeting duration: %d\n" result.meeting.duration_min;
+  Printf.printf "Deep dive: %b\n" result.meeting.deep_dive;
+  Printf.printf "Drift: %s\n" (string_of_drift result.meeting.drift);
+  Printf.printf "Issue status: %s\n" (string_of_issue_status result.issue.status);
+  Printf.printf "Fired rules: %s\n" (string_of_fired_rules result.fired_rules); 
+
+print_endline("###########################################################")
+
+let () =
+  let meeting = {
+    meeting_type = Daily;
+    duration_min = 15;
+    deep_dive = false;
+    drift = Focused;
+  } in
+
+   let participants = [
+    { role = SM; interested = true; understands = false };
+    { role = Developer; interested = false; understands = true };
+  ] in
+
+  let issue = {
+    priority = Insignificant;
+    status = Open;
+    understood_by = [Technical; Testing];
+  } in
+
+  let result = simulate all_rules meeting participants issue in
+  Printf.printf "Meeting duration: %d\n" result.meeting.duration_min;
+  Printf.printf "Deep dive: %b\n" result.meeting.deep_dive;
+  Printf.printf "Drift: %s\n" (string_of_drift result.meeting.drift);
+  Printf.printf "Issue status: %s\n" (string_of_issue_status result.issue.status);
+  Printf.printf "Fired rules: %s\n" (string_of_fired_rules result.fired_rules);
+  
+  

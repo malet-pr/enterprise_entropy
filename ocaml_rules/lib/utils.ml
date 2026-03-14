@@ -1,4 +1,4 @@
-open Domain
+open Model
 
 let participant_has_role role participant =
   participant.role = role
@@ -22,6 +22,9 @@ let exists_understanding_participant roles participants =
     )
     participants
 
+let meeting_is mt meeting =
+  meeting.meeting_type = mt    
+
 (*************************** STRINGS *******************************)
 
 let string_of_drift = function
@@ -35,4 +38,10 @@ let string_of_issue_status = function
   | Ignored -> "Ignored"
   | MovedToAnotherMeeting -> "MovedToAnotherMeeting"
   | Resolved -> "Resolved"
+  | Discarded -> "Discarded"
   | WillBreakProduction -> "WillBreakProduction"    
+
+let string_of_fired_rules rules =
+  match rules with
+  | [] -> "None"
+  | _ -> String.concat ", " rules

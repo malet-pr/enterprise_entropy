@@ -6,14 +6,14 @@ type meeting_type =
 
 type role =
   | SM
-  | DBA
+  | PO
+  | TechLead
+  | ActingLead
   | Developer
   | Tester
-  | PO
-  | ShadowTL
-  | OfficialTL
   | Analyst
-  | AppOps
+  | DataEngineer
+  | Operations
 
 type issue_priority =
   | Insignificant
@@ -28,6 +28,7 @@ type issue_status =
   | Ignored
   | MovedToAnotherMeeting
   | Resolved
+  | Discarded
   | WillBreakProduction
 
 type understanding =
@@ -59,4 +60,18 @@ type issue = {
   understood_by : understanding list;
 }
 
+type simulation_state = {
+  meeting : meeting;
+  participants : participant list;
+  issue : issue;
+  fired_rules : string list;
+}
+
+type simulation_result = {
+  meeting : meeting;
+  issue : issue;
+  fired_rules : string list;
+}
+
+type rule = simulation_state -> simulation_state
 
