@@ -6,7 +6,7 @@ Rule 1 — Curiosity Spiral
   Condition:
     Daily meeting
     High or Critical issue
-    SM or DBA interested
+    SM or DataEngineer interested
   Effect:
     meeting extended by 30 min.
     deep dive: true
