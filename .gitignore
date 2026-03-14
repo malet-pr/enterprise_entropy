@@ -5,6 +5,7 @@ quarkus_service/pom.xml.releaseBackup
 quarkus_service/pom.xml.versionsBackup
 quarkus_service/release.properties
 quarkus_service/.flattened-pom.xml
+quarkus_service/.env
 
 # IntelliJ
 .idea
