@@ -22,9 +22,26 @@ let exists_understanding_participant roles participants =
     )
     participants
 
-let meeting_is mt meeting =
-  meeting.meeting_type = mt    
+let is_high_priority issue =
+  match issue.priority with
+  | High | Critical -> true
+  | _ -> false
 
+let role_is_curious p =
+  match p.role with
+  | SM | DataEngineer -> p.interested
+  | _ -> false 
+
+
+let meeting_is mt meeting = meeting.meeting_type = mt    
+
+let count_participants_that_understand_the_issue (participants: participant list) : int = 
+  List.fold_left (fun acc p -> 
+    let x = Bool.to_int ((p.role = Developer || p.role = DataEngineer) && p.understands) in
+    acc + x)  0 participants
+
+
+  
 (*************************** STRINGS *******************************)
 
 let string_of_drift = function
