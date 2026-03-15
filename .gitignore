@@ -1,37 +1,37 @@
 #Maven
-quarkus_service/target/
-quarkus_service/pom.xml.tag
-quarkus_service/pom.xml.releaseBackup
-quarkus_service/pom.xml.versionsBackup
-quarkus_service/release.properties
-quarkus_service/.flattened-pom.xml
-quarkus_service/.env
+quarkus_rules/target/
+quarkus_rules/pom.xml.tag
+quarkus_rules/pom.xml.releaseBackup
+quarkus_rules/pom.xml.versionsBackup
+quarkus_rules/release.properties
+quarkus_rules/.flattened-pom.xml
+quarkus_rules/.env
 
 # IntelliJ
 .idea
 *.ipr
 *.iml
 *.iws
-quarkus_service/.idea
-quarkus_service/*.ipr
-quarkus_service/*.iml
-quarkus_service/*.iws
+quarkus_rules/.idea
+quarkus_rules/*.ipr
+quarkus_rules/*.iml
+quarkus_rules/*.iws
 
 # Visual Studio Code
 .vscode
 .factorypath
-quarkus_service/.vscode
-quarkus_service/.factorypath
+quarkus_rules/.vscode
+quarkus_rules/.factorypath
 
 # patch
 *.orig
 *.rej
 
 # Local environment
-quarkus_service/.env
+quarkus_rules/.env
 
 # Plugin directory
-quarkus_service/.quarkus/cli/plugins/
+quarkus_rules/.quarkus/cli/plugins/
 
 # OCaml rules project
 ocaml_rules/_build/

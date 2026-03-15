@@ -1,0 +1,7 @@
+org/acme/MyEntity.class
+org/acme/Applicant.class
+org/acme/LoanApplication.class
+org/acme/GreetingResource.class
+org/acme/SomePage.class
+org/acme/LoanAppDTO.class
+org/acme/LoanApplicationEndPoint.class
