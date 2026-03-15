@@ -41,3 +41,14 @@ ocaml_rules/*.cmo
 ocaml_rules/*.exe
 ocaml_rules/.dune/
 
+# OCaml state machine project
+ocaml_state_machine/_build/
+ocaml_state_machine/*.cmx
+ocaml_state_machine/*.cmi
+ocaml_state_machine/*.cmo
+ocaml_state_machine/*.exe
+ocaml_state_machine/.dune/
+_opam/
+ocaml_state_machine/_build/
+
+

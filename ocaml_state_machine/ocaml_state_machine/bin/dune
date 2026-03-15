@@ -1,0 +1,4 @@
+(executable
+ (public_name ocaml_state_machine)
+ (name main)
+ (libraries ocaml_state_machine))
