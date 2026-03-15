@@ -49,6 +49,6 @@ ocaml_state_machine/*.cmo
 ocaml_state_machine/*.exe
 ocaml_state_machine/.dune/
 _opam/
-ocaml_state_machine/_build/
+
 
 
