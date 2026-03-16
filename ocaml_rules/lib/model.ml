@@ -1,8 +1,8 @@
 type meeting_type =
   | Daily
   | Planning
-  | StaffMeeting
-  | CollectiveDebuggingInTestEnvironment
+  | Retro
+  | CollectiveDebuggingInEnvironment
 
 type role =
   | SM
@@ -41,11 +41,26 @@ type meeting_drift =
   | ToTheHillsOfUbeda
   | ToHell  
 
+type action_status =
+  | Proposed
+  | Accepted
+  | Forgotten
+  | Completed
+  | ReplacedByAnotherAction
+  | NeverToBeSpokenAgain
+
+type environment =
+  | Development
+  | Testing
+  | UAT  
+
 type meeting = {
   meeting_type : meeting_type;
   duration_min : int;
   deep_dive : bool;
   drift : meeting_drift;
+  environment : environment option;
+  hour : int option;  
 }
 
 type participant = {
@@ -73,5 +88,25 @@ type simulation_result = {
   fired_rules : string list;
 }
 
+type action = {
+  status : action_status;
+  source_issue_priority : issue_priority;
+} 
+
 type rule = simulation_state -> simulation_state
 
+let make_meeting meeting_type duration_min =
+  {
+    meeting_type;
+    duration_min;
+    deep_dive = false;
+    drift = Focused;
+    environment = None;
+    hour = None;
+  }
+
+let make_participant role =
+  {role; interested = false; understands= false}  
+
+let make_issue priority =
+  {priority; status = Open; understood_by = []}  

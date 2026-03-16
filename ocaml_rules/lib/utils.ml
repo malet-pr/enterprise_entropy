@@ -1,5 +1,8 @@
 open Model
 
+let mark_fired (name: string)(state: simulation_state) : simulation_state =
+  { state with fired_rules = name :: state.fired_rules }
+
 let participant_has_role role participant =
   participant.role = role
 

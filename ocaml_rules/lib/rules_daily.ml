@@ -17,16 +17,18 @@ let curiosity_spiral (state : simulation_state) : simulation_state =
      && is_high_priority state.issue
      && exists_interested_role [SM; DataEngineer] state.participants
   then
-    {
-      state with
-      meeting = {
-        state.meeting with
-        duration_min = state.meeting.duration_min + 30;
-        deep_dive = true;
-        drift = ToTheHillsOfUbeda;
-      };
-      fired_rules = "curiosity_spiral" :: state.fired_rules;
-    }
+    let updated_state =
+      {
+        state with
+        meeting = {
+          state.meeting with
+          duration_min = state.meeting.duration_min + 30;
+          deep_dive = true;
+          drift = ToTheHillsOfUbeda;
+        };
+      } 
+    in
+    mark_fired "curiosity_spiral" updated_state;
   else
     state
 
