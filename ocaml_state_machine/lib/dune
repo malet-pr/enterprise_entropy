@@ -1,2 +1,3 @@
 (library
- (name ocaml_state_machine))
+ (name ocaml_state_machine)
+ (modules model utils transitions printer))
