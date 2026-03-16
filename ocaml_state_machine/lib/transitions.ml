@@ -1,7 +1,5 @@
 open Model 
 open Utils
-open Printer
-
 
 let invalid_transition state event =
   failwith
