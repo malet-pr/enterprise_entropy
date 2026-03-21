@@ -62,17 +62,19 @@ let step ((state,ctx) : machine) event : machine  =
     | _, DeclareEntropyComplete ->  EntropyComplete, ctx
     | _ -> failwith "Invalid transition"
  
+
 let run events state =
+  Printf.printf "Start: %s\n\n" (string_of_machine state);   
   List.fold_left
-    (fun m event ->
-        Printf.printf "Event: %s\n" (string_of_event event);
+    (fun (m, step_num) event ->
+        Printf.printf "[%d] Event: %s\n" step_num (string_of_event event);
         try
             let res = step m event in
-            Printf.printf " -> %s\n\n" (string_of_machine res);
-            res
+            Printf.printf "Next -> %s\n\n" (string_of_machine res);
+            (res, step_num + 1)
         with Failure msg ->
             Printf.printf " !! %s\n\n" msg;
             raise (Failure msg)) 
-    state
+    (state , 1)
     events
        
