@@ -48,7 +48,13 @@ ocaml_state_machine/*.cmi
 ocaml_state_machine/*.cmo
 ocaml_state_machine/*.exe
 ocaml_state_machine/.dune/
+ocaml_state_machine/*.mmd
 _opam/
 
-
-
+# Python state machine cli
+python_state_machine/src/.env
+python_state_machine/dist/
+python_state_machine/src/output-files/
+python_state_machine/̣__pycache__
+python_state_machine/src/__init__.py
+python_state_machine/̣src/__pycache__

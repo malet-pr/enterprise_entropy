@@ -22,14 +22,17 @@ type issue_priority =
   | High
   | Critical
 
+type risk =
+  | WillBreakProduction
+  | UsersWillRaiseHell
+
 type issue_status =
   | Open
-  | Deferred
   | Ignored
-  | MovedToAnotherMeeting
-  | Resolved
   | Discarded
-  | WillBreakProduction
+  | Deferred
+  | MovedToAnotherMeeting
+  | RiskFlagged of risk
 
 type understanding =
   | Functional

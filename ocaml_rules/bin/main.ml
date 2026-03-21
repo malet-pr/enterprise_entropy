@@ -52,4 +52,25 @@ let () =
   let result = simulate all_rules meeting participants issue in
   print_result result;
   
+  print_endline("###########################################################")
+  
+let () =
+  let meeting = make_meeting Daily 5 in
+  let participants = [
+    (make_participant SM);
+    {(make_participant ActingLead) with interested = true; understands = true};] in
+  let issue = {(make_issue High) with understood_by = [Technical] } in
+  let result = simulate all_rules meeting participants issue in
+  print_result result;
+
+  print_endline("###########################################################")
+  
+let () =
+  let meeting = make_meeting Daily 35 in
+  let participants = [
+    {(make_participant ActingLead) with interested = true; understands = true};] in
+  let issue = {(make_issue High) with understood_by = [Technical] } in
+  let result = simulate all_rules meeting participants issue in
+  print_result result;  
+
   

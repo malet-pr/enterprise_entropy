@@ -84,13 +84,21 @@ let insignificant_issue_consumes_time (state : simulation_state) : simulation_st
 Rule 4 - Move issue to another meeting
   Condition
     meeting is Daily
-    issue priority is Low or Medium
+    issue priority is Medium or High
+    issue understood by Technical only
+    and:
+      SM not interested
+      or
+      ActingLead interested and meeting lenght > 30 min
   Effect
     issue status: MovedToAnotherMeeting
 *)
 let move_issue_to_another_meeting (state : simulation_state) : simulation_state =
   if meeting_is Daily state.meeting
-     && (state.issue.priority = Low || state.issue.priority = Medium)
+    && (state.issue.priority = High || state.issue.priority = Medium)
+    && state.issue.understood_by = [Technical]
+    && (roles_not_interested [SM] state.participants
+    ||(exists_interested_role [ActingLead] state.participants && state.meeting.duration_min > 30))
   then
     {
       state with

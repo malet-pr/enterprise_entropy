@@ -14,6 +14,11 @@ let exists_interested_role roles participants =
     (fun p -> List.mem p.role roles && p.interested)
     participants
 
+let roles_not_interested roles participants =
+  List.exists
+    (fun p -> List.mem p.role roles && p.interested = false)
+    participants
+
 let issue_is_understandable_by domain issue =
   List.mem domain issue.understood_by
 
@@ -47,6 +52,10 @@ let count_participants_that_understand_the_issue (participants: participant list
   
 (*************************** STRINGS *******************************)
 
+let string_of_risk = function
+  | WillBreakProduction -> "WillBreakProduction"
+  | UsersWillRaiseHell -> "UsersWillRaiseHell"
+
 let string_of_drift = function
   | Focused -> "Focused"
   | ToTheHillsOfUbeda -> "ToTheHillsOfUbeda"
@@ -57,11 +66,11 @@ let string_of_issue_status = function
   | Deferred -> "Deferred"
   | Ignored -> "Ignored"
   | MovedToAnotherMeeting -> "MovedToAnotherMeeting"
-  | Resolved -> "Resolved"
   | Discarded -> "Discarded"
-  | WillBreakProduction -> "WillBreakProduction"    
+  | RiskFlagged a -> string_of_risk a
 
 let string_of_fired_rules rules =
   match rules with
   | [] -> "None"
   | _ -> String.concat ", " rules
+
