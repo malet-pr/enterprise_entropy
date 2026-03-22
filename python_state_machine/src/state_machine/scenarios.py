@@ -20,11 +20,11 @@ scenario = {
     }
 }
 
-scenario = {"test": set([1, 2, 3])}
+# scenario = {"test": set([1, 2, 3])}
 
 def create_scenarios(args):
     arg = get_args(args)
-    if len(arg) > 0:
+    if arg is not None:
         file = os.path.join(set_output_path(), arg+'.json')
     else:    
         file = os.path.join(set_output_path(), get_file_name())
@@ -42,4 +42,4 @@ def get_args(args: argparse.Namespace) -> str:
     if hasattr(args, 'fileName') and args.fileName is not None:
         return args.fileName
     else:
-        return '' 
+        return None 

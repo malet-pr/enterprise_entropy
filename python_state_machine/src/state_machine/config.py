@@ -13,7 +13,7 @@ FILE_NAME = os.getenv('FILE_NAME','scenario.json')
 # Logging config
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
-def get_file_name():
+def get_file_name(): 
     return FILE_NAME
 
 def get_default_output_path() -> Path:
