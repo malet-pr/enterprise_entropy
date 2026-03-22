@@ -7,6 +7,10 @@ quarkus_rules/release.properties
 quarkus_rules/.flattened-pom.xml
 quarkus_rules/.env
 
+# Python
+__pycache__/
+*.pyc
+
 # IntelliJ
 .idea
 *.ipr
@@ -52,9 +56,7 @@ ocaml_state_machine/*.mmd
 _opam/
 
 # Python state machine cli
-python_state_machine/src/.env
+python_state_machine/.env
 python_state_machine/dist/
-python_state_machine/src/output-files/
-python_state_machine/̣__pycache__
-python_state_machine/src/__init__.py
-python_state_machine/̣src/__pycache__
+python_state_machine/src/state_machine/output-files/
+python_state_machine/src/state_machine/__init__.py
