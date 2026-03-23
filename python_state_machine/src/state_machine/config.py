@@ -2,19 +2,30 @@ from pathlib import Path
 from dotenv import load_dotenv
 import os, sys
 import logging
+import argparse
 
 load_dotenv()
 
 # Parmeters
 OUTPUT_FILE_PATH = os.getenv('OUTPUT_FILE_PATH')
 PATH_NAME = os.getenv('PATH_NAME','ocaml')
-FILE_NAME = os.getenv('FILE_NAME','scenario.json')
+FILE_NAME_SCENARIO = os.getenv('FILE_NAME_SCENARIO','scenario.json')
+FILE_NAME_REPORT = os.getenv('FILE_NAME_REPORT', 'report.md')
 
 # Logging config
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
-def get_file_name(): 
-    return FILE_NAME
+def get_file_name_scenario(): 
+    return FILE_NAME_SCENARIO 
+
+def get_file_name_report(): 
+    return FILE_NAME_REPORT
+
+def get_args(args: argparse.Namespace) -> str:
+    if hasattr(args, 'fileName') and args.fileName is not None:
+        return args.fileName
+    else:
+        return None 
 
 def get_default_output_path() -> Path:
     """

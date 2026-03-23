@@ -1,23 +1,37 @@
-import argparse
 import logging
 import json
 import os, sys
-from config import set_output_path, get_file_name
+from config import *
+
 
 scenario = {
     "scenario_id": "SCN-001",
-    "meeting": {
-        "type": "Daily",
-        "duration": 15
+    "initial_context": {
+        "revival_signals": 0,
+        "qa_rejections": 0,
+        "sprints_ignored": 0
     },
-    "participants": [
-        {"name": "John", "role": "TechLead", "interested": True, "understands": True},
-        {"name": "Mary", "role": "Developer", "interested": True, "understands": False}
+    "initial_state":"IdeaFog",
+    "events": [
+        "ClarifySomehow",
+        "StartAnyway",
+        "DiscoverDisagreement",
+        "Postpone",
+        "ForgetForLongTime",
+        "ForgetForLongTime",
+        "CustomerComplains",
+        "ExecutiveRemembers",
+        "DiscoverDisagreement",
+        "StartAnyway",
+        "SendToQA",
+        "Rework",
+        "SendToQA",
+        "RejectFundamentally",
+        "Postpone",
+        "ForgetForLongTime",
+        "AuditDiscovers",
+        "DeclareEntropyComplete"
     ],
-    "issue": {
-        "priority": "High",
-        "understood_by": ["TechLead"]
-    }
 }
 
 # scenario = {"test": set([1, 2, 3])}
@@ -27,7 +41,7 @@ def create_scenarios(args):
     if arg is not None:
         file = os.path.join(set_output_path(), arg+'.json')
     else:    
-        file = os.path.join(set_output_path(), get_file_name())
+        file = os.path.join(set_output_path(), get_file_name_scenario())
     try:    
         with open(file, "w") as f:
             json.dump([scenario], f, indent=2)
@@ -37,9 +51,3 @@ def create_scenarios(args):
         sys.exit(1)    
     
     
-# This is just to run an initial test, it will be deleted.
-def get_args(args: argparse.Namespace) -> str:
-    if hasattr(args, 'fileName') and args.fileName is not None:
-        return args.fileName
-    else:
-        return None 
