@@ -2,7 +2,7 @@ open Ocaml_state_machine
 open Model
 open Transitions
 
-let () = print_endline "JIRA TICKET STATE MACHINE\n"
+let () = print_endline "FEATURE STATE MACHINE\n"
 
 let initial_ctx = {
   revival_signals = 0;

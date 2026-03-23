@@ -3,30 +3,39 @@ type state =
   | PretendPlanning
   | HeroicImplementation
   | PhilosophicalDebate
-  | ThisIsAllWrong
+  | StressTheThing
   | TemporarilyPostponed
-  | ZombieTicket
+  | ZombieFeature
+  | EntropyReduction
   | EntropyComplete
+  | EntropyAbandoned
 
  type event =
+  | AuditDiscovers
   | ClarifySomehow
-  | StartAnyway
+  | CustomerComplains
+  | DeclareEntropyAbandoned
+  | DeclareEntropyComplete
+  | DeclareEntropyReduction
   | DiscoverDisagreement
-  | SendToQA
+  | ExecutiveRemembers
+  | ForgetForLongTime
+  | Postpone
+  | RealizeWrongDirection
   | RejectFundamentally
   | Rework
-  | Postpone
-  | ForgetForLongTime
-  | ExecutiveRemembers
-  | CustomerComplains
-  | AuditDiscovers
-  | DeclareEntropyComplete
+  | SendToQA
+  | StartAnyway
+  | ThisIsAllWrong
+
   
- type context = {
+type context = {
   revival_signals : int;
   qa_rejections : int;
   sprints_ignored : int;
 }
+
+type machine = state * context
 
 let initial_context = {
   revival_signals = 0;
@@ -36,4 +45,10 @@ let initial_context = {
 
 let initial_state = IdeaFog
 
-type machine = state * context
+let is_terminal = function
+  | (EntropyComplete, _) -> true
+  | (EntropyReduction, _) -> true
+  | (EntropyAbandoned, _) -> true
+  | _ -> false
+
+

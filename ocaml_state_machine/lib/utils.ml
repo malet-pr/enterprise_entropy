@@ -5,24 +5,31 @@ let string_of_state = function
   | PretendPlanning -> "PretendPlanning"
   | HeroicImplementation -> "HeroicImplementation"
   | PhilosophicalDebate -> "PhilosophicalDebate"
-  | ThisIsAllWrong -> "ThisIsAllWrong"
+  | StressTheThing -> "StressTheThing"
   | TemporarilyPostponed -> "TemporarilyPostponed"
-  | ZombieTicket -> "ZombieTicket"
+  | ZombieFeature -> "ZombieFeature"
+  | EntropyReduction -> "EntropyReduction"
   | EntropyComplete -> "EntropyComplete"
+  | EntropyAbandoned -> "EntropyAbandoned"
+
 
 let string_of_event = function
+  | AuditDiscovers -> "AuditDiscovers"
   | ClarifySomehow -> "ClarifySomehow"
-  | StartAnyway -> "StartAnyway"
+  | CustomerComplains -> "CustomerComplains"
+  | DeclareEntropyAbandoned -> "DeclareEntropyAbandoned"
+  | DeclareEntropyComplete -> "DeclareEntropyComplete"
+  | DeclareEntropyReduction -> "DeclareEntropyReduction"
   | DiscoverDisagreement -> "DiscoverDisagreement"
-  | SendToQA -> "SendToQA"
+  | ExecutiveRemembers -> "ExecutiveRemembers"
+  | ForgetForLongTime -> "ForgetForLongTime"
+  | Postpone -> "Postpone"
+  | RealizeWrongDirection -> "RealizeWrongDirection"
   | RejectFundamentally -> "RejectFundamentally"
   | Rework -> "Rework"
-  | Postpone -> "Postpone"
-  | ForgetForLongTime -> "ForgetForLongTime"
-  | ExecutiveRemembers -> "ExecutiveRemembers"
-  | CustomerComplains -> "CustomerComplains"
-  | AuditDiscovers -> "AuditDiscovers"
-  | DeclareEntropyComplete -> "DeclareEntropyComplete"  
+  | SendToQA -> "SendToQA"
+  | StartAnyway -> "StartAnyway"
+  | ThisIsAllWrong -> "ThisIsAllWrong"
 
 let string_of_context ctx =
   Printf.sprintf
@@ -35,9 +42,6 @@ let string_of_machine (state, ctx) =
   Printf.sprintf "%s %s"
     (string_of_state state)
     (string_of_context ctx)  
-
-
-
 
 let increment_qa_rejections ctx =
   { ctx with qa_rejections = ctx.qa_rejections + 1 }

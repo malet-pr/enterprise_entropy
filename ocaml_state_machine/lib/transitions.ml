@@ -25,40 +25,40 @@ let step ((state,ctx) : machine) event : machine  =
         if new_ctx.qa_rejections >= 3 then
              PhilosophicalDebate, new_ctx
         else
-             ThisIsAllWrong, new_ctx
+             StressTheThing, new_ctx
     | HeroicImplementation, DiscoverDisagreement ->  PhilosophicalDebate, ctx
     | HeroicImplementation, Postpone ->  TemporarilyPostponed, ctx
-    | ThisIsAllWrong, Rework ->  HeroicImplementation, ctx
-    | ThisIsAllWrong, RejectFundamentally ->  PhilosophicalDebate, ctx
-    | ThisIsAllWrong, Postpone ->  TemporarilyPostponed, ctx
+    | StressTheThing, Rework ->  HeroicImplementation, ctx
+    | StressTheThing, RejectFundamentally ->  PhilosophicalDebate, ctx
+    | StressTheThing, Postpone ->  TemporarilyPostponed, ctx
     | PhilosophicalDebate, ClarifySomehow ->  PretendPlanning, ctx
     | PhilosophicalDebate, StartAnyway ->  HeroicImplementation, ctx
     | PhilosophicalDebate, Postpone ->  TemporarilyPostponed, ctx
     | TemporarilyPostponed, ForgetForLongTime ->
         let new_ctx = increment_sprints_ignored ctx in
         if new_ctx.sprints_ignored >= 2 then
-             ZombieTicket, new_ctx
+             ZombieFeature, new_ctx
         else
              TemporarilyPostponed, new_ctx
     | TemporarilyPostponed, StartAnyway ->  HeroicImplementation, ctx
-    | ZombieTicket, ExecutiveRemembers ->
+    | ZombieFeature, ExecutiveRemembers ->
         let new_ctx = increment_revival_signals ctx in
         if new_ctx.revival_signals >= 2 then
              HeroicImplementation, reset_revival_signals new_ctx
         else
-             ZombieTicket, new_ctx
-    | ZombieTicket, CustomerComplains ->
+             ZombieFeature, new_ctx
+    | ZombieFeature, CustomerComplains ->
         let new_ctx = increment_revival_signals ctx in
         if new_ctx.revival_signals >= 2 then
              HeroicImplementation, reset_revival_signals new_ctx
         else
-             ZombieTicket, new_ctx
-    | ZombieTicket, AuditDiscovers ->
+             ZombieFeature, new_ctx
+    | ZombieFeature, AuditDiscovers ->
         let new_ctx = increment_revival_signals ctx in
         if new_ctx.revival_signals >= 2 then
              HeroicImplementation, reset_revival_signals new_ctx
         else
-             ZombieTicket, new_ctx
+             ZombieFeature, new_ctx
     | _, DeclareEntropyComplete ->  EntropyComplete, ctx
     | _ -> failwith "Invalid transition"
  
