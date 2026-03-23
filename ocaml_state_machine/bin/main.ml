@@ -20,14 +20,18 @@ let scenario1 = [
   SendToQA;
   Rework;
   SendToQA;
+  Rework;
+  SendToQA;
+  ThisIsAllWrong;
 ]
 
 let scenario2 = [
   ClarifySomehow;
   StartAnyway;
   SendToQA;
-  DiscoverDisagreement;
   Rework;
+  SendToQA;
+  DeclareEntropyComplete;
 ]
 
 let scenario3 = [
@@ -47,8 +51,9 @@ let scenario3 = [
   RejectFundamentally;
   Postpone;
   ForgetForLongTime;
+  ForgetForLongTime;
   AuditDiscovers;
-  DeclareEntropyComplete;
+  DeclareEntropyAbandoned;
 ]
 
 let scenario4 = [
@@ -59,10 +64,10 @@ let scenario4 = [
   AuditDiscovers;
 ]
 
-let res1 = run scenario1 initial_machine
+let res1 = run scenario3 initial_machine
 let sep = print_endline("\n################################################\n\n")
-let res3 = run scenario3 initial_machine
+(* let res3 = run scenario2 initial_machine
 let sep = print_endline("\n################################################\n\n")
-let res4 = run scenario4 initial_machine
+let res4 = run scenario3 initial_machine
 let sep = print_endline("\n################################################\n\n")
-let res2 = run scenario2 initial_machine
+let res2 = run scenario4 initial_machine *)
