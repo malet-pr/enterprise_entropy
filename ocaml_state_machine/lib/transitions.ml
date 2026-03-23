@@ -10,37 +10,41 @@ let invalid_transition state event =
 
 let step ((state,ctx) : machine) event : machine  =
   match state with
-  | EntropyComplete -> failwith "Invalid transition"
+  | EntropyComplete | EntropyAbandoned | EntropyReduction -> failwith "Invalid transition"
   | _ ->
     match state, event with
     | IdeaFog, ClarifySomehow ->  PretendPlanning, ctx
     | IdeaFog, StartAnyway ->  HeroicImplementation, ctx
-    | IdeaFog, Postpone ->  TemporarilyPostponed, ctx
-    | IdeaFog, DeclareEntropyComplete ->  EntropyComplete, ctx
+    | IdeaFog, Postpone ->  TemporarilyPostponed, reset_sprints_ignored ctx
+    | IdeaFog, DeclareEntropyAbandoned ->  EntropyAbandoned, ctx
     | PretendPlanning, StartAnyway ->  HeroicImplementation, ctx
     | PretendPlanning, DiscoverDisagreement ->  PhilosophicalDebate, ctx
-    | PretendPlanning, Postpone ->  TemporarilyPostponed, ctx
-    | HeroicImplementation, SendToQA ->
-        let new_ctx = increment_qa_rejections ctx in
-        if new_ctx.qa_rejections >= 3 then
-             PhilosophicalDebate, new_ctx
-        else
-             StressTheThing, new_ctx
+    | PretendPlanning, Postpone ->  TemporarilyPostponed, reset_sprints_ignored ctx
+    | PretendPlanning, DeclareEntropyComplete ->  EntropyComplete, ctx
+    | PretendPlanning, DeclareEntropyReduction ->  EntropyReduction, ctx
+    | PretendPlanning, DeclareEntropyAbandoned ->  EntropyAbandoned, ctx
+    | HeroicImplementation, SendToQA -> StressTheThing, ctx
     | HeroicImplementation, DiscoverDisagreement ->  PhilosophicalDebate, ctx
-    | HeroicImplementation, Postpone ->  TemporarilyPostponed, ctx
-    | StressTheThing, Rework ->  HeroicImplementation, ctx
+    | HeroicImplementation, Postpone ->  TemporarilyPostponed, reset_sprints_ignored ctx
+    | HeroicImplementation, RealizeWrongDirection ->  PretendPlanning, reset_qa_rejections ctx
+    | StressTheThing, Rework when ctx.qa_rejections < 3 -> HeroicImplementation, increment_qa_rejections ctx
+    | StressTheThing, ThisIsAllWrong when ctx.qa_rejections >= 3 ->  PretendPlanning, reset_qa_rejections ctx
+    | StressTheThing, Postpone ->  TemporarilyPostponed, reset_sprints_ignored ctx
+    | StressTheThing, RealizeWrongDirection ->  PretendPlanning, reset_qa_rejections ctx
     | StressTheThing, RejectFundamentally ->  PhilosophicalDebate, ctx
-    | StressTheThing, Postpone ->  TemporarilyPostponed, ctx
-    | PhilosophicalDebate, ClarifySomehow ->  PretendPlanning, ctx
+    | StressTheThing, DeclareEntropyComplete ->  EntropyComplete, ctx  
     | PhilosophicalDebate, StartAnyway ->  HeroicImplementation, ctx
-    | PhilosophicalDebate, Postpone ->  TemporarilyPostponed, ctx
+    | PhilosophicalDebate, Postpone ->  TemporarilyPostponed, reset_sprints_ignored ctx
+    | PhilosophicalDebate, DeclareEntropyReduction ->  EntropyReduction, ctx
+    | PhilosophicalDebate, DeclareEntropyAbandoned ->  EntropyAbandoned, ctx 
     | TemporarilyPostponed, ForgetForLongTime ->
         let new_ctx = increment_sprints_ignored ctx in
         if new_ctx.sprints_ignored >= 2 then
              ZombieFeature, new_ctx
         else
              TemporarilyPostponed, new_ctx
-    | TemporarilyPostponed, StartAnyway ->  HeroicImplementation, ctx
+    | TemporarilyPostponed, StartAnyway ->  HeroicImplementation, reset_sprints_ignored ctx
+    | TemporarilyPostponed, ClarifySomehow ->  PretendPlanning, reset_sprints_ignored ctx
     | ZombieFeature, ExecutiveRemembers ->
         let new_ctx = increment_revival_signals ctx in
         if new_ctx.revival_signals >= 2 then
@@ -59,7 +63,7 @@ let step ((state,ctx) : machine) event : machine  =
              HeroicImplementation, reset_revival_signals new_ctx
         else
              ZombieFeature, new_ctx
-    | _, DeclareEntropyComplete ->  EntropyComplete, ctx
+    | ZombieFeature, DeclareEntropyAbandoned -> EntropyAbandoned, ctx         
     | _ -> failwith "Invalid transition"
  
 
