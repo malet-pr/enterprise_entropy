@@ -1,4 +1,8 @@
 package org.acme.incidents.api;
 
-public class SuppressionRule {
+import org.acme.incidents.model.Incident;
+
+@FunctionalInterface
+public interface SuppressionRule {
+    boolean shouldSuppress(Incident incident);
 }

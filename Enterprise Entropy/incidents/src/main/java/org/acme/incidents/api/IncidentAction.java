@@ -1,4 +1,8 @@
 package org.acme.incidents.api;
 
-public class IncidentAction {
+import org.acme.incidents.model.Incident;
+
+@FunctionalInterface
+public interface IncidentAction {
+    void execute(Incident incident);
 }

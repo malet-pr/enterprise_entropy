@@ -1,4 +1,9 @@
 package org.acme.incidents.api;
 
-public class RoutingPolicy {
+import org.acme.incidents.model.Incident;
+import org.acme.incidents.model.Team;
+
+@FunctionalInterface
+public interface RoutingPolicy {
+    Team route(Incident incident);
 }
