@@ -1,3 +1,4 @@
-(library
+ (library 
  (name ocaml_state_machine)
- (modules model utils transitions))
+ (modules model utils transitions integration)
+ (libraries yojson))

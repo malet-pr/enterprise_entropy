@@ -12,6 +12,18 @@ let string_of_state = function
   | EntropyComplete -> "EntropyComplete"
   | EntropyAbandoned -> "EntropyAbandoned"
 
+let state_of_string = function
+  | "IdeaFog" -> IdeaFog
+  | "PretendPlanning" -> PretendPlanning
+  | "HeroicImplementation" -> HeroicImplementation
+  | "StressTheThing" -> StressTheThing
+  | "PhilosophicalDebate" -> PhilosophicalDebate
+  | "TemporarilyPostponed" -> TemporarilyPostponed
+  | "ZombieFeature" -> ZombieFeature
+  | "EntropyComplete" -> EntropyComplete
+  | "EntropyReduction" -> EntropyReduction
+  | "EntropyAbandoned" -> EntropyAbandoned
+  | s -> failwith ("Unknown state: " ^ s)
 
 let string_of_event = function
   | AuditDiscovers -> "AuditDiscovers"
@@ -30,6 +42,26 @@ let string_of_event = function
   | SendToQA -> "SendToQA"
   | StartAnyway -> "StartAnyway"
   | ThisIsAllWrong -> "ThisIsAllWrong"
+
+let event_of_string = function
+  | "AuditDiscovers" -> AuditDiscovers
+  | "ClarifySomehow" -> ClarifySomehow
+  | "CustomerComplains" -> CustomerComplains 
+  | "DeclareEntropyAbandoned" -> DeclareEntropyAbandoned 
+  | "DeclareEntropyComplete" -> DeclareEntropyComplete
+  | "DeclareEntropyReduction" ->DeclareEntropyReduction
+  | "DiscoverDisagreement" -> DiscoverDisagreement
+  | "ExecutiveRemembers" -> ExecutiveRemembers
+  | "ForgetForLongTime" -> ForgetForLongTime
+  | "Postpone" -> Postpone
+  | "RealizeWrongDirection"-> RealizeWrongDirection
+  | "RejectFundamentally" -> RejectFundamentally
+  | "Rework" -> Rework 
+  | "SendToQA" -> SendToQA  
+  | "StartAnyway"-> StartAnyway 
+  | "ThisIsAllWrong" -> ThisIsAllWrong 
+  | e -> failwith ("Unknown event: " ^ e)
+
 
 let string_of_context ctx =
   Printf.sprintf
@@ -62,11 +94,3 @@ let reset_revival_signals ctx =
   { ctx with revival_signals = 0 }  
 
 
-
-(* 
-transition result --> (state * context) -> event -> (state * context)  
-
-val check_invariants : state -> context -> bool
-
-val invariant_violations : state -> context -> string list 
-*)

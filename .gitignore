@@ -52,6 +52,7 @@ ocaml_state_machine/*.cmi
 ocaml_state_machine/*.cmo
 ocaml_state_machine/*.exe
 ocaml_state_machine/.dune/
+ocaml_state_machine/data/
 ocaml_state_machine/*.mmd
 _opam/
 
