@@ -1,6 +1,5 @@
 package org.acme.incidents.engine;
 
-import lombok.extern.slf4j.XSlf4j;
 import org.acme.incidents.api.EscalationPolicy;
 import org.acme.incidents.api.IncidentAction;
 import org.acme.incidents.api.RoutingPolicy;

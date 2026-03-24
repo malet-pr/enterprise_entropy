@@ -1,11 +1,11 @@
 #Java
-Enterprise Entropy/target/
-Enterprise Entropy/pom.xml.tag
-Enterprise Entropy/pom.xml.releaseBackup
-Enterprise Entropy/pom.xml.versionsBackup
-Enterprise Entropy/release.properties
-Enterprise Entropy/.flattened-pom.xml
-Enterprise Entropy/.env
+Enterprise_Entropy/target/
+Enterprise_Entropy/pom.xml.tag
+Enterprise_Entropy/pom.xml.releaseBackup
+Enterprise_Entropy/pom.xml.versionsBackup
+Enterprise_Entropy/release.properties
+Enterprise_Entropy/.flattened-pom.xml
+Enterprise_Entropy/.env
 
 # Python
 __pycache__/
@@ -16,26 +16,26 @@ __pycache__/
 *.ipr
 *.iml
 *.iws
-Enterprise Entropy/.idea
-Enterprise Entropy/*.ipr
-Enterprise Entropy/*.iml
-Enterprise Entropy/*.iws
+Enterprise_Entropy/.idea
+Enterprise_Entropy/*.ipr
+Enterprise_Entropy/*.iml
+Enterprise_Entropy/*.iws
 
 # Visual Studio Code
 .vscode
 .factorypath
-Enterprise Entropy/.vscode
-Enterprise Entropy/.factorypath
+Enterprise_Entropy/.vscode
+Enterprise_Entropy/.factorypath
 
 # patch
 *.orig
 *.rej
 
 # Local environment
-Enterprise Entropy/.env
+Enterprise_Entropy/.env
 
 # Plugin directory
-Enterprise Entropy/.quarkus/cli/plugins/
+Enterprise_Entropy/.quarkus/cli/plugins/
 
 # OCaml rules project
 ocaml_rules/_build/
