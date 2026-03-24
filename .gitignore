@@ -1,11 +1,11 @@
-#Maven
-quarkus_rules/target/
-quarkus_rules/pom.xml.tag
-quarkus_rules/pom.xml.releaseBackup
-quarkus_rules/pom.xml.versionsBackup
-quarkus_rules/release.properties
-quarkus_rules/.flattened-pom.xml
-quarkus_rules/.env
+#Java
+java_implementations/target/
+java_implementations/pom.xml.tag
+java_implementations/pom.xml.releaseBackup
+java_implementations/pom.xml.versionsBackup
+java_implementations/release.properties
+java_implementations/.flattened-pom.xml
+java_implementations/.env
 
 # Python
 __pycache__/
@@ -16,26 +16,26 @@ __pycache__/
 *.ipr
 *.iml
 *.iws
-quarkus_rules/.idea
-quarkus_rules/*.ipr
-quarkus_rules/*.iml
-quarkus_rules/*.iws
+java_implementations/.idea
+java_implementations/*.ipr
+java_implementations/*.iml
+java_implementations/*.iws
 
 # Visual Studio Code
 .vscode
 .factorypath
-quarkus_rules/.vscode
-quarkus_rules/.factorypath
+java_implementations/.vscode
+java_implementations/.factorypath
 
 # patch
 *.orig
 *.rej
 
 # Local environment
-quarkus_rules/.env
+java_implementations/.env
 
 # Plugin directory
-quarkus_rules/.quarkus/cli/plugins/
+java_implementations/.quarkus/cli/plugins/
 
 # OCaml rules project
 ocaml_rules/_build/
