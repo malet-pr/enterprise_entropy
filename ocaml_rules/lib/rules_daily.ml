@@ -52,7 +52,7 @@ let important_issue_not_understood (state : simulation_state) : simulation_state
     else
       state
   else
-    state
+    state 
 
 (*
 Rule 3 - Insignificat issue consumes time
@@ -148,4 +148,23 @@ let collective_debugging_swarm (state : simulation_state) : simulation_state =
     }
   else  
     state
- 
+
+let collective_debugging_swarm_no_if (state : simulation_state) : simulation_state =
+  let cond = daily_priority_technical_understand_by_two state in
+  match cond with
+    | false -> state
+    | true ->
+              {
+                state with
+                issue = {
+                  state.issue with
+                  status = Open;
+                };
+                meeting = {
+                  state.meeting with
+                  duration_min = state.meeting.duration_min + 20;
+                  deep_dive = true;
+                  drift = Focused;
+                };
+                fired_rules = "collective_debugging_swarm_no_if" :: state.fired_rules;
+              }

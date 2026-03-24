@@ -25,6 +25,7 @@ type issue_priority =
 type risk =
   | WillBreakProduction
   | UsersWillRaiseHell
+  | AuditorsWillNotBeHappy
 
 type issue_status =
   | Open
