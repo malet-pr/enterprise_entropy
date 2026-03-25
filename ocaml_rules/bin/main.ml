@@ -34,19 +34,19 @@ let () =
   print_result result1;
   print_endline("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
   let result2 = simulate [risk_will_break_production] meeting2 participants result1.issue in
-  print_result result2;
+  print_result result2; 
+  print_endline("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
 
-(* let () =
+let () =
   let meeting = make_meeting Daily 15 in
   let participants = [
     (make_participant Developer);
     {(make_participant SM) with interested = true};
-] in
+  ] in
   let issue = {(make_issue Critical) with understood_by = [Technical] } in
   let result = simulate all_rules meeting participants issue in
   print_result result;
-
-print_endline("###########################################################")
+  print_endline("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
 
 let () =
   let meeting = make_meeting Daily 15  in
@@ -57,8 +57,7 @@ let () =
   let issue = {(make_issue Insignificant) with understood_by = [Technical;Testing] } in
   let result = simulate all_rules meeting participants issue in
   print_result result;
-
-  print_endline("###########################################################") 
+  print_endline("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
 
 let () =
   let meeting = make_meeting Daily 15 in
@@ -73,9 +72,8 @@ let () =
   let issue = {(make_issue High) with understood_by = [Technical] } in
   let result = simulate all_rules meeting participants issue in
   print_result result;
-  
-  print_endline("###########################################################")
-  
+  print_endline("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+
 let () =
   let meeting = make_meeting Daily 5 in
   let participants = [
@@ -84,15 +82,13 @@ let () =
   let issue = {(make_issue High) with understood_by = [Technical] } in
   let result = simulate all_rules meeting participants issue in
   print_result result;
+  print_endline("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
 
-  print_endline("###########################################################")
   
 let () =
   let meeting = make_meeting Daily 35 in
-  let participants = [
-    {(make_participant ActingLead) with interested = true; understands = true};] in
+  let participants = [{(make_participant ActingLead) with interested = true; understands = true};] in
   let issue = {(make_issue High) with understood_by = [Technical] } in
   let result = simulate all_rules meeting participants issue in
-  print_result result;  
- *)
-  
+  print_result result;
+

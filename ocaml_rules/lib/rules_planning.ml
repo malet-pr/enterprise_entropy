@@ -20,7 +20,7 @@ let issue_is_discarded (state : simulation_state) : simulation_state =
         state with
         issue = {
           state.issue with
-          status = Discarded
+          status = {stage=Discarded;risk=state.issue.status.risk}
         };
       } 
     in
@@ -47,7 +47,7 @@ let auditors_will_not_like_it (state : simulation_state) : simulation_state =
         state with
         issue = {
           state.issue with
-          status = RiskFlagged AuditorsWillNotBeHappy
+          status = {stage=state.issue.status.stage;risk= Some AuditorsWillNotBeHappy};
         };
       } 
     in

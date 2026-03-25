@@ -11,8 +11,8 @@ let print_meeting_deep_dive meeting =
 let print_meeting_drift meeting =
   Printf.printf "Drift: %s\n" (string_of_drift meeting.drift)
 
-let print_issue_status issue_status =
-  Printf.printf "Issue status: %s\n" (string_of_issue_status issue_status)
+let print_issue_status status =
+  Printf.printf "Issue status: %s\n" (string_of_status status)
 
 let print_fired_rules fired_rules =
   Printf.printf "Fired rules: %s\n" (string_of_fired_rules fired_rules)

@@ -46,7 +46,10 @@ let important_issue_not_understood (state : simulation_state) : simulation_state
     then
       {
         state with
-        issue = { state.issue with status = Ignored };
+        issue = {
+          state.issue with
+          status = {stage=Ignored;risk=state.issue.status.risk}
+        };
         fired_rules = "important_issue_not_understood" :: state.fired_rules;
       }
     else
@@ -104,7 +107,7 @@ let move_issue_to_another_meeting (state : simulation_state) : simulation_state 
       state with
       issue = {
         state.issue with
-        status = MovedToAnotherMeeting;
+        status = {stage=MovedToAnotherMeeting;risk= state.issue.status.risk};
       };
       fired_rules = "move_issue_to_another_meeting" :: state.fired_rules;
     }
@@ -136,7 +139,7 @@ let collective_debugging_swarm (state : simulation_state) : simulation_state =
       state with
       issue = {
         state.issue with
-        status = Open;
+        status = {stage=Open;risk= state.issue.status.risk};
       };
       meeting = {
         state.meeting with
@@ -158,7 +161,7 @@ let collective_debugging_swarm_no_if (state : simulation_state) : simulation_sta
                 state with
                 issue = {
                   state.issue with
-                  status = Open;
+                  status = {stage=Open;risk= state.issue.status.risk};
                 };
                 meeting = {
                   state.meeting with

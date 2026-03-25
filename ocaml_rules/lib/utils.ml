@@ -98,18 +98,22 @@ let string_of_risk = function
   | UsersWillRaiseHell -> "UsersWillRaiseHell"
   | AuditorsWillNotBeHappy -> "AuditorsWillNotBeHappy"
 
+let string_of_stage = function
+  | Open -> "Open"
+  | Ignored -> "Ignored"
+  | Discarded -> "Discarded"
+  | Deferred -> "Deferred"
+  | MovedToAnotherMeeting -> "MovedToAnotherMeeting"
+
+let string_of_status s = 
+  match s.risk with
+  | Some x -> "stage: " ^ string_of_stage s.stage ^ ", risk: " ^ string_of_risk x
+  | None -> "stage: " ^ string_of_stage s.stage
+  
 let string_of_drift = function
   | Focused -> "Focused"
   | ToTheHillsOfUbeda -> "ToTheHillsOfUbeda"
   | ToHell -> "ToHell"
-
-let string_of_issue_status = function
-  | Open -> "Open"
-  | Deferred -> "Deferred"
-  | Ignored -> "Ignored"
-  | MovedToAnotherMeeting -> "MovedToAnotherMeeting"
-  | Discarded -> "Discarded"
-  | RiskFlagged a -> "RiskFlagged - " ^ string_of_risk a
 
 let string_of_fired_rules rules =
   match rules with

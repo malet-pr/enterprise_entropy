@@ -15,7 +15,7 @@ Rule D1 — Flag risk will break production
 let risk_will_break_production (state : simulation_state) : simulation_state =
   if meeting_is_collective_debug_in_environment state.meeting UAT
      && is_medium_priority state.issue
-     && state.issue.status = Discarded
+     && state.issue.status.stage = Discarded
      && participants_with_role_count Developer state.participants >= 3
     then
     let updated_state =
@@ -23,7 +23,7 @@ let risk_will_break_production (state : simulation_state) : simulation_state =
         state with
         issue = {
           state.issue with
-          status = RiskFlagged WillBreakProduction;
+          status = {stage=state.issue.status.stage;risk= Some WillBreakProduction};
         }
       }
     in

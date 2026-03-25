@@ -1,7 +1,6 @@
 type meeting_type =
   | Daily
   | Planning
-  | Retro
   | CollectiveDebuggingInEnvironment
 
 type role =
@@ -27,13 +26,12 @@ type risk =
   | UsersWillRaiseHell
   | AuditorsWillNotBeHappy
 
-type issue_status =
+type stage =
   | Open
   | Ignored
   | Discarded
   | Deferred
   | MovedToAnotherMeeting
-  | RiskFlagged of risk
 
 type understanding =
   | Functional
@@ -44,14 +42,6 @@ type meeting_drift =
   | Focused
   | ToTheHillsOfUbeda
   | ToHell  
-
-type action_status =
-  | Proposed
-  | Accepted
-  | Forgotten
-  | Completed
-  | ReplacedByAnotherAction
-  | NeverToBeSpokenAgain
 
 type environment =
   | Development
@@ -73,9 +63,14 @@ type participant = {
   understands : bool;
 }
 
+type status = {
+  stage : stage;
+  risk : risk option;
+}
+
 type issue = {
   priority : issue_priority;
-  status : issue_status;
+  status : status;
   understood_by : understanding list;
 }
 
@@ -113,4 +108,4 @@ let make_participant role =
   {role; interested = false; understands= false}  
 
 let make_issue priority =
-  {priority; status = Open; understood_by = []}  
+  {priority; status = {stage = Open; risk = None}; understood_by = []}  
