@@ -1,0 +1,202 @@
+{
+    "scenario_id": "SCN-001",
+    "status": "ok",
+    "final_state": "EntropyAbandoned",
+    "final_context": {
+        "revival_signals": 1,
+        "qa_rejections": 1,
+        "sprints_ignored": 2
+    },
+    "steps": [
+        {
+            "step": 1,
+            "event": "ClarifySomehow",
+            "resulting_state": "PretendPlanning",
+            "resulting_context": {
+                "revival_signals": 0,
+                "qa_rejections": 0,
+                "sprints_ignored": 0
+            }
+        },
+        {
+            "step": 2,
+            "event": "StartAnyway",
+            "resulting_state": "HeroicImplementation",
+            "resulting_context": {
+                "revival_signals": 0,
+                "qa_rejections": 0,
+                "sprints_ignored": 0
+            }
+        },
+        {
+            "step": 3,
+            "event": "DiscoverDisagreement",
+            "resulting_state": "PhilosophicalDebate",
+            "resulting_context": {
+                "revival_signals": 0,
+                "qa_rejections": 0,
+                "sprints_ignored": 0
+            }
+        },
+        {
+            "step": 4,
+            "event": "Postpone",
+            "resulting_state": "TemporarilyPostponed",
+            "resulting_context": {
+                "revival_signals": 0,
+                "qa_rejections": 0,
+                "sprints_ignored": 0
+            }
+        },
+        {
+            "step": 5,
+            "event": "ForgetForLongTime",
+            "resulting_state": "TemporarilyPostponed",
+            "resulting_context": {
+                "revival_signals": 0,
+                "qa_rejections": 0,
+                "sprints_ignored": 1
+            }
+        },
+        {
+            "step": 6,
+            "event": "ForgetForLongTime",
+            "resulting_state": "ZombieFeature",
+            "resulting_context": {
+                "revival_signals": 0,
+                "qa_rejections": 0,
+                "sprints_ignored": 2
+            }
+        },
+        {
+            "step": 7,
+            "event": "CustomerComplains",
+            "resulting_state": "ZombieFeature",
+            "resulting_context": {
+                "revival_signals": 1,
+                "qa_rejections": 0,
+                "sprints_ignored": 2
+            }
+        },
+        {
+            "step": 8,
+            "event": "ExecutiveRemembers",
+            "resulting_state": "HeroicImplementation",
+            "resulting_context": {
+                "revival_signals": 0,
+                "qa_rejections": 0,
+                "sprints_ignored": 2
+            }
+        },
+        {
+            "step": 9,
+            "event": "DiscoverDisagreement",
+            "resulting_state": "PhilosophicalDebate",
+            "resulting_context": {
+                "revival_signals": 0,
+                "qa_rejections": 0,
+                "sprints_ignored": 2
+            }
+        },
+        {
+            "step": 10,
+            "event": "StartAnyway",
+            "resulting_state": "HeroicImplementation",
+            "resulting_context": {
+                "revival_signals": 0,
+                "qa_rejections": 0,
+                "sprints_ignored": 2
+            }
+        },
+        {
+            "step": 11,
+            "event": "SendToQA",
+            "resulting_state": "StressTheThing",
+            "resulting_context": {
+                "revival_signals": 0,
+                "qa_rejections": 0,
+                "sprints_ignored": 2
+            }
+        },
+        {
+            "step": 12,
+            "event": "Rework",
+            "resulting_state": "HeroicImplementation",
+            "resulting_context": {
+                "revival_signals": 0,
+                "qa_rejections": 1,
+                "sprints_ignored": 2
+            }
+        },
+        {
+            "step": 13,
+            "event": "SendToQA",
+            "resulting_state": "StressTheThing",
+            "resulting_context": {
+                "revival_signals": 0,
+                "qa_rejections": 1,
+                "sprints_ignored": 2
+            }
+        },
+        {
+            "step": 14,
+            "event": "RejectFundamentally",
+            "resulting_state": "PhilosophicalDebate",
+            "resulting_context": {
+                "revival_signals": 0,
+                "qa_rejections": 1,
+                "sprints_ignored": 2
+            }
+        },
+        {
+            "step": 15,
+            "event": "Postpone",
+            "resulting_state": "TemporarilyPostponed",
+            "resulting_context": {
+                "revival_signals": 0,
+                "qa_rejections": 1,
+                "sprints_ignored": 0
+            }
+        },
+        {
+            "step": 16,
+            "event": "ForgetForLongTime",
+            "resulting_state": "TemporarilyPostponed",
+            "resulting_context": {
+                "revival_signals": 0,
+                "qa_rejections": 1,
+                "sprints_ignored": 1
+            }
+        },
+        {
+            "step": 17,
+            "event": "ForgetForLongTime",
+            "resulting_state": "ZombieFeature",
+            "resulting_context": {
+                "revival_signals": 0,
+                "qa_rejections": 1,
+                "sprints_ignored": 2
+            }
+        },
+        {
+            "step": 18,
+            "event": "AuditDiscovers",
+            "resulting_state": "ZombieFeature",
+            "resulting_context": {
+                "revival_signals": 1,
+                "qa_rejections": 1,
+                "sprints_ignored": 2
+            }
+        },
+        {
+            "step": 19,
+            "event": "DeclareEntropyAbandoned",
+            "resulting_state": "EntropyAbandoned",
+            "resulting_context": {
+                "revival_signals": 1,
+                "qa_rejections": 1,
+                "sprints_ignored": 2
+            }
+        }
+    ]
+}
