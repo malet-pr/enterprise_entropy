@@ -30,7 +30,7 @@ class State(BaseModel):
     steps: Optional[List[Step]] = None
   
 
-json_data = Path("output3.json").read_text()
+json_data = Path("output.json").read_text()
 state_instance = State.model_validate_json(json_data)
 
 lines_to_write = [
@@ -43,24 +43,35 @@ lines_to_write = [
 if state_instance.error is not None:
     lines_to_write.append(f"- **Error:**\n")
     if state_instance.error.step is not None:
-        lines_to_write.append(f"     - step: {state_instance.error.step}\n")
-        lines_to_write.append(f"     - event: {state_instance.error.event}\n")
-        lines_to_write.append(f"     - message: {state_instance.error.message}\n")
+        lines_to_write.append(f"    - step: {state_instance.error.step}\n")
+        lines_to_write.append(f"    - event: {state_instance.error.event}\n")
+        lines_to_write.append(f"    - message: {state_instance.error.message}\n")
         lines_to_write.append(f"- **Last state:** {state_instance.last_state}\n") 
-        lines_to_write.append(f"- **Last context:** {state_instance.last_context}\n\n")  
+        lines_to_write.append(f"- **Last context:**\n")  
+        lines_to_write.append(f"    - revival_signals: {state_instance.last_context.revival_signals}\n")
+        lines_to_write.append(f"    - qa_rejections: {state_instance.last_context.qa_rejections}\n")
+        lines_to_write.append(f"    - sprints_ignored: {state_instance.last_context.sprints_ignored}\n\n")
     else:    
-        lines_to_write.append(f"     - phase: {state_instance.error.phase}\n")
-        lines_to_write.append(f"     - message: {state_instance.error.message}\n")
+        lines_to_write.append(f"    - phase: {state_instance.error.phase}\n")
+        lines_to_write.append(f"    - message: {state_instance.error.message}\n")
 else:
     lines_to_write.append(f"- **Final state:** {state_instance.final_state}\n") 
-    lines_to_write.append(f"- **Final context:** {state_instance.final_context}\n\n")   
+    lines_to_write.append(f"- **Final context:** {state_instance.final_context}\n")   
+    lines_to_write.append(f"    - revival_signals: {state_instance.final_context.revival_signals}\n")
+    lines_to_write.append(f"    - qa_rejections: {state_instance.final_context.qa_rejections}\n")
+    lines_to_write.append(f"    - sprints_ignored: {state_instance.final_context.sprints_ignored}\n\n")
 
 if state_instance.steps is not None:
     lines_to_write.append("## Events\n")
     for s in state_instance.steps:
-        lines_to_write.append(f"{s.step}- {s.event}\n")
+        lines_to_write.append(f"{s.step}. {s.event}\n")
+        lines_to_write.append(f"    - resulting_state: {s.resulting_state} \n")
+        lines_to_write.append(f"    - context:\n")
+        lines_to_write.append(f"        - revival_signals: {s.resulting_context.revival_signals}\n")
+        lines_to_write.append(f"        - qa_rejections: {s.resulting_context.qa_rejections}\n")
+        lines_to_write.append(f"        - sprints_ignored: {s.resulting_context.sprints_ignored}\n")
 
-file = 'prueba3.md'
+file = 'prueba.md'
 with open(file, "w") as f:
     f.writelines(lines_to_write)
     print(f'File {file} created.')
