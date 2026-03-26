@@ -79,7 +79,7 @@ def store_report(args, lines_to_write: List[str]):
     else:    
         file = os.path.join(set_output_path(), get_file_name_report())
     try:   
-        file = './files/reports/report3.md' 
+        file = './files/reports/report.md' 
         with open(file, "w") as f:
             f.writelines(lines_to_write)
             print(f'File {file} created.')
