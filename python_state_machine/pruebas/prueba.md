@@ -4,7 +4,7 @@
 - **ID:** SCN-001
 - **Status:** ok
 - **Final state:** EntropyAbandoned
-- **Final context:** revival_signals=1 qa_rejections=1 sprints_ignored=2
+- **Final context:**
     - revival_signals: 1
     - qa_rejections: 1
     - sprints_ignored: 2

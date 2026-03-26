@@ -56,7 +56,7 @@ if state_instance.error is not None:
         lines_to_write.append(f"    - message: {state_instance.error.message}\n")
 else:
     lines_to_write.append(f"- **Final state:** {state_instance.final_state}\n") 
-    lines_to_write.append(f"- **Final context:** {state_instance.final_context}\n")   
+    lines_to_write.append(f"- **Final context:**\n")   
     lines_to_write.append(f"    - revival_signals: {state_instance.final_context.revival_signals}\n")
     lines_to_write.append(f"    - qa_rejections: {state_instance.final_context.qa_rejections}\n")
     lines_to_write.append(f"    - sprints_ignored: {state_instance.final_context.sprints_ignored}\n\n")
