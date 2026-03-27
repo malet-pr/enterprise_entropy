@@ -25,7 +25,7 @@ def main():
 
     # Comand 'create-scenarios'
     parser_create_scenarios = subparsers.add_parser('create-scenarios', help='Generates files that will be used by Ocaml to run the state machine.')
-    parser_create_scenarios.add_argument('--fileName', type=str, help=f'File name of the output file, (default = {FILE_NAME_SCENARIO})')
+    parser_create_scenarios.add_argument('--fileName', type=str, help=f'File name of the output file, (default = {FILE_NAME_DATA})')
     parser_create_scenarios.set_defaults(func=create_scenarios)
     
     # Comand 'create-report'

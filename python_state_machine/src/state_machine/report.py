@@ -75,11 +75,14 @@ def create_md(state_instance: State)-> List[str]:
 def store_report(args, lines_to_write: List[str]):
     arg = get_args(args)
     if arg is not None:
-        file = os.path.join(set_output_path(), arg+'.md')
+        print(set_path('reports'))
+        file = os.path.join(set_path('reports'), arg+'.md')
     else:    
-        file = os.path.join(set_output_path(), get_file_name_report())
+        print(set_path('reports'))
+        print(get_file_name_report())
+        file = os.path.join(set_path('reports'), get_file_name_report()) 
     try:   
-        file = './files/reports/report.md' 
+        #file = './files/reports/report.md' 
         with open(file, "w") as f:
             f.writelines(lines_to_write)
             print(f'File {file} created.')
@@ -88,10 +91,16 @@ def store_report(args, lines_to_write: List[str]):
         sys.exit(1)    
     
 def create_report(args):
-    json_data = Path("./files/data/output3.json").read_text()
+    arg = get_args(args)
+    json_data = {}
+    if arg is not None:
+        json_data = Path(os.path.join(set_path('data'), arg+'.json')).read_text()
+    else:  
+        json_data = Path(os.path.join(set_path('data'), get_file_name_data())).read_text()   
     instance = State.model_validate_json(json_data)
     lines = create_md(instance) 
     store_report(args, lines)
     
-    
+
+ 
     

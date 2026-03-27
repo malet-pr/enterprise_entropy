@@ -7,19 +7,20 @@ import argparse
 load_dotenv()
 
 # Parmeters
-OUTPUT_FILE_PATH = os.getenv('OUTPUT_FILE_PATH')
-PATH_NAME = os.getenv('PATH_NAME','ocaml')
-FILE_NAME_SCENARIO = os.getenv('FILE_NAME_SCENARIO','scenario.json')
+FILES_PATH = os.getenv('FILES_PATH')
+DATA_PATH = os.getenv('DATA_PATH','data')
+REPORT_PATH = os.getenv('REPORT_PATH','reports')
+FILE_NAME_DATA = os.getenv('FILE_NAME_DATA','output.json')
 FILE_NAME_REPORT = os.getenv('FILE_NAME_REPORT', 'report.md')
 
 # Logging config
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
-def get_file_name_scenario(): 
-    return FILE_NAME_SCENARIO 
+def get_file_name_data(): 
+    return FILE_NAME_DATA 
 
 def get_file_name_report(): 
-    return FILE_NAME_REPORT
+    return FILE_NAME_REPORT 
 
 def get_args(args: argparse.Namespace) -> str:
     if hasattr(args, 'fileName') and args.fileName is not None:
@@ -27,11 +28,14 @@ def get_args(args: argparse.Namespace) -> str:
     else:
         return None 
 
-def get_default_output_path() -> Path:
+def get_default_output_path(type:str) -> Path:
     """
-    Defines a path to store outputs relative to 'output-files' in the current directory.
+    Defines a path to store outputs or read inputs relative to 'files' in the current directory.
     """
-    default_path = Path(f"output-files/{PATH_NAME}")
+    if type == 'data':
+        default_path = Path(f"files/{DATA_PATH}")
+    elif type == 'reports':    
+        default_path = Path(f"files/{REPORT_PATH}")
     logging.debug(f"Using default path: {default_path}")  
     return default_path
 
@@ -48,22 +52,29 @@ def check_and_create_path(path: Path) -> Path:
                 sys.exit(1)
         else:
             path.mkdir(parents=True, exist_ok=True)
-            logging.info(f"Output path crated: {path}")
+            logging.info(f"Path crated: {path}")
         return path   
     except Exception as e:
         logging.error(f"Fatal error creating '{path}': {e}")
         sys.exit(1)
 
-def set_output_path() -> Path:
+def set_path(type:str) -> Path:
     """
     Returns output path via ENV or via OS default. Secures path existence.
     Returns path object.
     """
-    output_path_env = os.getenv('STATE_MACHINE_OUTPUT_PATH')
-    if output_path_env:
-        output_path = Path(output_path_env)
-    else:
-        output_path = get_default_output_path()
-    final_path = check_and_create_path(output_path)
-    return final_path
+    if type == 'data':
+        full_path_data = os.getenv('STATE_MACHINE_PATH_DATA')
+        if full_path_data:
+            path = check_and_create_path(Path(full_path_data)) 
+        else:
+            path = check_and_create_path(get_default_output_path('data')) 
+    elif type == 'reports':   
+        full_path_reports = os.getenv('STATE_MACHINE_PATH_REPORTS')
+        if full_path_reports:
+            path = check_and_create_path(Path(full_path_reports)) 
+        else:
+            path = check_and_create_path(get_default_output_path('reports')) 
+    return path        
+    
 
