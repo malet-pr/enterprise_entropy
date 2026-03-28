@@ -63,3 +63,5 @@ python_state_machine/src/state_machine/output-files/
 python_state_machine/src/state_machine/__init__.py
 python_state_machine/pruebas/
 python_state_machine/src/state_machine/files/
+python_state_machine/prueba
+python_state_machine/src/logs

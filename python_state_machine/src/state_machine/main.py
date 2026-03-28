@@ -38,23 +38,16 @@ def main():
     if args.command is None:
         args.command = 'run-all'
         args.func = run_all
-        print('\n###############################################################################')
-        print("No argument was provided, executing run_all.")   
+        logging.info("No argument was provided, executing run_all.")   
 
-
-    
-    print('\n###############################################################################')
     logging.info('STARTING THE PROCESS...')
-    print('###############################################################################\n')
 
     try:
         args.func(args)
     except Exception as e:
         logging.error(f"Error while executing command '{args.command}': {e}", exc_info=True)
-
-    print('\n###############################################################################')
+        
     logging.info('PROCESS ENDED.')
-    print('###############################################################################\n')
 
 if __name__ == "__main__":
     main()  

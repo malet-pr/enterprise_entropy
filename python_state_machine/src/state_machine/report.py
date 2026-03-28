@@ -75,19 +75,17 @@ def create_md(state_instance: State)-> List[str]:
 def store_report(args, lines_to_write: List[str]):
     arg = get_args(args)
     if arg is not None:
-        print(set_path('reports'))
         file = os.path.join(set_path('reports'), arg+'.md')
     else:    
-        print(set_path('reports'))
-        print(get_file_name_report())
         file = os.path.join(set_path('reports'), get_file_name_report()) 
+    logger.info(f"File name: {file}")
     try:   
         #file = './files/reports/report.md' 
         with open(file, "w") as f:
             f.writelines(lines_to_write)
-            print(f'File {file} created.')
+            logger.info(f'File {file} created.')
     except Exception as e:
-        logging.error(f"Failed to write file {file}: {e}") 
+        logger.error(f"Failed to write file {file}: {e}") 
         sys.exit(1)    
     
 def create_report(args):
