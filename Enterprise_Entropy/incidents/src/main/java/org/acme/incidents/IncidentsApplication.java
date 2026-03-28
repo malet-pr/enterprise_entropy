@@ -1,12 +1,10 @@
 package org.acme.incidents;
 
-import org.acme.incidents.api.EscalationPolicy;
-import org.acme.incidents.api.IncidentAction;
-import org.acme.incidents.api.RoutingPolicy;
-import org.acme.incidents.api.SuppressionRule;
+import org.acme.incidents.api.*;
 import org.acme.incidents.demo.SampleIncidents;
 import org.acme.incidents.engine.IncidentProcessor;
 import org.acme.incidents.model.Incident;
+import org.acme.incidents.model.NextStep;
 import org.acme.incidents.model.Team;
 import org.acme.incidents.model.TriageDecision;
 import org.slf4j.Logger;
@@ -41,42 +39,45 @@ public class IncidentsApplication  implements CommandLineRunner {
 
         EscalationPolicy escalationPolicy = incident -> {
             boolean prod = "prod".equalsIgnoreCase(incident.getEnvironment());
-
             if (prod && incident.getSeverityScore() >= 9 && incident.isCustomerImpact()) {
-                return TriageDecision.PAGE_NOW;
+                return TriageDecision.WAKE_SOMEONE_UP;
             }
-
             if (prod && incident.getSeverityScore() >= 8) {
-                return TriageDecision.ESCALATE;
+                return TriageDecision.WE_SHOULD_TELL_SOMEONE;
             }
-
             if (incident.getSeverityScore() >= 5) {
-                return TriageDecision.INVESTIGATE;
+                return TriageDecision.WE_SHOULD_PROBABLY_LOOK_AT_THIS;
             }
-
-            return TriageDecision.LOG_ONLY;
+            return TriageDecision.FORGET_IT;
         };
 
         RoutingPolicy routingPolicy = incident -> {
             String service = incident.getService().toLowerCase();
-
             if (service.contains("billing")) {
-                return Team.BILLING;
+                return Team.WHERE_IS_MY_MONEY;
             }
             if (service.contains("gateway")) {
-                return Team.PLATFORM;
+                return Team.MACHINES_AND_STUFF;
             }
             if (service.contains("auth")) {
-                return Team.SECURITY;
+                return Team.THIS_GATE_IS_CLOSED;
             }
             if (service.contains("sap") || service.contains("kafka")) {
-                return Team.INTEGRATIONS;
+                return Team.TALK_AMONG_YOURSELVES;
             }
-            return Team.UNKNOWN;
+            return Team.WHAT_IS_THIS;
+        };
+
+        FollowUp followUp = incident -> {
+            String service = incident.getService().toLowerCase();
+            if (service.contains("gateway") && incident.isCustomerImpact()) {
+                return NextStep.INVESTIGATE_AND_FIX;
+            }
+            return NextStep.ALL_DONE;
         };
 
         IncidentAction action = incident ->
-                log.info("   -> action executed for {}", incident.getId());
+                log.info("Action executed for {}", incident.getId());
 
         IncidentProcessor processor = new IncidentProcessor();
         processor.process(
@@ -84,6 +85,7 @@ public class IncidentsApplication  implements CommandLineRunner {
                 suppressionRule,
                 escalationPolicy,
                 routingPolicy,
+                followUp,
                 action
         );
 
