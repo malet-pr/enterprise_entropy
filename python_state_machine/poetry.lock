@@ -13,6 +13,19 @@ files = [
 ]
 
 [[package]]
+name = "ansicon"
+version = "1.89.0"
+description = "Python wrapper for loading Jason Hood's ANSICON"
+optional = false
+python-versions = "*"
+groups = ["main"]
+markers = "platform_system == \"Windows\""
+files = [
+    {file = "ansicon-1.89.0-py2.py3-none-any.whl", hash = "sha256:f1def52d17f65c2c9682cf8370c03f541f410c1752d6a14029f97318e4b9dfec"},
+    {file = "ansicon-1.89.0.tar.gz", hash = "sha256:e4d039def5768a47e4afec8e89e83ec3ae5a26bf00ad851f914d1240b444d2b1"},
+]
+
+[[package]]
 name = "argparse"
 version = "1.4.0"
 description = "Python command-line parsing library"
@@ -23,6 +36,25 @@ files = [
     {file = "argparse-1.4.0-py2.py3-none-any.whl", hash = "sha256:c31647edb69fd3d465a847ea3157d37bed1f95f19760b11a47aa91c04b666314"},
     {file = "argparse-1.4.0.tar.gz", hash = "sha256:62b089a55be1d8949cd2bc7e0df0bddb9e028faefc8c32038cc84862aefdd6e4"},
 ]
+
+[[package]]
+name = "blessed"
+version = "1.37.0"
+description = "Easy, practical library for making terminal apps, by providing an elegant, well-documented interface to Colors, Keyboard input, and screen Positioning capabilities."
+optional = false
+python-versions = ">=3.8"
+groups = ["main"]
+files = [
+    {file = "blessed-1.37.0-py3-none-any.whl", hash = "sha256:24bc4b995a59cc25fb61228e4008a23b58af64882db5f846a578e46fd1ce9309"},
+    {file = "blessed-1.37.0.tar.gz", hash = "sha256:36da5ff5779c1b15d4dfa8cd583ea3b05a0a31e1db4bd5af81f89c774b3e9815"},
+]
+
+[package.dependencies]
+jinxed = {version = ">=1.4.0", markers = "platform_system == \"Windows\""}
+wcwidth = ">=0.6"
+
+[package.extras]
+docs = ["Pillow", "Sphinx (>3)", "sphinx-paramlinks", "sphinx_rtd_theme", "sphinxcontrib-manpage"]
 
 [[package]]
 name = "dotenv"
@@ -37,6 +69,22 @@ files = [
 
 [package.dependencies]
 python-dotenv = "*"
+
+[[package]]
+name = "jinxed"
+version = "1.4.0"
+description = "Jinxed Terminal Library"
+optional = false
+python-versions = "*"
+groups = ["main"]
+markers = "platform_system == \"Windows\""
+files = [
+    {file = "jinxed-1.4.0-py2.py3-none-any.whl", hash = "sha256:95876a8b270081b8e28a9bbcbabe4fa98327faa91102526f724ed1904f9a55ac"},
+    {file = "jinxed-1.4.0.tar.gz", hash = "sha256:8f7801a10799de39e509eb5abc6d131ee169c1ce4fd5d568aa85b5f56ed58068"},
+]
+
+[package.dependencies]
+ansicon = {version = "*", markers = "platform_system == \"Windows\""}
 
 [[package]]
 name = "logging"
@@ -259,7 +307,19 @@ files = [
 [package.dependencies]
 typing-extensions = ">=4.12.0"
 
+[[package]]
+name = "wcwidth"
+version = "0.6.0"
+description = "Measures the displayed width of unicode strings in a terminal"
+optional = false
+python-versions = ">=3.8"
+groups = ["main"]
+files = [
+    {file = "wcwidth-0.6.0-py3-none-any.whl", hash = "sha256:1a3a1e510b553315f8e146c54764f4fb6264ffad731b3d78088cdb1478ffbdad"},
+    {file = "wcwidth-0.6.0.tar.gz", hash = "sha256:cdc4e4262d6ef9a1a57e018384cbeb1208d8abbc64176027e2c2455c81313159"},
+]
+
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.12"
-content-hash = "9d91b2dc17552e1e0c3f1da9218a42c10a93d6eba8a999d13be3c86528a3e40d"
+content-hash = "603c4f1591530825dcd4745031da282b2816265d7a6c8b0dc207f2dcf36125b1"
