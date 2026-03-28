@@ -14,7 +14,14 @@ FILE_NAME_DATA = os.getenv('FILE_NAME_DATA','output.json')
 FILE_NAME_REPORT = os.getenv('FILE_NAME_REPORT', 'report.md')
 
 # Logging config
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logging.basicConfig(
+    filename="../logs/cli.log",
+    level=logging.INFO,
+    format="%(asctime)s | %(levelname)s | %(message)s"
+)
+logger = logging.getLogger("cli")
+logger.info("=== New CLI session ===")
+
 
 def get_file_name_data(): 
     return FILE_NAME_DATA 

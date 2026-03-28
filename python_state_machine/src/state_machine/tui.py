@@ -3,12 +3,12 @@ from blessed import Terminal
 import logging
 
 logging.basicConfig(
-    filename="../logs/tui_test.log",
+    filename="../logs/tui.log",
     level=logging.INFO,
-    format="%(asctime)s | %(levelname)s | %(name)s | %(message)s"
+    format="%(asctime)s | %(levelname)s | %(message)s"
 )
 
-logger = logging.getLogger("tui_test")
+logger = logging.getLogger("tui")
 logger.info("=== New TUI session ===")
 
 term = Terminal()
