@@ -2,13 +2,16 @@ package org.acme.incidents;
 
 import org.acme.incidents.api.*;
 import org.acme.incidents.demo.SampleIncidents;
+import org.acme.incidents.dto.ProcessedIncident;
 import org.acme.incidents.engine.IncidentProcessor;
+import org.acme.incidents.engine.ProcessOne;
 import org.acme.incidents.model.Incident;
 import org.acme.incidents.model.NextStep;
 import org.acme.incidents.model.Team;
 import org.acme.incidents.model.TriageDecision;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -30,9 +33,13 @@ public class IncidentsApplication  implements CommandLineRunner {
 
         log.info("\n\nStarting Incident Triage Application Runner ...\n");
 
-        Supplier<List<Incident>> incidentSupplier = SampleIncidents.sampleData();
+        ProcessOne processOne = new ProcessOne();
 
-        SuppressionRule suppressionRule = incident ->
+        Supplier<List<Incident>> incidentSupplier = SampleIncidents.sampleData();
+        List<Incident> incidents = incidentSupplier.get();
+        processOne.process(incidents);
+
+/*        SuppressionRule suppressionRule = incident ->
                 "dev".equalsIgnoreCase(incident.getEnvironment())
                         && incident.getMessage().toLowerCase().contains("healthcheck failed")
                         && incident.getOccurrences() < 3;
@@ -88,7 +95,7 @@ public class IncidentsApplication  implements CommandLineRunner {
                 followUp,
                 action
         );
-
+*/
         log.info("\n\nIncident Triage Application Runner Finished...\n");
     }
 }

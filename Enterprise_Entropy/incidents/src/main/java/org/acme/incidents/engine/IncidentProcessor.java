@@ -5,14 +5,15 @@ import org.acme.incidents.model.Incident;
 import org.acme.incidents.model.NextStep;
 import org.acme.incidents.model.Team;
 import org.acme.incidents.model.TriageDecision;
-import org.acme.incidents.report.ProcessedIncident;
+import org.acme.incidents.dto.ProcessedIncident;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
 
-
+@Service
 public class IncidentProcessor {
 
     Logger log = LoggerFactory.getLogger(IncidentProcessor.class);

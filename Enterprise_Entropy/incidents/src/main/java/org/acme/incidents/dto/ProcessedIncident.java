@@ -1,4 +1,4 @@
-package org.acme.incidents.report;
+package org.acme.incidents.dto;
 
 import org.acme.incidents.model.Incident;
 import org.acme.incidents.model.NextStep;
