@@ -45,6 +45,9 @@ ocaml_rules/*.cmo
 ocaml_rules/*.exe
 ocaml_rules/.dune/
 
+# OCaml/Python interface
+prueba/
+
 # OCaml state machine project
 ocaml_state_machine/_build/
 ocaml_state_machine/*.cmx
@@ -63,5 +66,4 @@ python_state_machine/src/state_machine/output-files/
 python_state_machine/src/state_machine/__init__.py
 python_state_machine/pruebas/
 python_state_machine/src/state_machine/files/
-python_state_machine/prueba
-python_state_machine/src/logs
+python_state_machine/logs

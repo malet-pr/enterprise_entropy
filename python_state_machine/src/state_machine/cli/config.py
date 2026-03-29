@@ -15,7 +15,7 @@ FILE_NAME_REPORT = os.getenv('FILE_NAME_REPORT', 'report.md')
 
 # Logging config
 logging.basicConfig(
-    filename="../logs/cli.log",
+    filename="../../../logs/cli.log",
     level=logging.INFO,
     format="%(asctime)s | %(levelname)s | %(message)s"
 )
