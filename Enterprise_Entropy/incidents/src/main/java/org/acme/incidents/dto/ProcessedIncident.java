@@ -1,11 +1,13 @@
 package org.acme.incidents.dto;
 
+import com.fasterxml.jackson.annotation.JsonIncludeProperties;
 import org.acme.incidents.model.Incident;
 import org.acme.incidents.model.NextStep;
 import org.acme.incidents.model.Team;
 import org.acme.incidents.model.TriageDecision;
 
 public record ProcessedIncident(
+        @JsonIncludeProperties({"id"})
         Incident incident,
         TriageDecision decision,
         Team team,
