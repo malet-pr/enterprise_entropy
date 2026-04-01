@@ -1,24 +1,25 @@
 package org.acme.incidents.engine;
 
-import org.acme.incidents.api.*;
 import org.acme.incidents.dto.ProcessedIncident;
-import org.acme.incidents.model.Incident;
-import org.acme.incidents.model.NextStep;
-import org.acme.incidents.model.Team;
-import org.acme.incidents.model.TriageDecision;
+import org.acme.incidents.model.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import java.util.List;
+import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.function.Predicate;
+import static org.acme.incidents.api.SuppressionRulesProvided.*;
+
 
 @Service
-public class ProcessOne {
+public class ProcessOneProvided {
 
-    Logger log = LoggerFactory.getLogger(ProcessOne.class);
+    Logger log = LoggerFactory.getLogger(ProcessOneProvided.class);
 
     public List<ProcessedIncident> process(List<Incident> incidents) {
-        IncidentProcessor processor = new IncidentProcessor();
-        log.trace("Processing Incidents in ProcessOne: {}", incidents.stream().map(Incident::getId).toList());
+        log.trace("Processing Incidents in ProcessOneProvider: {}", incidents.stream().map(Incident::getId).toList());
+        IncidentProcessorProvided processor = new IncidentProcessorProvided();
         return processor.process(
                 incidents,
                 suppressionRule,
@@ -29,12 +30,10 @@ public class ProcessOne {
         );
     }
 
-    SuppressionRule suppressionRule = incident ->
-            "dev".equalsIgnoreCase(incident.getEnvironment())
-                    && incident.getMessage().toLowerCase().contains("healthcheck failed")
-                    && incident.getOccurrences() < 3;
+    Predicate<Incident> suppressionRule =
+            devHealthcheckNoise.or(testSapTransientNoise).or(legacyGhostCallNoise);
 
-    EscalationPolicy escalationPolicy = incident -> {
+    Function<Incident, TriageDecision> escalationPolicy = incident -> {
         boolean prod = "prod".equalsIgnoreCase(incident.getEnvironment());
         if (prod && incident.getSeverityScore() >= 9 && incident.isCustomerImpact()) {
             return TriageDecision.WAKE_SOMEONE_UP;
@@ -48,7 +47,7 @@ public class ProcessOne {
         return TriageDecision.FORGET_IT;
     };
 
-    RoutingPolicy routingPolicy = incident -> {
+    Function<Incident, Team> routingPolicy = incident -> {
         String service = incident.getService().toLowerCase();
         if (service.contains("billing")) {
             return Team.WHERE_IS_MY_MONEY;
@@ -65,7 +64,7 @@ public class ProcessOne {
         return Team.WHAT_IS_THIS;
     };
 
-    FollowUp followUp = incident -> {
+    Function<Incident, NextStep> followUp = incident -> {
         String service = incident.getService().toLowerCase();
         if (service.contains("gateway") && incident.isCustomerImpact()) {
             return NextStep.INVESTIGATE_AND_FIX;
@@ -73,6 +72,8 @@ public class ProcessOne {
         return NextStep.ALL_DONE;
     };
 
-    IncidentAction action = incident ->
+    Consumer<Incident> action = incident ->
             log.info("Action executed for {}", incident.getId());
+
+
 }
