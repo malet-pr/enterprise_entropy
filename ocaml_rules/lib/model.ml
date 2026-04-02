@@ -54,7 +54,6 @@ type meeting = {
   deep_dive : bool;
   drift : meeting_drift;
   environment : environment option;
-  hour : int option;  
 }
 
 type participant = {
@@ -87,11 +86,6 @@ type simulation_result = {
   fired_rules : string list;
 }
 
-type action = {
-  status : action_status;
-  source_issue_priority : issue_priority;
-} 
-
 type rule = simulation_state -> simulation_state
 
 let make_meeting meeting_type duration_min =
@@ -101,7 +95,6 @@ let make_meeting meeting_type duration_min =
     deep_dive = false;
     drift = Focused;
     environment = None;
-    hour = None;
   }
 
 let make_participant role =
@@ -109,3 +102,52 @@ let make_participant role =
 
 let make_issue priority =
   {priority; status = {stage = Open; risk = None}; understood_by = []}  
+
+(********************************************************************************************)  
+
+type condition =
+  | Meeting of meeting_condition
+  | Issue of issue_condition
+  | Participants of participant_condition
+
+and meeting_condition =
+  | MeetingTypeIs of meeting_type
+  | MeetingDriftIs of meeting_drift
+  | DeepDiveIs of bool
+  | EnvironmentIs of environment
+
+and issue_condition =
+  | IssueStageIs of stage
+  | IssueRiskIs of risk
+  | IssuePriorityIs of issue_priority
+
+and participant_condition =
+  | ParticipantCountAtLeast of int
+  | ParticipantCountAtMost of int
+  | UnderstandsCountAtLeast of int
+  | UnderstandsCountAtMost of int
+  | ExistsParticipantWithRole of role list
+  | ExistsUnderstandingParticipantWithRole of role list
+  | AllParticipantsUnderstand
+  | NoParticipantUnderstands
+
+type action =
+  | MeetingAction of meeting_action
+  | IssueAction of issue_action
+
+and meeting_action =
+  | ExtendMeetingBy of int
+  | SetMeetingDrift of meeting_drift
+  | SetDeepDive of bool
+
+and issue_action =
+  | SetIssueStage of stage
+  | SetIssueRisk of risk option
+
+type rule_candidate = {
+  rule_name : string;
+  conditions : condition list;
+  actions : action list;
+}
+
+
