@@ -58,22 +58,6 @@ let count_participants_that_understand_the_issue (participants: participant list
     acc + x)  0 participants
 
  
-(* let daily_priority_technical_understand_by_two (s : simulation_state): bool = 
-  let part = count_participants_that_understand_the_issue s.participants >= 2 in
-  let und = issue_is_understandable_by Technical s.issue in
-  match s.meeting.meeting_type with
-  | Retro | Planning | CollectiveDebuggingInEnvironment -> false 
-  | Daily -> 
-      match s.issue.priority with 
-        | Insignificant | Low | Medium -> false
-        | High | Critical ->
-          match und with
-            | false -> false
-            | true ->
-              match part with
-                | false -> false
-                | true -> true *)
-
 let daily_priority_technical_understand_by_two (s : simulation_state): bool = 
   let part = count_participants_that_understand_the_issue s.participants >= 2 in
   let und = issue_is_understandable_by Technical s.issue in
@@ -119,4 +103,6 @@ let string_of_fired_rules rules =
   match rules with
   | [] -> "None"
   | _ -> String.concat ", " rules
+
+(*****************************************************************)
 

@@ -104,8 +104,8 @@ let make_issue priority =
   {priority; status = {stage = Open; risk = None}; understood_by = []}  
 
 (********************************************************************************************)  
-
-type condition =
+ 
+type predicate =
   | Meeting of meeting_condition
   | Issue of issue_condition
   | Participants of participant_condition
@@ -115,11 +115,15 @@ and meeting_condition =
   | MeetingDriftIs of meeting_drift
   | DeepDiveIs of bool
   | EnvironmentIs of environment
+  | DurationGreaterThan of int
+  | DurationAtLeast of int
+  | DurationAtMost of int
 
 and issue_condition =
   | IssueStageIs of stage
   | IssueRiskIs of risk
   | IssuePriorityIs of issue_priority
+  | IssuePriorityIn of issue_priority list
 
 and participant_condition =
   | ParticipantCountAtLeast of int
@@ -127,13 +131,21 @@ and participant_condition =
   | UnderstandsCountAtLeast of int
   | UnderstandsCountAtMost of int
   | ExistsParticipantWithRole of role list
+  | ExistsInterestedParticipantWithRole of role list
+  | NoInterestedParticipantWithRole of role list
   | ExistsUnderstandingParticipantWithRole of role list
   | AllParticipantsUnderstand
   | NoParticipantUnderstands
+  | IssueUnderstoodByTechnicalOnly
+
+type condition_expr =
+  | Atom of predicate
+  | And of condition_expr list
+  | Or of condition_expr list
 
 type action =
-  | MeetingAction of meeting_action
-  | IssueAction of issue_action
+  | MeetingAction of meeting_action list
+  | IssueAction of issue_action list
 
 and meeting_action =
   | ExtendMeetingBy of int
@@ -146,7 +158,7 @@ and issue_action =
 
 type rule_candidate = {
   rule_name : string;
-  conditions : condition list;
+  conditions : condition_expr;
   actions : action list;
 }
 

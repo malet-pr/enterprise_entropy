@@ -12,7 +12,7 @@ Rule 1 — Curiosity Spiral
     deep dive: true
     drift: ToTheHillsOfUbeda
 *)
-let curiosity_spiral (state : simulation_state) : simulation_state =
+(* let curiosity_spiral (state : simulation_state) : simulation_state =
   if meeting_is Daily state.meeting
      && is_high_priority state.issue
      && exists_interested_role [SM; DataEngineer] state.participants
@@ -30,7 +30,21 @@ let curiosity_spiral (state : simulation_state) : simulation_state =
     in
     mark_fired "curiosity_spiral" updated_state;
   else
-    state
+    state *)
+
+let curiosity_spiral_conditions = 
+  And [
+    Atom (Meeting (MeetingTypeIs Daily));
+    Atom (Issue (IssuePriorityIn [High; Critical]));
+    Atom (Participants (ExistsInterestedParticipantWithRole [SM; DataEngineer]));
+  ]
+
+let curiosity_spiral_actions = 
+  [MeetingAction ([ExtendMeetingBy 30; SetMeetingDrift ToTheHillsOfUbeda; SetDeepDive true ])]
+
+let curiosity_spiral (state : simulation_state) : simulation_state = state 
+
+
 
 (*
 Rule 2 — Important Issue Not Understood
@@ -96,7 +110,7 @@ Rule 4 - Move issue to another meeting
   Effect
     issue status: MovedToAnotherMeeting
 *)
-let move_issue_to_another_meeting (state : simulation_state) : simulation_state =
+(* let move_issue_to_another_meeting (state : simulation_state) : simulation_state =
   if meeting_is Daily state.meeting
     && (state.issue.priority = High || state.issue.priority = Medium)
     && state.issue.understood_by = [Technical]
@@ -112,7 +126,24 @@ let move_issue_to_another_meeting (state : simulation_state) : simulation_state 
       fired_rules = "move_issue_to_another_meeting" :: state.fired_rules;
     }
   else
-    state
+    state *)
+
+let move_issue_to_another_meeting_conditions = And [
+  Atom (Meeting (MeetingTypeIs Daily)); 
+  Atom (Issue (IssuePriorityIn [Medium;High]));
+  Atom (Participants IssueUnderstoodByTechnicalOnly);
+  Or [
+    Atom (Participants (NoInterestedParticipantWithRole [SM]));
+    And [
+      Atom (Participants (ExistsInterestedParticipantWithRole [ActingLead]));
+      Atom (Meeting (DurationGreaterThan 30))
+    ]
+  ]
+]
+
+let move_issue_to_another_meeting_actions = [IssueAction [SetIssueStage MovedToAnotherMeeting]]
+
+let move_issue_to_another_meeting (state : simulation_state) : simulation_state = state    
 
 (*
 Rule 5 - Collective Debugging Swarm
