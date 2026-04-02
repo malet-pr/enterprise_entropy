@@ -23,3 +23,4 @@ let print_result result =
   print_meeting_drift result.meeting;
   print_issue_status result.issue.status;
   print_fired_rules result.fired_rules;
+

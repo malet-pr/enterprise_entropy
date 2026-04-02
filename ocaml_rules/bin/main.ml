@@ -9,16 +9,36 @@ open Rules_debug
 
 let all_rules = [
   curiosity_spiral;
-  important_issue_not_understood;
-  insignificant_issue_consumes_time;
   move_issue_to_another_meeting; 
-  collective_debugging_swarm;
-  collective_debugging_swarm_no_if;
-  issue_is_discarded;
-  risk_will_break_production;
 ]
 
 let () =
+  let meeting = make_meeting Daily 15 in
+    let participants = [
+    {(make_participant SM) with interested = false};
+    {(make_participant Developer) with interested = true; understands = true};
+    {(make_participant Developer) with understands = true};
+    (make_participant Developer);
+    (make_participant Developer);
+    {(make_participant DataEngineer) with interested = true; understands = true};  
+  ] in
+  let issue = {(make_issue Medium) with understood_by = [Technical] } in
+  let state = {
+    meeting = meeting;
+    participants = participants;
+    issue = issue;
+    fired_rules = [] ;
+  } in
+  let final_state = run_rule state curiosity_spiral in
+  print_fired_rules final_state.fired_rules;
+
+
+
+
+
+
+
+(* let () =
   let meeting1 = make_meeting Planning 105 in
   let meeting2 = {(make_meeting CollectiveDebuggingInEnvironment 120) with environment = Some UAT}in
   let participants = [
@@ -92,3 +112,4 @@ let () =
   let result = simulate all_rules meeting participants issue in
   print_result result;
 
+ *)
