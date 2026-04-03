@@ -23,17 +23,5 @@ let simulate (rules : rule list) meeting participants issue : simulation_result 
   } in
   result
 
-let evaluate_condition_expr state conditions = true
-
-let apply_actions state actions = state
-
-let run_rule  (state : simulation_state)  (rule : rule_candidate): simulation_state  = 
-  if evaluate_condition_expr state rule.conditions 
-    then
-      let new_state = apply_actions state rule.actions in
-      {new_state with fired_rules = "test" :: state.fired_rules}
-  else  
-    state
-
 
 

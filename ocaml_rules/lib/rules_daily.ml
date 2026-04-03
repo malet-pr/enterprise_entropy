@@ -94,7 +94,7 @@ Rule 4 - Move issue to another meeting
 let move_issue_to_another_meeting_conditions = And [
   Atom (Meeting (MeetingTypeIs Daily)); 
   Atom (Issue (IssuePriorityIn [Medium;High]));
-  Atom (Participants IssueUnderstoodByTechnicalOnly);
+  Atom (Issue (IssueUnderstoodOnlyBy Technical));
   Or [
     Atom (Participants (NoInterestedParticipantWithRole [SM]));
     And [

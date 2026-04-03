@@ -124,6 +124,8 @@ and issue_condition =
   | IssueRiskIs of risk
   | IssuePriorityIs of issue_priority
   | IssuePriorityIn of issue_priority list
+  | IssueUnderstoodOnlyBy of understanding
+  | IssueUnderstoodByList of understanding list
 
 and participant_condition =
   | ParticipantCountAtLeast of int
@@ -136,7 +138,6 @@ and participant_condition =
   | ExistsUnderstandingParticipantWithRole of role list
   | AllParticipantsUnderstand
   | NoParticipantUnderstands
-  | IssueUnderstoodByTechnicalOnly
 
 type condition_expr =
   | Atom of predicate

@@ -6,6 +6,7 @@ open Printer
 open Simulation
 open Rules_planning
 open Rules_debug
+open Evaluator
 
 let all_rules = [
   curiosity_spiral;
@@ -22,7 +23,7 @@ let () =
     (make_participant Developer);
     {(make_participant DataEngineer) with interested = true; understands = true};  
   ] in
-  let issue = {(make_issue Medium) with understood_by = [Technical] } in
+  let issue = {(make_issue High) with understood_by = [Technical] } in
   let state = {
     meeting = meeting;
     participants = participants;
