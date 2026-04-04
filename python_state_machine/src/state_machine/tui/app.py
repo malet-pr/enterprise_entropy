@@ -1,8 +1,8 @@
 from blessed import Terminal
 import logging
-from constants import MENU_ITEMS
-from render import render_menu,render_message_screen
-from input import prompt_input
+from constants import MENU_ITEMS,STATES,EVENTS
+from render import *
+from input import *
 
 logging.basicConfig(
     filename="../../../logs/tui.log",
@@ -23,48 +23,38 @@ def run_tui():
     error = None
     
     with term.fullscreen(), term.hidden_cursor(), term.cbreak():
-
         while running:
             error = None
             if current_screen == "menu":
                 render_menu(selected_index)
                 key = term.inkey()
-
                 if key.name == "KEY_UP":
                     selected_index = (selected_index - 1) % len(MENU_ITEMS)
-
                 elif key.name == "KEY_DOWN":
                     selected_index = (selected_index + 1) % len(MENU_ITEMS)
-
                 elif key.name == "KEY_ENTER" or key == "\n":
                     selected_item = MENU_ITEMS[selected_index]
                     if selected_item != "exit":
                         logger.info(f"Selected {selected_item}.")
-
                     if selected_item == "exit":
                         logger.info(f"Exit tui.")
                         running = False
                     else:
                         current_screen = selected_item
-
                 elif key.name == "KEY_ESCAPE":
                     logger.info("Exit tui (ESC).")
                     running = False
-
             else:
                 if current_screen == "create_scenario":
                     scenario_id = prompt_input("Scenario ID")
-                    initial_state = prompt_input("Initial State")
-                    
+                    initial_state = select_initial_state(term)
+                    events_list = select_events(term)
                     render_message_screen(
-                        f"Scenario created:\n\nID: {scenario_id}\nInitial State: {initial_state}"
-                    )
-                    
-                    logger.info(f"[create_scenario] Scenario created: [{scenario_id},{initial_state}]")
-
+                        f"Scenario created:\n\nID: {scenario_id}\nInitial State: {initial_state}\nSelected Events: {events_list}"
+                    )                    
+                    logger.info(f"[create_scenario] Scenario created: [{scenario_id},{initial_state},{events_list}]")
                     term.inkey()
                     current_screen = "menu"
-
                 elif current_screen == "create_report":
                     logger.info(f"Entered {current_screen}.")
                     render_message_screen("Entered create_report")
