@@ -30,7 +30,7 @@ def render_state_options(selected_index):
             print(f"  {item}") 
     print("\nUse ↑ ↓ to navigate, Enter to select, Esc to select a default.")    
     
-def draw_events_layout(EVENTS, sel_idx, sel_events_pre, logs, buttons, button_idx, sel_events_post,focus_button):
+def render_events_layout(EVENTS, sel_idx, sel_events_pre, logs, buttons, button_idx, sel_events_post,focus_button):
     print(term.clear + term.home)
     w_half, h_half = term.width // 2, term.height // 2
     # --- LEFT HALF ---
@@ -61,3 +61,21 @@ def draw_events_layout(EVENTS, sel_idx, sel_events_pre, logs, buttons, button_id
         print(btn_line)
 
     
+def render_form(initial_context,edited_fields,buttons):
+    print(term.clear + term.home)
+    print(term.bold_purple_underline("INITIAL CONTEXT"))
+    active_field = None
+    for i, (label, value) in enumerate(initial_context.items()):
+        y = 4 + i * 2
+        text_color = term.bright_black if label not in edited_fields else term.white
+        if active_field == label:
+            box = term.black_on_purple
+        else:
+            box = term.on_gray 
+        formatted_text= f" {value:5} "
+        print(term.move_yx(y, 2) + f"{label}: " + box(text_color(formatted_text)) + term.normal)
+    for name, (y, x) in buttons.items():
+        color = term.white_on_purple 
+        print(term.move_yx(y, x) + color(f" {name} ") + term.normal)
+        
+        

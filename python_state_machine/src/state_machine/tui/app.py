@@ -49,10 +49,11 @@ def run_tui():
                     scenario_id = prompt_input("Scenario ID")
                     initial_state = select_initial_state(term)
                     events_list = select_events(term)
+                    initial_context = context_imput(term)
                     render_message_screen(
-                        f"Scenario created:\n\nID: {scenario_id}\nInitial State: {initial_state}\nSelected Events: {events_list}"
+                        f"Scenario created:\n\nID: {scenario_id}\nInitial State: {initial_state}\nSelected Events: {events_list}\nInitial Context: {initial_context}"
                     )                    
-                    logger.info(f"[create_scenario] Scenario created: [{scenario_id},{initial_state},{events_list}]")
+                    logger.info(f"[create_scenario] Scenario created: [{scenario_id},{initial_state},{events_list},{initial_context}]")
                     term.inkey()
                     current_screen = "menu"
                 elif current_screen == "create_report":
@@ -60,7 +61,6 @@ def run_tui():
                     render_message_screen("Entered create_report")
                     term.inkey()
                     current_screen = "menu"
-
                 elif current_screen == "run_all":
                     logger.info(f"Entered {current_screen}.")
                     render_message_screen("Entered run_all")
