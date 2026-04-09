@@ -101,6 +101,7 @@ def select_events(term):
                     sel_events_pre = []
                     
 def context_imput(term):
+    active_field = None
     initial_context = {        
         "revival_signals": 0,
         "qa_rejections": 0,

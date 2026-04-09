@@ -3,9 +3,11 @@ import logging
 from constants import MENU_ITEMS,STATES,EVENTS
 from render import *
 from input import *
+from integration import *
+
 
 logging.basicConfig(
-    filename="../../../logs/tui.log",
+    filename="/home/nuria/enterprise_entropy/python_state_machine/logs/tui.log",
     level=logging.INFO,
     format="%(asctime)s | %(levelname)s | %(message)s"
 )
@@ -17,6 +19,7 @@ term = Terminal()
 
 def run_tui():
     selected_index = 0
+    selected_item = ""
     current_screen = "menu"
     running = True
     value = ""
@@ -54,6 +57,13 @@ def run_tui():
                         f"Scenario created:\n\nID: {scenario_id}\nInitial State: {initial_state}\nSelected Events: {events_list}\nInitial Context: {initial_context}"
                     )                    
                     logger.info(f"[create_scenario] Scenario created: [{scenario_id},{initial_state},{events_list},{initial_context}]")
+                    scenario_payload = {
+                        "scenario_id": scenario_id,
+                        "initial_context": initial_context,
+                        "initial_state": initial_state,
+                        "events": events_list,
+                    }            
+                    write_scenario_payload(scenario_payload,STATE_MACHINE_PATH_DATA)
                     term.inkey()
                     current_screen = "menu"
                 elif current_screen == "create_report":
