@@ -13,9 +13,7 @@ def prompt_input(label):
     while True:
         print(term.home + term.clear)
         print(term.bold("Create Scenario\n"))
-        # Label
         print(term.white(label + ": "))
-        # Input field (styled)
         if value == "":
             display = "<- type here ->"
         else:
