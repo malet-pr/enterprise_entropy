@@ -22,13 +22,40 @@ let isIssueUnderstoodOnlyBy(i: issue) (u: understanding): bool =
 let isIssueUnderstoodByList (i: issue) (ul: understanding list): bool = 
   i.understood_by = ul
 
+let isIssueStageIs (i: issue)(s: stage) : bool =
+  i.status.stage = s  
+
+
 (***************** PARTICIPANTS *******************)
 
 let isExistsInterestedParticipantWithRole (ps: participant list)(rl: role list): bool = 
   List.exists (fun p -> List.mem p.role rl && p.interested) ps
 
-let isNoInterestedParticipantWithRole (ps: participant list)(rl: role list): bool = 
-  not (isExistsInterestedParticipantWithRole ps rl)
+let isNotExistsInterestedParticipantWithRole (ps: participant list)(rl: role list): bool = 
+  not (isExistsInterestedParticipantWithRole ps rl)   
 
+let isExistsUnderstandingParticipantWithRole (ps: participant list)(rl: role list): bool = 
+  List.exists (fun p -> List.mem p.role rl && p.understands) ps
+
+let isNotExistsUnderstandingParticipantWithRole (ps: participant list)(rl: role list): bool = 
+  not (isExistsUnderstandingParticipantWithRole ps rl)
+
+let isAllParticipantsUnderstand (ps: participant list) : bool =
+  List.exists (fun p -> p.understands)ps
+
+let isNoParticipantUnderstands (ps: participant list) : bool =
+  not (isAllParticipantsUnderstand ps)
+
+let isUnderstandsCountAtLeast (ps: participant list) (c: int) : bool =
+  (List.fold_left (fun acc p -> acc + Bool.to_int p.understands) 0 ps) >= c
+
+let isUnderstandsCountAtMost (ps: participant list) (c: int) : bool =
+  (List.fold_left (fun acc p -> acc + Bool.to_int p.understands) 0 ps) <= c  
+
+let isParticipantCountAtLeast (ps: participant list) (c: int) : bool =
+  List.length ps >= c
+
+let isParticipantCountAtMost (ps: participant list) (c: int) : bool =
+  List.length ps <= c
 
 

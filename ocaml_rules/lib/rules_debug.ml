@@ -1,6 +1,4 @@
 open Model
-open Utils
-
 
 (*
 Rule D1 — Flag risk will break production
@@ -12,25 +10,19 @@ Rule D1 — Flag risk will break production
   Effect:
     risk_will_break_production
 *)
-let risk_will_break_production (state : simulation_state) : simulation_state =
-  if meeting_is_collective_debug_in_environment state.meeting UAT
-     && is_medium_priority state.issue
-     && state.issue.status.stage = Discarded
-     && participants_with_role_count Developer state.participants >= 3
-    then
-    let updated_state =
-      {
-        state with
-        issue = {
-          state.issue with
-          status = {stage=state.issue.status.stage;risk= Some WillBreakProduction};
-        }
-      }
-    in
-    mark_fired "risk_will_break_production" updated_state;
-  else
-    state
-  
+let risk_will_break_production_conditions = And [
+  Atom (Meeting (MeetingTypeIs (CollectiveDebuggingInEnvironment UAT)));
+  Atom (Issue (IssuePriorityIs Medium));
+  Atom (Issue (IssueStageIs Discarded));
+  Atom (Participants (ParticipantCountAtLeast 3))
+]
+let risk_will_break_production_actions = [IssueAction ([SetIssueRisk (Some WillBreakProduction)])]
+let risk_will_break_production = {
+  rule_name = "risk_will_break_production";
+  conditions = risk_will_break_production_conditions;
+  actions = risk_will_break_production_actions;
+} 
+
 
 
   

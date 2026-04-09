@@ -1,7 +1,12 @@
+type environment =
+  | Development
+  | Testing
+  | UAT  
+
 type meeting_type =
   | Daily
   | Planning
-  | CollectiveDebuggingInEnvironment
+  | CollectiveDebuggingInEnvironment of environment
 
 type role =
   | SM
@@ -42,11 +47,6 @@ type meeting_drift =
   | Focused
   | ToTheHillsOfUbeda
   | ToHell  
-
-type environment =
-  | Development
-  | Testing
-  | UAT  
 
 type meeting = {
   meeting_type : meeting_type;
@@ -114,7 +114,6 @@ and meeting_condition =
   | MeetingTypeIs of meeting_type
   | MeetingDriftIs of meeting_drift
   | DeepDiveIs of bool
-  | EnvironmentIs of environment
   | DurationGreaterThan of int
   | DurationAtLeast of int
   | DurationAtMost of int
@@ -133,9 +132,11 @@ and participant_condition =
   | UnderstandsCountAtLeast of int
   | UnderstandsCountAtMost of int
   | ExistsParticipantWithRole of role list
+  | NotExistsParticipantWithRole of role list
   | ExistsInterestedParticipantWithRole of role list
   | NoInterestedParticipantWithRole of role list
   | ExistsUnderstandingParticipantWithRole of role list
+  | NotExistsUnderstandingParticipantWithRole of role list
   | AllParticipantsUnderstand
   | NoParticipantUnderstands
 

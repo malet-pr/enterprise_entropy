@@ -1,0 +1,50 @@
+rule "insignificant_issue_consumes_time"
+    when
+        $meeting : Meeting(meetingType == Meeting.Daily)
+        $issue: Issuee(priority == Priority.Insignificant)
+    then
+        $meeting.setDuration($meeting.getDuration() + 10)  
+        $meeting.setDrift(Drift.To_Hell)  
+        $meeting.setDeepDive(false)
+        update($meeting);
+end    
+
+rule "important_issue_not_understood"
+    when
+        $issue : Issue(understoodBy.contains(Undestanding.Technical))
+        List techPeople = $meeting.getParticipants().stream()
+                .filter(p -> List.of(Role.Developer, Role.DataEngineer, Role.ActingLead, Role.TechLead).contains p.getRole())
+        int undestanded = techPeople.stream().
+        // does the List from accumulate still exist?
+    then
+        Status status = New Status(setStage(Status.Ignored), setRisk($issue.getStatus().getRisk()))
+        $issue.setStatus(status)
+        update($issue)
+end
+
+
+
+(*
+Rule 2 — Important Issue Not Understood
+  Condition:
+    Issue requires Technical understanding
+    Nobody in the meeting understands it
+  Effect:
+    issue status: Ignored
+*)
+let important_issue_not_understood (state : simulation_state) : simulation_state =
+  if issue_is_understandable_by Technical state.issue then
+    if not (exists_understanding_participant [Developer; DataEngineer; TechLead; ActingLead] state.participants)
+    then
+      {
+        state with
+        issue = {
+          state.issue with
+          status = {stage=Ignored;risk=state.issue.status.risk}
+        };
+        fired_rules = "important_issue_not_understood" :: state.fired_rules;
+      }
+    else
+      state
+  else
+    state 

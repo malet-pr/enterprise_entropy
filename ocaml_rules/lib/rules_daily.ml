@@ -1,5 +1,4 @@
 open Model
-open Utils
 
 (*
 Rule 1 — Curiosity Spiral
@@ -35,22 +34,19 @@ Rule 2 — Important Issue Not Understood
   Effect:
     issue status: Ignored
 *)
-let important_issue_not_understood (state : simulation_state) : simulation_state =
-  if issue_is_understandable_by Technical state.issue then
-    if not (exists_understanding_participant [Developer; DataEngineer; TechLead; ActingLead] state.participants)
-    then
-      {
-        state with
-        issue = {
-          state.issue with
-          status = {stage=Ignored;risk=state.issue.status.risk}
-        };
-        fired_rules = "important_issue_not_understood" :: state.fired_rules;
-      }
-    else
-      state
-  else
-    state 
+let important_issue_not_understood_conditions =
+  And [
+    Atom (Issue (IssueUnderstoodByList [Technical]));
+    Atom (Participants (NoParticipantUnderstands));
+  ]
+let important_issue_not_understood_actions =
+  [IssueAction ([SetIssueStage Ignored])]
+
+let important_issue_not_understood = {
+  rule_name = "important_issue_not_understood";
+  conditions = important_issue_not_understood_conditions;
+  actions = important_issue_not_understood_actions;
+}  
 
 (*
 Rule 3 - Insignificat issue consumes time
@@ -61,22 +57,18 @@ Rule 3 - Insignificat issue consumes time
     meeting extended by 10 min.
     drift: ToHell  
 *)
-let insignificant_issue_consumes_time (state : simulation_state) : simulation_state =
-  if meeting_is Daily state.meeting
-    && state.issue.priority = Insignificant
-  then
-    {
-      state with
-      meeting = {
-        state.meeting with
-        duration_min = state.meeting.duration_min + 10;
-        deep_dive = false;
-        drift = ToHell;
-      };
-      fired_rules = "insignificant_issue_consumes_time" :: state.fired_rules;
-    }
-  else
-    state
+let insignificant_issue_consumes_time_conditions =
+  And [
+    Atom (Issue (IssuePriorityIs Insignificant));
+    Atom (Meeting (MeetingTypeIs Daily));
+  ]
+let insignificant_issue_consumes_time_actions =
+  [MeetingAction ([ExtendMeetingBy 10; SetMeetingDrift ToHell ])]
+let insignificant_issue_consumes_time = {
+  rule_name = "insignificant_issue_consumes_time";
+  conditions = insignificant_issue_consumes_time_conditions;
+  actions = insignificant_issue_consumes_time_actions;
+}  
 
 (*
 Rule 4 - Move issue to another meeting
@@ -126,45 +118,20 @@ Rule 5 - Collective Debugging Swarm
     drift: Focused
     status remains Open
 *)
-let collective_debugging_swarm (state : simulation_state) : simulation_state =
-  if meeting_is Daily state.meeting
-    && (state.issue.priority = High || state.issue.priority = Critical)
-    && issue_is_understandable_by Technical state.issue
-    && count_participants_that_understand_the_issue state.participants >= 2
-  then
-    {
-      state with
-      issue = {
-        state.issue with
-        status = {stage=Open;risk= state.issue.status.risk};
-      };
-      meeting = {
-        state.meeting with
-        duration_min = state.meeting.duration_min + 20;
-        deep_dive = true;
-        drift = Focused;
-      };
-      fired_rules = "collective_debugging_swarm" :: state.fired_rules;
-    }
-  else  
-    state
+let collective_debugging_swarm_conditions = And [
+  Atom (Meeting (MeetingTypeIs Daily)); 
+  Atom (Issue (IssuePriorityIn [Critical;High]));
+  Atom (Issue (IssueUnderstoodOnlyBy Technical));
+  Atom (Participants (UnderstandsCountAtLeast 2));
+  Atom (Participants (ExistsUnderstandingParticipantWithRole [Developer;DataEngineer]))
+]
+let collective_debugging_swarm_actions = [
+  IssueAction ([SetIssueStage Open]);
+  MeetingAction ([ExtendMeetingBy 20; SetMeetingDrift Focused; SetDeepDive true ])
+]
+let collective_debugging_swarm = {
+  rule_name = "collective_debugging_swarm";
+  conditions = collective_debugging_swarm_conditions;
+  actions = collective_debugging_swarm_actions;
+}  
 
-let collective_debugging_swarm_no_if (state : simulation_state) : simulation_state =
-  let cond = daily_priority_technical_understand_by_two state in
-  match cond with
-    | false -> state
-    | true ->
-              {
-                state with
-                issue = {
-                  state.issue with
-                  status = {stage=Open;risk= state.issue.status.risk};
-                };
-                meeting = {
-                  state.meeting with
-                  duration_min = state.meeting.duration_min + 20;
-                  deep_dive = true;
-                  drift = Focused;
-                };
-                fired_rules = "collective_debugging_swarm_no_if" :: state.fired_rules;
-              }

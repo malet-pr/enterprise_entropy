@@ -49,9 +49,9 @@ let role_is_curious p =
 
 let meeting_is mt meeting = meeting.meeting_type = mt    
 
-let meeting_is_collective_debug_in_environment meeting environment = 
+(* let meeting_is_collective_debug_in_environment meeting environment = 
   meeting_is CollectiveDebuggingInEnvironment meeting && meeting.environment = Some environment
-
+ *)
 let count_participants_that_understand_the_issue (participants: participant list) : int = 
   List.fold_left (fun acc p -> 
     let x = Bool.to_int ((p.role = Developer || p.role = DataEngineer) && p.understands) in
