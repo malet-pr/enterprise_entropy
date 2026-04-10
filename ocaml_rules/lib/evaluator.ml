@@ -7,7 +7,10 @@ let evaluate_meeting_condition (s:simulation_state)(mc:meeting_condition): bool 
   match mc with 
   | MeetingTypeIs c -> isMeetingTypeIs m c
   | DurationGreaterThan c -> isDurationGreaterThan m c
-  | MeetingDriftIs _ | DeepDiveIs _ | DurationAtLeast _ | DurationAtMost _ -> false
+  | MeetingDriftIs _ -> false
+  | DeepDiveIs _ -> false
+  | DurationAtLeast _ -> false
+  | DurationAtMost _ -> false
 
 let evaluate_issue_condition (s:simulation_state)(ic:issue_condition): bool =
   let i = s.issue in
@@ -24,7 +27,7 @@ let evaluate_participant_condition (s:simulation_state)(pc:participant_condition
   let ps = s.participants in
   match pc with
   | ParticipantCountAtLeast c -> isParticipantCountAtLeast ps c
-  | ParticipantCountAtMost c -> let isParticipantCountAtMost ps c
+  | ParticipantCountAtMost c -> isParticipantCountAtMost ps c
   | UnderstandsCountAtLeast c -> isUnderstandsCountAtLeast ps c
   | UnderstandsCountAtMost c -> isUnderstandsCountAtMost ps c
   | ExistsParticipantWithRole _ -> false
