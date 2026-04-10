@@ -23,18 +23,18 @@ let evaluate_issue_condition (s:simulation_state)(ic:issue_condition): bool =
 let evaluate_participant_condition (s:simulation_state)(pc:participant_condition): bool =
   let ps = s.participants in
   match pc with
-  | ParticipantCountAtLeast _ -> false
-  | ParticipantCountAtMost _ -> false
+  | ParticipantCountAtLeast c -> isParticipantCountAtLeast ps c
+  | ParticipantCountAtMost c -> let isParticipantCountAtMost ps c
   | UnderstandsCountAtLeast c -> isUnderstandsCountAtLeast ps c
-  | UnderstandsCountAtMost _ -> false
+  | UnderstandsCountAtMost c -> isUnderstandsCountAtMost ps c
   | ExistsParticipantWithRole _ -> false
   | NotExistsParticipantWithRole _ -> false
   | ExistsInterestedParticipantWithRole rl -> isExistsInterestedParticipantWithRole ps rl
   | NoInterestedParticipantWithRole rl -> isNotExistsInterestedParticipantWithRole ps rl
   | ExistsUnderstandingParticipantWithRole rl -> isExistsUnderstandingParticipantWithRole ps rl
-  | NotExistsUnderstandingParticipantWithRole _ -> false
-  | AllParticipantsUnderstand -> false
-  | NoParticipantUnderstands -> false
+  | NotExistsUnderstandingParticipantWithRole rl -> isNotExistsUnderstandingParticipantWithRole ps rl
+  | AllParticipantsUnderstand -> isAllParticipantsUnderstand ps
+  | NoParticipantUnderstands -> isNoParticipantUnderstands ps
 
 let evaluate_predicate s p =
   match p with
