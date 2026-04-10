@@ -25,6 +25,9 @@ let isIssueUnderstoodByList (i: issue) (ul: understanding list): bool =
 let isIssueStageIs (i: issue)(s: stage) : bool =
   i.status.stage = s  
 
+let isIssueRiskIs (i: issue)(r: risk) : bool =
+  i.status.risk = Some r
+
 
 (***************** PARTICIPANTS *******************)
 

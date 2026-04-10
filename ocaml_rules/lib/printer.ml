@@ -24,6 +24,8 @@ let string_of_drift = function
   | ToTheHillsOfUbeda -> "ToTheHillsOfUbeda"
   | ToHell -> "ToHell"
 
+  
+
 let string_of_fired_rules rules =
   match rules with
   | [] -> "None"
@@ -46,10 +48,18 @@ let print_issue_status status =
 let print_fired_rules fired_rules =
   Printf.printf "Fired rules: %s\n" (string_of_fired_rules fired_rules)
 
-let print_result result =
+let print_final_state (result: simulation_state) : unit =
   print_meeting_duration result.meeting;
   print_meeting_deep_dive result.meeting;
   print_meeting_drift result.meeting;
   print_issue_status result.issue.status;
   print_fired_rules result.fired_rules;
+
+(* let print_result result =
+  print_meeting_duration result.meeting;
+  print_meeting_deep_dive result.meeting;
+  print_meeting_drift result.meeting;
+  print_issue_status result.issue.status;
+  print_fired_rules result.fired_rules; *)
+
 
