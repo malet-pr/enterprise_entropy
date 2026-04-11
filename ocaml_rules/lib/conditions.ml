@@ -8,6 +8,18 @@ let isMeetingTypeIs (m:meeting)(x:meeting_type):bool =
 let isDurationGreaterThan (m:meeting)(x:int):bool = 
   m.duration_min > x
 
+let isMeetingDriftIs (m:meeting)(x:meeting_drift):bool =
+  m.drift = x
+
+let isDeepDiveIs (m:meeting)(x: bool):bool =
+  m.deep_dive = x
+
+let isDurationAtLeast (m:meeting)(x:int):bool = 
+  m.duration_min >= x
+
+let isDurationAtMost (m:meeting)(x:int):bool = 
+  m.duration_min <= x
+
 (******************** ISSUE ***********************)
 
 let isIssuePriorityIs (i:issue)(x:issue_priority):bool = 
@@ -61,4 +73,10 @@ let isParticipantCountAtLeast (ps: participant list) (c: int) : bool =
 let isParticipantCountAtMost (ps: participant list) (c: int) : bool =
   List.length ps <= c
 
+let isExistsParticipantWithRole (ps: participant list)(rl: role list): bool = 
+  List.exists (fun p -> List.mem p.role rl) ps
 
+let isNotExistsParticipantWithRole (ps: participant list)(rl: role list): bool = 
+  not (isExistsParticipantWithRole ps rl)
+
+  

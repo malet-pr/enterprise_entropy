@@ -24,12 +24,13 @@ let string_of_drift = function
   | ToTheHillsOfUbeda -> "ToTheHillsOfUbeda"
   | ToHell -> "ToHell"
 
-  
-
 let string_of_fired_rules rules =
   match rules with
   | [] -> "None"
   | _ -> String.concat ", " rules
+
+let string_of_rule (r: rule_candidate): string = r.rule_name
+
 
 (*****************************************************************)
 
