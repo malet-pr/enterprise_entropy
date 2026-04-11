@@ -1,4 +1,5 @@
 (library
  (name ocaml_rules)
- (modules model rules_daily rules_planning rules_debug conditions actions evaluator printer)
+ (modules model rules_daily rules_planning rules_debug conditions actions evaluator utils printer integration)
+ (libraries yojson)
 )

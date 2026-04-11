@@ -2,6 +2,7 @@ open Model
 open Conditions
 open Actions
 open Printer
+open Utils
 
 let evaluate_meeting_condition (s:simulation_state)(mc:meeting_condition): bool = 
   let m = s.meeting in
@@ -72,7 +73,7 @@ let apply_actions (s: simulation_state)(ac: action list): simulation_state =
 
 let run_rule  (state : simulation_state)  (rule : rule_candidate): simulation_state  = 
   let cond_met = evaluate_condition_expr state rule.conditions in
-  print_endline("conditions met for " ^ (string_of_rule rule) ^ "? " ^ string_of_bool (cond_met));
+  (* print_endline("conditions met for " ^ (string_of_rule rule) ^ "? " ^ string_of_bool (cond_met)); *)
   if cond_met then
     let new_state = apply_actions state rule.actions in
     {new_state with fired_rules =  new_state.fired_rules @ [rule.rule_name]}

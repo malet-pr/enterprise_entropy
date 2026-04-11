@@ -1,0 +1,30 @@
+{
+  "run_id": "RUN-001",
+  "meeting_input": {
+    "meeting_type": "Daily",
+    "duration_min": 30,
+    "deep_dive": false,
+    "drift": "Focused",
+    "environment": null
+  },
+  "issue_input": {
+    "priority": "High",
+    "status": {
+      "stage": "Open",
+      "risk": null
+    },
+    "understood_by": ["Technical"]
+  },
+  "participants_input": [
+    {
+      "role": "SM",
+      "interested": true,
+      "understands": false
+    },
+    {
+      "role": "Developer",
+      "interested": false,
+      "understands": true
+    }
+  ]
+}

@@ -5,6 +5,9 @@ open Rules_planning
 open Rules_debug
 open Evaluator
 open Printer
+open Integration
+open Yojson.Safe
+open Yojson.Safe.Util
 
 
 let all_rules = [
@@ -18,7 +21,27 @@ let all_rules = [
   issue_is_ignored;
 ]  
 
-let () = 
+
+let () =
+  try
+    let json = Yojson.Safe.from_file "test_input.json" in
+    let input = input_of_yojson json in
+    print_endline ("Parsed run_id: " ^ input.run_id);
+    let state = {
+      meeting = input.meeting_input;
+      participants = input.participants_input;
+      issue = input.issue_input;
+      fired_rules = [];
+    } in
+    let result = run_multiple_rules state all_rules in
+    print_final_state result
+  with
+  | Failure msg -> print_endline ("Failure: " ^ msg)
+  | Yojson.Json_error msg -> print_endline ("JSON error: " ^ msg)
+  | Yojson.Safe.Util.Type_error (msg, _) -> print_endline ("Type error: " ^ msg)
+
+
+(* let () = 
   let meeting1 = make_meeting Daily 15 in 
   let meeting2 = make_meeting (CollectiveDebuggingInEnvironment Testing) 45 in
   let participants = [ 
@@ -37,7 +60,7 @@ let () =
   print_final_state(final_state1);
   let final_state2 = run_multiple_rules state2 all_rules in 
   print_final_state(final_state2);
-
+ *)
 
 
 
