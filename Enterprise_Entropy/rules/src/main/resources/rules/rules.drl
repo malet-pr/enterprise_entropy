@@ -1,0 +1,76 @@
+package rules
+
+import org.acme.rules.model.Meeting;
+import org.acme.rules.model.enums.MeetingType;
+import org.acme.rules.model.Issue;
+import org.acme.rules.model.Participant;
+import org.acme.rules.model.enums.IssuePriority;
+import org.acme.rules.model.enums.Role;
+import org.acme.rules.model.enums.MeetingDrift;
+import org.acme.rules.model.enums.Understanding;
+import java.util.List
+import org.acme.rules.model.Status
+import org.acme.rules.model.enums.Stage;
+
+global java.util.ArrayList<String> appliedRules;
+
+rule "Curiosity Spiral"
+    when
+        $meeting : Meeting(meetingType == MeetingType.DAILY)
+        $p : Participant(interested == true, role in (Role.SM, Role.DATA_ENGINEER)) from $meeting.getParticipants()
+        Issue(priority == IssuePriority.HIGH || priority == IssuePriority.CRITICAL)
+    then
+        $meeting.setDurationMin($meeting.getDurationMin() + 30);
+        $meeting.setDeepDive(true);
+        $meeting.setDrift(MeetingDrift.TO_THE_HILLS_OF_UBEDA);
+        appliedRules.add("Curiosity Spiral");
+end
+
+rule "Important Issue Not Understood"
+    when
+        $meeting : Meeting(meetingType == MeetingType.DAILY)
+        $issue : Issue(understoodBy.contains(Understanding.TECHNICAL))
+        not Participant(understands == true) from $meeting.getParticipants()
+    then
+        $issue.getStatus().setStage(Stage.IGNORED);
+        appliedRules.add("Important Issue Not Understood");
+end
+
+rule "Insignificant Issue Consumes Time"
+    when
+        $meeting : Meeting(meetingType == MeetingType.DAILY)
+        Issue(priority == IssuePriority.INSIGNIFICANT)
+    then
+        $meeting.setDurationMin($meeting.getDurationMin() + 10);
+        $meeting.setDrift(MeetingDrift.TO_HELL);
+        appliedRules.add("Insignificant Issue Consumes Time");
+end
+
+rule "Move issue to another meeting"
+    when
+        $meeting : Meeting(meetingType == MeetingType.DAILY)
+        $issue : Issue(priority in (IssuePriority.MEDIUM, IssuePriority.HIGH), understoodBy.contains(Understanding.TECHNICAL))
+        (not Participant(interested == true, role == Role.SM) from $meeting.getParticipants()
+        or
+        (Participant(interested == true, role == Role.ACTING_LEAD) from $meeting.getParticipants()
+        and
+         Meeting(durationMin > 25)))
+    then
+        $issue.getStatus().setStage(Stage.MOVED_TO_ANOTHER_MEETING);
+        appliedRules.add("Move issue to another meeting");
+end
+
+rule "Collective Debugging Swarm"
+    when
+        $meeting : Meeting(meetingType == MeetingType.DAILY)
+        $issue : Issue(priority in (IssuePriority.HIGH, IssuePriority.CRITICAL), understoodBy.equals(List.of(Understanding.TECHNICAL)))
+        $understandingList : List(size >= 2) from collect(
+          Participant(understands == true) from $meeting.getParticipants()
+        )
+        $devOrDataEng : Participant(understands == true, role in (Role.DEVELOPER, Role.DATA_ENGINEER)) from $meeting.getParticipants()
+    then
+        $meeting.setDurationMin($meeting.getDurationMin() + 20);
+        $meeting.setDeepDive(true);
+        $meeting.setDrift(MeetingDrift.FOCUSED);
+        appliedRules.add("Collective Debugging Swarm");
+end

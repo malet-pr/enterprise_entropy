@@ -1,9 +1,9 @@
 package org.acme.rules.model;
 
 import lombok.Data;
-import org.acme.rules.model.enums.Environment;
-import org.acme.rules.model.enums.MeetingDrift;
-import org.acme.rules.model.enums.MeetingType;
+import org.acme.rules.model.enums.*;
+
+import java.util.List;
 
 @Data
 public class Meeting {
@@ -12,4 +12,5 @@ public class Meeting {
     private boolean deepDive;
     private MeetingDrift drift;
     private Environment environment;
+    private List<Participant> participants;
 }

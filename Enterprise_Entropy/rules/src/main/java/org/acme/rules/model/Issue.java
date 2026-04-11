@@ -2,7 +2,6 @@ package org.acme.rules.model;
 
 import lombok.Data;
 import org.acme.rules.model.enums.IssuePriority;
-import org.acme.rules.model.enums.Status;
 import org.acme.rules.model.enums.Understanding;
 import java.util.List;
 
