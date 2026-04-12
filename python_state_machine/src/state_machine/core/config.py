@@ -15,12 +15,12 @@ STATE_MACHINE_PATH_SCENARIO = os.getenv('STATE_MACHINE_PATH_SCENARIO')
 
 # Logging config
 logging.basicConfig(
-    filename="../../../logs/core.log",
+    filename="../logs/state-machine.log",
     level=logging.INFO,
-    format="%(asctime)s | %(levelname)s | %(message)s"
+    format="%(asctime)s | %(name)s | %(levelname)s | %(message)s"
 )
-logger = logging.getLogger("core")
-logger.info("=== New CORE session ===")
+logger = logging.getLogger(__name__)
+logger.info("=== New State Machine Session ===")
 
 
 def get_file_name_data(): 
@@ -90,5 +90,10 @@ def set_path(type:str) -> Path:
             path = check_and_create_path(Path(full_path_reports)) 
         else:
             path = check_and_create_path(get_default_output_path('reports')) 
+    elif type == 'scenarios':   
+        if STATE_MACHINE_PATH_SCENARIO:
+            path = check_and_create_path(Path(STATE_MACHINE_PATH_SCENARIO)) 
+        else:
+            path = check_and_create_path(get_default_output_path('scenarios')) 
     return path        
     

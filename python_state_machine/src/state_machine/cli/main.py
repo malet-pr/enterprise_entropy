@@ -1,23 +1,10 @@
 import argparse
 import logging 
-from scenarios import create_scenarios
-from report import create_report
-from core.config import FILE_NAME_DATA, FILE_NAME_REPORT, FILE_NAME_SCENARIO
+from .scenarios import create_scenarios
+from .report import create_report
+from state_machine.core.config import *
 
-
-logging.basicConfig(
-    filename="../../../logs/cli.log",
-    level=logging.INFO,
-    format="%(asctime)s | %(levelname)s | %(message)s"
-)
-logger = logging.getLogger("cli")
-logger.info("=== New CLI session ===")
-
-def get_args(args: argparse.Namespace) -> str:
-    if hasattr(args, 'fileName') and args.fileName is not None:
-        return args.fileName
-    else:
-        return None 
+logger = logging.getLogger("state_machine.cli.main")
 
 def run_all(args):
     create_scenarios(args)
@@ -40,7 +27,8 @@ def main():
 
     # Comand 'create-scenarios'
     parser_create_scenarios = subparsers.add_parser('create-scenarios', help='Generates files that will be used by Ocaml to run the state machine.')
-    parser_create_scenarios.add_argument('--fileName', type=str, help=f'File name of the output file, (default = {FILE_NAME_DATA})')
+    parser_create_scenarios.add_argument("-i", '--input_file', type=str, help=f'File name of the input file')
+    parser_create_scenarios.add_argument("-o", '--output_file', type=str, help=f'File name of the output file, (default = {FILE_NAME_DATA})')
     parser_create_scenarios.set_defaults(func=create_scenarios)
     
     # Comand 'create-report'
@@ -49,20 +37,22 @@ def main():
     parser_create_report.set_defaults(func=create_report)
 
     args = parser.parse_args()
+    #logger.info(f"ARGS RAW: {args}")
+    #logger.info(f"ARGS DICT: {vars(args)}")
     
     if args.command is None:
         args.command = 'run-all'
         args.func = run_all
-        logging.info("No argument was provided, executing run_all.")   
+        logger.info("No argument was provided, executing run_all.")   
 
-    logging.info('STARTING THE PROCESS...')
+    logger.info('STARTING THE PROCESS...')
 
     try:
         args.func(args)
     except Exception as e:
-        logging.error(f"Error while executing command '{args.command}': {e}", exc_info=True)
+        logger.error(f"Error while executing command '{args.command}': {e}", exc_info=True)
         
-    logging.info('PROCESS ENDED.')
+    logger.info('PROCESS ENDED.')
 
 if __name__ == "__main__":
     main()  

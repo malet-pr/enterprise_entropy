@@ -1,6 +1,6 @@
 import json
 import logging
-import core.scenario_service as css
+import state_machine.core.scenario_service as css
 
 logger = logging.getLogger("tui")
 

@@ -1,6 +1,6 @@
 import logging
 import os, sys
-from config import *
+from state_machine.core.config import *
 from pydantic import BaseModel, RootModel
 from typing import List,Optional
 from pathlib import Path
