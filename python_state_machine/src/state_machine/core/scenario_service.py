@@ -1,9 +1,7 @@
 import logging
 import json
 import os, sys
-from core.config import *
-import core.scenario_service as css
-
+from config import *
 
 """ scenario = {
     "scenario_id": "SCN-001",
@@ -35,19 +33,23 @@ import core.scenario_service as css
     ],
 } """
 
-# scenario = {"test": set([1, 2, 3])}
+def read_scenario():
+    sm_data = get_data_full_path()
+    with open(sm_data, 'r', encoding='utf-8') as file:
+        data = json.load(file)
+    return data
 
 
-
-def create_scenarios(filename,scenario):
+def create_scenarios (scenario,filename=None):
     if filename is not None:
         file = os.path.join(set_path(), filename+'.json')
     else:    
         file = os.path.join(set(), get_file_name_scenario())
     try:    
-        css.create_scenarios(scenario,file)
+        with open(file, "w") as f:
+            json.dump([scenario], f, indent=2)
+            print(f'File {file} created.')
     except Exception as e:
         logging.error(f"Failed to write file {file}: {e}") 
         sys.exit(1)    
-    
     

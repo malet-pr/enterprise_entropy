@@ -1,5 +1,6 @@
 from blessed import Terminal
 import logging
+from core.config import *
 from constants import MENU_ITEMS,STATES,EVENTS
 from render import *
 from input import *

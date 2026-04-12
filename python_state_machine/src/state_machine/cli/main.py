@@ -1,8 +1,23 @@
 import argparse
 import logging 
-from config import *
 from scenarios import create_scenarios
 from report import create_report
+from core.config import FILE_NAME_DATA, FILE_NAME_REPORT, FILE_NAME_SCENARIO
+
+
+logging.basicConfig(
+    filename="../../../logs/cli.log",
+    level=logging.INFO,
+    format="%(asctime)s | %(levelname)s | %(message)s"
+)
+logger = logging.getLogger("cli")
+logger.info("=== New CLI session ===")
+
+def get_args(args: argparse.Namespace) -> str:
+    if hasattr(args, 'fileName') and args.fileName is not None:
+        return args.fileName
+    else:
+        return None 
 
 def run_all(args):
     create_scenarios(args)
