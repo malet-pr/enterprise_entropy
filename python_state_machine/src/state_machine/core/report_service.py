@@ -2,6 +2,8 @@ import logging, sys, json
 from state_machine.core.config import *
 from pydantic import BaseModel, RootModel
 from typing import List,Optional
+from pathvalidate import ValidationError, validate_filepath
+
 
 logger = logging.getLogger(__name__)
 
@@ -71,17 +73,28 @@ def create_md(state_instance: State)-> List[str]:
             lines_to_write.append(f"        - sprints_ignored: {s.resulting_context.sprints_ignored}\n")
     return lines_to_write
 
-
 def create_report(file,json_data):
-    instance = State.model_validate_json(json_data)
-    lines = create_md(instance) 
+    instance = None
+    lines = []
+    logger.info(f"Incoming file: {file}")
+    if not file or len(file.strip()) == 0:
+        logger.error("Output file cannot be empty.")
+        return
+    try:
+        json_str = json.dumps(json_data)
+        instance = State.model_validate_json(json_str)  
+        logger.info(f"Scenario: {instance.scenario_id} parsed.")
+    except Exception as e:
+        logger.error(f"Error parsing the json: {e}")   
+        return
+    lines = create_md(instance)    
     store_report(file, lines)
-    
+
 def store_report(file, lines_to_write: List[str]):
     try:   
         with open(file, "w") as f:
             f.writelines(lines_to_write)
-            logger.info(f'File {file} created.')
+            logger.info(f'Report file created: {file}')
     except Exception as e:
         logger.error(f"Failed to write file {file}: {e}") 
         sys.exit(1)    
