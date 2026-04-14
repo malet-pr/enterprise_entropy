@@ -150,15 +150,15 @@ def context_imput(term):
 def input_data_for_report(term):
     report_buttons = {"SEND": (10, 5), "DISCARD": (10, 20)}  
     while True:
-        scenario = read_scenario()
-        render_scenario(report_buttons,scenario)
+        report_data = read_report_data()
+        render_report_data(report_buttons,report_data)
         rep = term.inkey()
         key_lower = rep.lower()
         if rep == 'd': 
             logger.info("discard")
             return
         elif key_lower == 's':       
-            write_scenario_payload(scenario)
+            generate_report(report_data)
             return
 
 

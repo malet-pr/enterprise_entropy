@@ -48,11 +48,11 @@ def create_report(file,json_data):
     lines = []
     logger.info(f"Incoming file: {file}")
     if not file or len(file.strip()) == 0:
-        logger.error("Output file cannot be empty.")
-        return
+        file = os.path.join(get_report_full_path(), get_file_name_report())  
+        logger.info(f"Will use default path: {file}")
     try:
         json_str = json.dumps(json_data)
-        instance = State.model_validate_json(json_str)  
+        instance = State.model_validate_json(json_data)  
         logger.info(f"Scenario: {instance.scenario_id} parsed.")
     except Exception as e:
         logger.error(f"Error parsing the json: {e}")   
@@ -69,4 +69,22 @@ def store_report(file, lines_to_write: List[str]):
         logger.error(f"Failed to write file {file}: {e}") 
         sys.exit(1)    
         
-    
+def read_machine_result (filename=None):
+    data = None
+    if filename is not None:
+        file = os.path.join(get_data_full_path(), filename)
+    else:    
+        file = os.path.join(get_data_full_path(), get_file_name_data())    
+    logger.info(f"Reading report data form file {file}")
+    try:    
+        with open(file, "r") as f:
+            data = json.load(f)
+            return data
+        if not data :
+            logger.error(f"No data was recovered ")
+            return None
+    except Exception as e:
+        logging.error(f"Failed to read file {file}: {e}") 
+        return None
+
+   

@@ -32,6 +32,12 @@ class State(BaseModel):
     final_state: Optional[str] = None
     final_context: Optional[Context] = None
     steps: Optional[List[Step]] = None
+    
+class Scenario(BaseModel):
+    scenario_id: str
+    initial_state: Optional[str]
+    initial_context: Context
+    events: List[str]
   
   
   

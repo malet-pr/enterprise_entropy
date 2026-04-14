@@ -1,6 +1,6 @@
 from blessed import Terminal
 from .constants import MENU_ITEMS,STATES,EVENTS
-from .integration import read_scenario
+from .integration import *
 import logging, json
 
 logger = logging.getLogger(__name__)
@@ -95,5 +95,21 @@ def render_scenario(report_buttons,scenario):
         print(f"ID: ''\nInitial State: ''\nQuantity of Events: ''\nInitial Context: ''")    
     for name, (y, x) in report_buttons.items():
         color = term.white_on_purple 
-        print(term.move_yx(y, x) + color(f" {name} ") + term.normal)             
-
+        print(term.move_yx(y, x) + color(f" {name} ") + term.normal)      
+        
+def render_report_data(report_buttons,report_data):
+    print(term.home + term.clear)
+    print(term.bold("Report Data\n"))      
+    if report_data:
+        scenario_id = report_data.get("scenario_id")  
+        status = report_data.get("status") 
+        last_state = report_data.get("last_state")    
+        steps = len(report_data.get("steps"))
+        error_event = report_data.get("error").get("event")
+        error_message = report_data.get("error").get("message")
+        print(f"ID: {scenario_id}\nStatus: {status}\nLast State: {last_state}\nFailed Event: {error_event}\nFailure Message: {error_message}\nQuantity of Steps Completed: {steps}")
+    else:
+        print(f"Unable to retrieve report data.")   
+    for name, (y, x) in report_buttons.items():
+        color = term.white_on_purple 
+        print(term.move_yx(y, x) + color(f" {name} ") + term.normal)      
