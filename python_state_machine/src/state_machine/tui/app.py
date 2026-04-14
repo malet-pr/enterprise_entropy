@@ -1,20 +1,13 @@
 from blessed import Terminal
 import logging
 from state_machine.core.config import *
-from constants import MENU_ITEMS,STATES,EVENTS
-from render import *
-from input import *
-from integration import *
+from .constants import MENU_ITEMS,STATES,EVENTS
+from .render import *
+from .input import *
+from .integration import *
 
 
-logging.basicConfig(
-    filename="/home/nuria/enterprise_entropy/python_state_machine/logs/tui.log",
-    level=logging.INFO,
-    format="%(asctime)s | %(levelname)s | %(message)s"
-)
-
-logger = logging.getLogger("tui")
-logger.info("=== New TUI session ===")
+logger = logging.getLogger("state_machine.tui.app")
 
 term = Terminal()
 
@@ -56,7 +49,8 @@ def run_tui():
                     initial_context = context_imput(term)
                     render_message_screen(
                         f"Scenario created:\n\nID: {scenario_id}\nInitial State: {initial_state}\nSelected Events: {events_list}\nInitial Context: {initial_context}"
-                    )                    
+                    )   
+                    print("\n\nPress any key to return to menu")                 
                     logger.info(f"[create_scenario] Scenario created: [{scenario_id},{initial_state},{events_list},{initial_context}]")
                     scenario_payload = {
                         "scenario_id": scenario_id,
@@ -64,12 +58,13 @@ def run_tui():
                         "initial_state": initial_state,
                         "events": events_list,
                     }            
-                    write_scenario_payload(scenario_payload,STATE_MACHINE_PATH_DATA)
+                    write_scenario_payload(scenario_payload)
                     term.inkey()
                     current_screen = "menu"
                 elif current_screen == "create_report":
-                    logger.info(f"Entered {current_screen}.")
-                    render_message_screen("Entered create_report")
+                    input_data_for_report(term)
+                    print(term.home + term.clear)
+                    print("\n\nPress any key to return to menu")  
                     term.inkey()
                     current_screen = "menu"
                 elif current_screen == "run_all":

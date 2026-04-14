@@ -1,11 +1,12 @@
 from blessed import Terminal
-from constants import *
-from render import *
+from .constants import *
+from .render import *
+from .integration import *
 import logging
 
-term = Terminal()
-logger = logging.getLogger("tui")
+logger = logging.getLogger(__name__)
 
+term = Terminal()
 
 def prompt_input(label):
     value = ""
@@ -146,4 +147,20 @@ def context_imput(term):
                         initial_context[active_field] += inp
                 render_form(initial_context,edited_fields,buttons)   
                     
+def input_data_for_report(term):
+    report_buttons = {"SEND": (10, 5), "DISCARD": (10, 20)}  
+    while True:
+        scenario = read_scenario()
+        render_scenario(report_buttons,scenario)
+        rep = term.inkey()
+        key_lower = rep.lower()
+        if rep == 'd': 
+            logger.info("discard")
+            return
+        elif key_lower == 's':       
+            write_scenario_payload(scenario)
+            return
+
+
+      
                         

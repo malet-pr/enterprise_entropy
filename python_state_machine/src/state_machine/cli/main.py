@@ -2,7 +2,6 @@ import argparse
 import logging 
 from .scenarios import create_scenarios
 from .report import create_report
-
 from state_machine.core.config import *
 
 logger = logging.getLogger("state_machine.cli.main")
