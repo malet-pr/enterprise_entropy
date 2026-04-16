@@ -2,6 +2,7 @@ from blessed import Terminal
 from .constants import MENU_ITEMS,STATES,EVENTS
 from .integration import *
 import logging, json
+from collections import defaultdict
 
 logger = logging.getLogger(__name__)
 
@@ -103,11 +104,22 @@ def render_report_data(report_buttons,report_data):
     if report_data:
         scenario_id = report_data.get("scenario_id")  
         status = report_data.get("status") 
+        final_state = report_data.get("final_state")
         last_state = report_data.get("last_state")    
-        steps = len(report_data.get("steps"))
-        error_event = report_data.get("error").get("event")
-        error_message = report_data.get("error").get("message")
-        print(f"ID: {scenario_id}\nStatus: {status}\nLast State: {last_state}\nFailed Event: {error_event}\nFailure Message: {error_message}\nQuantity of Steps Completed: {steps}")
+        steps = report_data.get("steps")
+        if steps:
+            q_steps = len(steps)
+        error = report_data.get("error")
+        if error:
+            phase = error.get("phase")
+            error_event = error.get("event")
+            error_message = error.get("message")
+        if status == 'ok' :
+            print(f"ID: {scenario_id}\nStatus: {status}\nFinal State: {final_state}\nQuantity of Steps: {q_steps}")
+        elif status == 'error' and last_state :    
+            print(f"ID: {scenario_id}\nStatus: {status}\nLast State: {last_state}\nFailed Event: {error_event}\nFailure Message: {error_message}\nQuantity of Steps Completed: {q_steps}")
+        else:
+            print(f"ID: {scenario_id}\nStatus: {status}\nPhase: {phase}\nFailure Message: {error_message}")   
     else:
         print(f"Unable to retrieve report data.")   
     for name, (y, x) in report_buttons.items():
