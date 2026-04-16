@@ -33,7 +33,8 @@ def main():
     
     # Comand 'create-report'
     parser_create_report = subparsers.add_parser('create-report', help='Generates report files with Ocaml response to the scenario.')
-    parser_create_report.add_argument('--fileName', type=str, help=f'File name of the report file, (default = {FILE_NAME_REPORT})')
+    parser_create_report.add_argument("-i", '--input_file', type=str, help=f'File name of the input file')
+    parser_create_report.add_argument("-o", '--output_file', type=str, help=f'File name of the output file, (default = {FILE_NAME_REPORT})')
     parser_create_report.set_defaults(func=create_report)
 
     args = parser.parse_args()

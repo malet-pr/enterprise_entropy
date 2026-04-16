@@ -42,7 +42,7 @@ def create_report(args):
         logger.info("JSON is valid but empty. Report will not be created.")
         return
     logger.info("Data obtained. Sending to process report...")
-    crs.create_report(file, json_data)
+    crs.create_report(file, json.dumps(json_data))
  
         
         
