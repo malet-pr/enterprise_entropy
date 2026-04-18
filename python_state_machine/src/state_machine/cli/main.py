@@ -3,11 +3,13 @@ import logging
 from .scenarios import create_scenarios
 from .report import create_report
 from state_machine.core.config import *
+import state_machine.core.integration as itg
 
 logger = logging.getLogger("state_machine.cli.main")
 
 def run_all(args):
     create_scenarios(args)
+    itg.call_ocaml()
     create_report(args)
 
 def main():
