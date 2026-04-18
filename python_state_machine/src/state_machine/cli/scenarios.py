@@ -2,9 +2,9 @@ import json, os, logging
 from .utils import *
 from state_machine.core.config import *
 import state_machine.core.scenario_service as css
+import state_machine.core.integration as itg
 
 logger = logging.getLogger(__name__)
-
     
 def read_scenario(args):
     in_file = get_input_file_from_args(args)
@@ -30,12 +30,14 @@ def create_scenarios(args):
     if out_file is not None:
         file = os.path.join(css.set_path('scenarios'), out_file)
     else:    
-        file = os.path.join(css.set_path('scenarios'), get_file_name_scenario())
+        file = os.path.join(css.set_path('scenarios'), get_file_name_scenario())         
+    logger.info(f"full output file: {file}")
     payload = read_scenario(args) 
-    if payload is not None:  
-        logger.info(f"full output file: {file}")
-        css.create_scenarios(payload,file)
+    if payload is not None: 
+        logger.info('Sending multiple scenarios for processing...')
+        itg.call_ocaml_multiple(payload)       
     else:
-        logger.error("Payload cannot be null")    
+        logger.error("Payload cannot be null")  
+        return None
 
     

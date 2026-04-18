@@ -6,7 +6,7 @@ from .model import *
 
 logger = logging.getLogger(__name__)
 
-def create_scenarios (scenario,filename=None):
+def create_scenario (scenario,filename=None):
     logger.info(f'Scenario {scenario["scenario_id"]} received for processing.')
     if filename is not None:
         file = os.path.join(set_path('scenarios'), filename)
@@ -15,7 +15,7 @@ def create_scenarios (scenario,filename=None):
     try:    
         with open(file, "w") as f:
             json.dump(scenario, f, indent=2)
-            logger.info(f'File {file} created.')
+            logger.info(f'File {file} created.')   
     except Exception as e:
         logging.error(f"Failed to write file {file}: {e}") 
         sys.exit(1)    
