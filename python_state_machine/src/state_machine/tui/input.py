@@ -160,7 +160,12 @@ def input_data_for_report(term):
         elif key_lower == 's':       
             generate_report(report_data)
             return
-
+        
+def create_and_show_report(term):
+    report_data = read_report_data()
+    generate_report(report_data)
+    render_report_data(None,report_data)        
+    
 
       
                         

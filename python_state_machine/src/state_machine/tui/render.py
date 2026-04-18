@@ -122,6 +122,7 @@ def render_report_data(report_buttons,report_data):
             print(f"ID: {scenario_id}\nStatus: {status}\nPhase: {phase}\nFailure Message: {error_message}")   
     else:
         print(f"Unable to retrieve report data.")   
-    for name, (y, x) in report_buttons.items():
-        color = term.white_on_purple 
-        print(term.move_yx(y, x) + color(f" {name} ") + term.normal)      
+    if report_buttons:
+        for name, (y, x) in report_buttons.items():
+            color = term.white_on_purple 
+            print(term.move_yx(y, x) + color(f" {name} ") + term.normal)      

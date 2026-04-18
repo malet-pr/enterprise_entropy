@@ -12,6 +12,7 @@ FILE_NAME_SCENARIO = os.getenv("FILE_NAME_SCENARIO",'scenario.json')
 STATE_MACHINE_PATH_DATA = os.getenv('STATE_MACHINE_PATH_DATA')
 STATE_MACHINE_PATH_REPORT = os.getenv('STATE_MACHINE_PATH_REPORT')
 STATE_MACHINE_PATH_SCENARIO = os.getenv('STATE_MACHINE_PATH_SCENARIO')
+OCAML_PATH = os.getenv('OCAML_PATH')
 
 # Logging config
 logging.basicConfig(
@@ -40,6 +41,9 @@ def get_report_full_path():
 
 def get_scenario_full_path(): 
     return STATE_MACHINE_PATH_SCENARIO 
+
+def get_ocaml_path():
+    return OCAML_PATH
 
 def get_default_output_path(type:str) -> Path:
     """
