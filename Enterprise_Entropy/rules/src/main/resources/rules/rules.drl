@@ -1,4 +1,4 @@
-package rules
+package rules.old
 
 import org.acme.rules.model.Meeting;
 import org.acme.rules.model.enums.MeetingType;

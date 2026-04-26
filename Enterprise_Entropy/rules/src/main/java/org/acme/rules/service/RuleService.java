@@ -1,28 +1,34 @@
 package org.acme.rules.service;
 
+import lombok.extern.slf4j.Slf4j;
+import org.acme.rules.config.RuleCacheManager;
 import org.acme.rules.model.*;
-import org.drools.core.event.DebugAgendaEventListener;
-import org.drools.core.event.DebugRuleRuntimeEventListener;
+import org.acme.rules.persistence.repository.RuleDefinitionRepository;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 
 
+@Slf4j
 @Service
 public class RuleService {
-    private static final Logger log = LoggerFactory.getLogger(RuleService.class);
-    private final KieContainer kieContainer;
 
-    public RuleService(KieContainer kieContainer) {
-        this.kieContainer = kieContainer;
-        log.info("RuleService initialized with KieContainer");
+    private final RuleCacheManager ruleCacheManager;
+    private final RuleDefinitionRepository ruleDefinitionRepository;
+
+    public RuleService(RuleCacheManager ruleCacheManager, RuleDefinitionRepository ruleDefinitionRepository) {
+        this.ruleCacheManager = ruleCacheManager;
+        this.ruleDefinitionRepository = ruleDefinitionRepository;
     }
 
     public ScenarioResult processScenario(ScenarioOrigin origin) {
+        KieContainer kieContainer = ruleCacheManager.getKieContainer(origin.getMeeting().getMeetingType().toString());
+        if (kieContainer == null) {
+            log.error("No KieContainer found for DAILY category");
+            return null;
+        }
         log.info("Processing scenario {}", origin.getScenarioId());
         ScenarioResult result = new ScenarioResult();
         try (KieSession kieSession = kieContainer.newKieSession()){
@@ -51,3 +57,4 @@ public class RuleService {
         return result;
     }
 }
+

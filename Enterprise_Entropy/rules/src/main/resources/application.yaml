@@ -1,0 +1,66 @@
+spring:
+  application:
+    name: rules
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/enterprise_entropy
+    username: drools
+    password: drools
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      maximum-pool-size: 10
+      minimum-idle: 2
+      connection-timeout: 30000
+
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+    baseline-on-migrate: true
+
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        default_schema: rules
+        jdbc:
+          lob:
+            non_contextual_creation: true
+    show-sql: false
+
+server:
+  port: 8099
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,cache
+  metrics:
+    cache:
+      statistics:
+        enabled: true
+
+# Caffeine Cache Configuration
+drools:
+  rules:
+    cache:
+      # Maximum number of rule sets to cache
+      maximum-size: 100
+      # How long to keep rules in cache after last access
+      expire-after-access: 24h
+      # How long to keep rules in cache after write
+      expire-after-write: 24h
+      # Refresh cache every hour (for scheduled refresh)
+      refresh-interval: 3600000
+    database:
+      # Schema for rule tables
+      schema: drools
+      # Batch size for loading rules
+      batch-size: 100
+
+logging:
+  level:
+    com.example.drools: DEBUG
+    org.drools: INFO
+    org.springframework.cache: DEBUG
