@@ -20,7 +20,7 @@ END;
 $$ LANGUAGE plpgsql;
 
 -- Create trigger for rule_definition
-CREATE TRIGGER trigger_version_rules
+CREATE OR REPLACE TRIGGER trigger_version_rules
     BEFORE UPDATE ON rule_definition
     FOR EACH ROW
 EXECUTE FUNCTION increment_rule_version();
@@ -35,13 +35,13 @@ END;
 $$ LANGUAGE plpgsql;
 
 -- Add trigger for updated_at on rule_definition
-CREATE TRIGGER trigger_rule_definition_updated_at
+CREATE OR REPLACE TRIGGER trigger_rule_definition_updated_at
     BEFORE UPDATE ON rule_definition
     FOR EACH ROW
 EXECUTE FUNCTION update_updated_at_column();
 
 -- Add trigger for updated_at on rule_category
-CREATE TRIGGER trigger_rule_category_updated_at
+CREATE OR REPLACE TRIGGER trigger_rule_category_updated_at
     BEFORE UPDATE ON rule_category
     FOR EACH ROW
 EXECUTE FUNCTION update_updated_at_column();

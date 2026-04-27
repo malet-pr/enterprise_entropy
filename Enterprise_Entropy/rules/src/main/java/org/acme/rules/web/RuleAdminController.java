@@ -78,4 +78,12 @@ public class RuleAdminController {
         }
         return ResponseEntity.noContent().build();
     }
+
+    @GetMapping("/health/rules")
+    public ResponseEntity<Map<String, Object>> rulesHealth() {
+        Map<String, Object> health = new HashMap<>();
+        health.put("cacheStats", ruleCacheManager.getCacheStatistics());
+        health.put("status", "healthy");
+        return ResponseEntity.ok(health);
+    }
 }

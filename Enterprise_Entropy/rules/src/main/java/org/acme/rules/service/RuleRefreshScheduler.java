@@ -1,5 +1,6 @@
 package org.acme.rules.service;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.acme.rules.config.RuleCacheManager;
@@ -30,6 +31,7 @@ public class RuleRefreshScheduler {
      * Full refresh of all rules - runs every hour
      */
     @Scheduled(fixedDelayString = "${drools.rules.cache.refresh-interval:3600000}")
+    @Transactional
     public void refreshAllRules() {
         log.info("Starting scheduled full refresh of all rule categories");
         long startTime = System.currentTimeMillis();
@@ -50,6 +52,7 @@ public class RuleRefreshScheduler {
      * Incremental refresh for recently changed rules - runs every 5 minutes
      */
     @Scheduled(fixedDelay = 300000) // 5 minutes
+    @Transactional
     public void refreshChangedRules() {
         log.debug("Checking for recently changed rules");
         long startTime = System.currentTimeMillis();
@@ -72,6 +75,7 @@ public class RuleRefreshScheduler {
     /**
      * Manual refresh endpoint trigger
      */
+    @Transactional
     public void manualRefresh(String category) {
         log.info("Manual refresh requested for category: {}", category);
         if (category == null ) {

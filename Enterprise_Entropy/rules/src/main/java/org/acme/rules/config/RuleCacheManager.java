@@ -19,6 +19,8 @@ import org.kie.internal.io.ResourceFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import jakarta.annotation.PostConstruct;
+
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -143,14 +145,14 @@ public class RuleCacheManager {
         StringBuilder drlBuilder = new StringBuilder();
 
         // Add package declaration
-        drlBuilder.append("package org.acme.rules.resources.rules.").append(category).append(";\n\n");
+        drlBuilder.append("package rules.").append(category).append(";\n\n");
 
         // Add imports
-        drlBuilder.append("org.acme.rules.model.*;\n");
+        drlBuilder.append("import org.acme.rules.model.*;\n");
         drlBuilder.append("import java.util.*;\n\n");
 
         // Add globals if needed
-        drlBuilder.append("global java.util.ArrayList<String> appliedRules;\n\n");
+        drlBuilder.append("global java.util.Map<String, Object> results;\n\n");
 
         // Add each rule
         for (RuleDefinition rule : rules) {
@@ -170,22 +172,29 @@ public class RuleCacheManager {
         KieServices kieServices = KieServices.Factory.get();
         KieFileSystem kieFileSystem = kieServices.newKieFileSystem();
 
-        // Write the DRL content to the file system
+        // Log the DRL content being built (for debugging)
+        log.info("Building KieContainer for category: {} with DRL length: {}", category, drlContent.length());
+        log.debug("DRL Content:\n{}", drlContent);  // Change to debug or remove after debugging
+
         String drlPath = String.format("src/main/resources/rules/%s/rules.drl", category);
-        kieFileSystem.write(ResourceFactory.newByteArrayResource(drlContent.getBytes())
+        kieFileSystem.write(ResourceFactory.newByteArrayResource(drlContent.getBytes(StandardCharsets.UTF_8))
                 .setSourcePath(drlPath));
 
-        // Build with executable model
         KieBuilder kieBuilder = kieServices.newKieBuilder(kieFileSystem);
         kieBuilder.buildAll(ExecutableModelProject.class);
 
-        // Check for errors
         Results results = kieBuilder.getResults();
         if (results.hasMessages(Message.Level.ERROR)) {
-            log.error("Error building KieContainer for category: {}", category);
-            results.getMessages(Message.Level.ERROR).forEach(msg -> {
-                log.error("  {}: {}", msg.getPath(), msg.getText());
-            });
+            log.error("=== DRL COMPILATION ERRORS for category: {} ===", category);
+            for (Message msg : results.getMessages(Message.Level.ERROR)) {
+                log.error("Error: {}", msg.getText());
+                log.error("  Path: {}", msg.getPath());
+                if (msg.getLine() > 0) {
+                    log.error("  Line: {}, Column: {}", msg.getLine(), msg.getColumn());
+                }
+            }
+            log.error("=== Full DRL Content ===");
+            log.error(drlContent);
             throw new RuntimeException("Failed to build KieContainer for category: " + category);
         }
 
@@ -212,6 +221,7 @@ public class RuleCacheManager {
         }
         return kieContainer;
     }
+
     private KieContainer getClasspathKieContainer() {
         // Return the main KieContainer that loads from classpath
         return mainKieContainer;
@@ -244,6 +254,7 @@ public class RuleCacheManager {
     /**
      * Reload rules that have changed since a given timestamp
      */
+    @Transactional
     public void reloadChangedRules(LocalDateTime since) {
         List<RuleDefinition> changedRules = ruleDefinitionRepository.findByUpdatedAtAfter(since);
 

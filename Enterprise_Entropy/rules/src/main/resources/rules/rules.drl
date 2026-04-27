@@ -1,4 +1,4 @@
-package rules.old
+package rules
 
 import org.acme.rules.model.Meeting;
 import org.acme.rules.model.enums.MeetingType;
@@ -8,11 +8,11 @@ import org.acme.rules.model.enums.IssuePriority;
 import org.acme.rules.model.enums.Role;
 import org.acme.rules.model.enums.MeetingDrift;
 import org.acme.rules.model.enums.Understanding;
-import java.util.List
-import org.acme.rules.model.Status
+import org.acme.rules.model.Status;
 import org.acme.rules.model.enums.Stage;
+import java.util.List;
 
-global java.util.ArrayList<String> appliedRules;
+global java.util.Map<String, Object> results;
 
 rule "Curiosity Spiral"
     when
@@ -23,7 +23,7 @@ rule "Curiosity Spiral"
         $meeting.setDurationMin($meeting.getDurationMin() + 30);
         $meeting.setDeepDive(true);
         $meeting.setDrift(MeetingDrift.TO_THE_HILLS_OF_UBEDA);
-        appliedRules.add("Curiosity Spiral");
+        results.put("appliedRule", "Test Rule");
 end
 
 rule "Important Issue Not Understood"
@@ -33,7 +33,7 @@ rule "Important Issue Not Understood"
         not Participant(understands == true) from $meeting.getParticipants()
     then
         $issue.getStatus().setStage(Stage.IGNORED);
-        appliedRules.add("Important Issue Not Understood");
+        results.put("appliedRule", "Test Rule");
 end
 
 rule "Insignificant Issue Consumes Time"
@@ -43,7 +43,7 @@ rule "Insignificant Issue Consumes Time"
     then
         $meeting.setDurationMin($meeting.getDurationMin() + 10);
         $meeting.setDrift(MeetingDrift.TO_HELL);
-        appliedRules.add("Insignificant Issue Consumes Time");
+        results.put("appliedRule", "Test Rule");
 end
 
 rule "Move issue to another meeting"
@@ -57,7 +57,7 @@ rule "Move issue to another meeting"
          Meeting(durationMin > 25)))
     then
         $issue.getStatus().setStage(Stage.MOVED_TO_ANOTHER_MEETING);
-        appliedRules.add("Move issue to another meeting");
+        results.put("appliedRule", "Test Rule");
 end
 
 rule "Collective Debugging Swarm"
@@ -72,5 +72,5 @@ rule "Collective Debugging Swarm"
         $meeting.setDurationMin($meeting.getDurationMin() + 20);
         $meeting.setDeepDive(true);
         $meeting.setDrift(MeetingDrift.FOCUSED);
-        appliedRules.add("Collective Debugging Swarm");
+        results.put("appliedRule", "Test Rule");
 end

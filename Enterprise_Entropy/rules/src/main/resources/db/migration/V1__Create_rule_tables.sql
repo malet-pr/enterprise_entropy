@@ -99,23 +99,23 @@ CREATE TABLE IF NOT EXISTS rule_execution_log (
 -- =====================================================
 
 -- Index on rule_category for active lookups
-CREATE INDEX idx_rule_category_active ON rule_category(is_active)
+CREATE INDEX IF NOT EXISTS idx_rule_category_active ON rule_category(is_active)
     WHERE is_active = TRUE;
 
 -- Indexes on rule_definition
-CREATE INDEX idx_rule_definition_category ON rule_definition(category_id);
-CREATE INDEX idx_rule_definition_active ON rule_definition(is_active)
+CREATE INDEX IF NOT EXISTS idx_rule_definition_category ON rule_definition(category_id);
+CREATE INDEX IF NOT EXISTS idx_rule_definition_active ON rule_definition(is_active)
     WHERE is_active = TRUE;
-CREATE INDEX idx_rule_definition_priority ON rule_definition(is_active, priority DESC)
+CREATE INDEX IF NOT EXISTS idx_rule_definition_priority ON rule_definition(is_active, priority DESC)
     WHERE is_active = TRUE;
 
 -- Composite index for common query pattern
-CREATE INDEX idx_rule_active_category_priority ON rule_definition(is_active, category_id, priority DESC);
+CREATE INDEX IF NOT EXISTS idx_rule_active_category_priority ON rule_definition(is_active, category_id, priority DESC);
 
 -- Index for execution logs (time-based queries)
-CREATE INDEX idx_execution_log_time ON rule_execution_log(execution_start DESC);
-CREATE INDEX idx_execution_log_category ON rule_execution_log(category_name);
-CREATE INDEX idx_execution_log_correlation ON rule_execution_log(correlation_id);
+CREATE INDEX IF NOT EXISTS idx_execution_log_time ON rule_execution_log(execution_start DESC);
+CREATE INDEX IF NOT EXISTS idx_execution_log_category ON rule_execution_log(category_name);
+CREATE INDEX IF NOT EXISTS idx_execution_log_correlation ON rule_execution_log(correlation_id);
 
 -- =====================================================
 -- Table Comments for Documentation

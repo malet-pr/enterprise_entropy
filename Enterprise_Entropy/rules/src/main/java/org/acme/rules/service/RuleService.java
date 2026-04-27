@@ -4,11 +4,16 @@ import lombok.extern.slf4j.Slf4j;
 import org.acme.rules.config.RuleCacheManager;
 import org.acme.rules.model.*;
 import org.acme.rules.persistence.repository.RuleDefinitionRepository;
+import org.drools.core.event.DebugAgendaEventListener;
+import org.drools.core.event.DebugRuleRuntimeEventListener;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
 import org.springframework.stereotype.Service;
+
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 @Slf4j
@@ -40,11 +45,18 @@ public class RuleService {
             kieSession.insert(meeting);
             kieSession.insert(issue);
             // Use global to capture result - set it before firing rules
-            List<String> appliedRules = new ArrayList<>();
-            kieSession.setGlobal("appliedRules", appliedRules);
+            Map<String, Object> results = new HashMap<>();
+            kieSession.setGlobal("results", results);
             // Fire rules
             kieSession.fireAllRules();
-            log.info("rules applied: {}", appliedRules);
+            log.info("rules applied: {}", results.get("appliedRule"));
+            Object appliedRuleObj = results.get("appliedRule");
+            List<String> appliedRules = new ArrayList<>();
+            if (appliedRuleObj instanceof String) {
+                appliedRules.add((String) appliedRuleObj);
+            } else if (appliedRuleObj instanceof List) {
+                appliedRules = (List<String>) appliedRuleObj;
+            }
             // Collect results from globals or modified facts
             result.setScenarioId(origin.getScenarioId());
             result.setIssue(issue);
