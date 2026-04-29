@@ -58,6 +58,53 @@ let string_of_fired_rules rules =
 
 let string_of_rule (r: rule_candidate): string = r.rule_name
 
+let string_of_environment e =
+  match e with
+  | Development -> "Development"
+  | Testing -> "Testing"
+  | UAT -> "UAT"
+
+let string_of_environment_option = function
+  | None -> "not specified"
+  | Some x -> 
+      match x with
+      | Development -> "Development"
+      | Testing -> "Testing"
+      | UAT -> "UAT"
+
+let string_of_meeting_type mt = 
+  match mt with
+  | Daily -> "Daily"
+  | Planning -> "Planning"
+  | CollectiveDebuggingInEnvironment e -> "Collective Debugging in " ^ string_of_environment e     
+
+let string_of_meeting (m: meeting): string =
+  "meeting type = " ^ string_of_meeting_type m.meeting_type 
+  ^ ", duration in min = " ^ string_of_int m.duration_min
+  ^ ", deep dive = " ^ string_of_bool m.deep_dive
+  ^ ", drift = " ^ string_of_drift m.drift
+  ^ ", environment = " ^ string_of_environment_option m.environment
+
+let string_of_issue_priority = function
+  | Insignificant -> "Insignificant"
+  | Low -> "Low"
+  | Medium -> "Medium"
+  | High -> "High"
+  | Critical -> "Critical"
+
+let string_of_understanding = function
+  | Functional -> "Functional"
+  | Testing -> "Testing"
+  | Technical -> "Technical" 
+
+let string_of_understanding_list ulist =
+  (List.map (fun u -> string_of_understanding u) ulist)
+
+let string_of_issue (i:issue):string =
+  "{ priority = " ^ string_of_issue_priority i.priority 
+  ^ ", status = " ^ string_of_status i.status
+  ^ ", understood_by = " ^ String.concat ", "(string_of_understanding_list i.understood_by) ^ " }"
+
 
 (****************************** FROM_STRING ***********************************)
 

@@ -39,7 +39,7 @@ type run_result =
   | InputError of input_error
   | ExecutionError of execution_error
 
-(************** PARSER *************)
+(************** PARSERS *************)
 let environment_of_yojson json =
   match json with
   | `Null -> None
@@ -95,6 +95,14 @@ let issue_of_yojson json = {
       j |> to_string |> understanding_of_string)
 }
 
+let simulation_state_to_yojson state =
+  `Assoc [
+    ("meeting", string_of_meeting state.meeting);
+    ("issue"), string_of_issue state.issue;
+  ]
+
+(************** INPUT - OUTPUT ***************)
+
 let input_of_yojson json =
   let run_id = json |> member "run_id" |> to_string in
   let meeting_input = json |> member "meeting_input" |> meeting_of_yojson in
@@ -108,6 +116,13 @@ let input_of_yojson json =
     participants_input;
   }
 
-
+let run_success_to_yojson run_id (final_state : simulation_state) =
+  `Assoc [
+    ("run_id", `String run_id);
+    ("status", `String "success");
+    ("final_meeting_state", `String (string_of_meeting final_state.meeting));
+    ("final_issue_state", `String (string_of_issue final_state.issue));
+    ("fired_rules", `List (List.map (fun r -> `String r) final_state.fired_rules));
+  ]
 
 

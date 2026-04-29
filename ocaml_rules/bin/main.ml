@@ -21,20 +21,18 @@ let all_rules = [
   issue_is_ignored;
 ]  
 
-
 let () =
   try
     let json = Yojson.Safe.from_file "test_input.json" in
     let input = input_of_yojson json in
-    print_endline ("Parsed run_id: " ^ input.run_id);
     let state = {
       meeting = input.meeting_input;
       participants = input.participants_input;
       issue = input.issue_input;
       fired_rules = [];
     } in
-    let result = run_multiple_rules state all_rules in
-    print_final_state result
+    let final_state = run_multiple_rules state all_rules in
+    print_endline(Yojson.Safe.pretty_to_string (run_success_to_yojson input.run_id final_state))
   with
   | Failure msg -> print_endline ("Failure: " ^ msg)
   | Yojson.Json_error msg -> print_endline ("JSON error: " ^ msg)
@@ -62,8 +60,3 @@ let () =
   print_final_state(final_state2);
  *)
 
-
-
-
-
-   
