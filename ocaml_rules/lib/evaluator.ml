@@ -83,3 +83,4 @@ let run_rule  (state : simulation_state)  (rule : rule_candidate): simulation_st
 let run_multiple_rules (state : simulation_state)  (rules : rule_candidate list): simulation_state = 
   List.fold_left run_rule state rules 
   
+ 

@@ -105,6 +105,10 @@ let string_of_issue (i:issue):string =
   ^ ", status = " ^ string_of_status i.status
   ^ ", understood_by = " ^ String.concat ", "(string_of_understanding_list i.understood_by) ^ " }"
 
+let string_of_simulation_state (s: simulation_state) = string_of_meeting s.meeting
+
+
+
 
 (****************************** FROM_STRING ***********************************)
 

@@ -22,7 +22,11 @@ let all_rules = [
 ]  
 
 let () =
-  try
+  let result = run_from_file "test_input.json" all_rules in
+  print_endline(Yojson.Safe.pretty_to_string (run_result_to_json result));
+
+
+(*   try
     let json = Yojson.Safe.from_file "test_input.json" in
     let input = input_of_yojson json in
     let state = {
@@ -36,6 +40,6 @@ let () =
   with
   | Failure msg -> print_endline ("Failure: " ^ msg)
   | Yojson.Json_error msg -> print_endline ("JSON error: " ^ msg)
-  | Yojson.Safe.Util.Type_error (msg, _) -> print_endline ("Type error: " ^ msg)
+  | Yojson.Safe.Util.Type_error (msg, _) -> print_endline ("Type error: " ^ msg) *)
 
 
