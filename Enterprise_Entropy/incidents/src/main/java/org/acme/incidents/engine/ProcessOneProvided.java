@@ -1,11 +1,13 @@
 package org.acme.incidents.engine;
 
+import org.acme.incidents.dto.NamedPredicate;
 import org.acme.incidents.dto.ProcessedIncident;
 import org.acme.incidents.model.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -17,10 +19,10 @@ public class ProcessOneProvided {
 
     Logger log = LoggerFactory.getLogger(ProcessOneProvided.class);
 
-    public List<ProcessedIncident> process(List<Incident> incidents) {
+    public List<ProcessedIncident> processOne(List<Incident> incidents) {
         log.trace("Processing Incidents in ProcessOneProvider: {}", incidents.stream().map(Incident::getId).toList());
         IncidentProcessorProvided processor = new IncidentProcessorProvided();
-        return processor.process(
+        return processor.processOne(
                 incidents,
                 suppressionRule,
                 escalationPolicy,
@@ -30,8 +32,33 @@ public class ProcessOneProvided {
         );
     }
 
+    public List<ProcessedIncident> processTwo(List<Incident> incidents) {
+        log.trace("Processing Incidents in ProcessOneProvider with First Suppression Rule: {}", incidents.stream().map(Incident::getId).toList());
+        IncidentProcessorProvided processor = new IncidentProcessorProvided();
+        return processor.processTwo(
+                incidents,
+                firstSuppressionRule,
+                escalationPolicy,
+                routingPolicy,
+                followUp,
+                action
+        );
+    }
+
     Predicate<Incident> suppressionRule =
             devHealthcheckNoise.or(testSapTransientNoise).or(legacyGhostCallNoise);
+
+    Predicate<Incident> firstSuppressionRule = incident -> {
+        Optional<NamedPredicate<Incident>> matchedRule =
+                suppressionRules.stream()
+                        .filter(rule -> rule.test(incident))
+                        .findFirst();
+        matchedRule.ifPresent(p -> log.info("Suppressed incident {} by rule '{}'",
+                incident.getId(), p.name()));
+        return matchedRule
+                .map(incidentNamedPredicate -> incidentNamedPredicate.test(incident))
+                .orElse(false);
+    };
 
     Function<Incident, TriageDecision> escalationPolicy = incident -> {
         boolean prod = "prod".equalsIgnoreCase(incident.getEnvironment());
@@ -73,7 +100,6 @@ public class ProcessOneProvided {
     };
 
     Consumer<Incident> action = incident ->
-            log.info("Action executed for {}", incident.getId());
-
+           log.info("Action executed for {}", incident.getId());
 
 }

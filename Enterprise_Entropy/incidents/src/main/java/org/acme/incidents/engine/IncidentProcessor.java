@@ -18,20 +18,48 @@ public class IncidentProcessor {
 
     Logger log = LoggerFactory.getLogger(IncidentProcessor.class);
 
-    public List<ProcessedIncident> process(
+    public List<ProcessedIncident> processOne(
             List<Incident> incidents,
             SuppressionRule suppressionRule,
             EscalationPolicy escalationPolicy,
             RoutingPolicy routingPolicy,
             FollowUp followUp,
             IncidentAction action) {
-        log.trace("IncidentProcessor::process");
+        log.trace("IncidentProcessor::process1");
         List<ProcessedIncident> processedIncidents = new ArrayList<>();
         for (Incident incident : incidents) {
             boolean suppressed = suppressionRule.shouldSuppress(incident);
             if (suppressed) {
                 processedIncidents.add(ProcessedIncident.suppressed(incident));
                 log.info("Suppressed incident {}", incident.getId());
+                continue;
+            }
+            TriageDecision decision = escalationPolicy.decide(incident);
+            Team team = routingPolicy.route(incident);
+            NextStep nextStep = followUp.decide(incident);
+            action.execute(incident);
+            ProcessedIncident processedIncident = new ProcessedIncident(incident, decision, team, nextStep, false);
+            if (log.isInfoEnabled()) {
+                log.info("    -> {}", processedIncident.logLine());
+            }
+            processedIncidents.add(processedIncident);
+        }
+        return processedIncidents;
+    }
+
+    public List<ProcessedIncident> processTwo(
+            List<Incident> incidents,
+            SuppressionRule firstSuppressionRule,
+            EscalationPolicy escalationPolicy,
+            RoutingPolicy routingPolicy,
+            FollowUp followUp,
+            IncidentAction action) {
+        log.trace("IncidentProcessor::process2");
+        List<ProcessedIncident> processedIncidents = new ArrayList<>();
+        for (Incident incident : incidents) {
+            boolean suppressed = firstSuppressionRule.shouldSuppress(incident);
+            if (suppressed) {
+                processedIncidents.add(ProcessedIncident.suppressed(incident));
                 continue;
             }
             TriageDecision decision = escalationPolicy.decide(incident);

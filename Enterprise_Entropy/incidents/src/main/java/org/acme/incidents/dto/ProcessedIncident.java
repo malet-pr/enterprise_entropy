@@ -36,12 +36,11 @@ public record ProcessedIncident(
 
     public String logLine() {
         return String.format(
-                "service=%s | decision=%s | team=%s | nextStep=%s | suppressed=%s",
+                "service=%s | decision=%s | team=%s | nextStep=%s",
                 incident.getService(),
                 decision,
                 team,
-                nextStep,
-                suppressed
+                nextStep
         );
     }
 

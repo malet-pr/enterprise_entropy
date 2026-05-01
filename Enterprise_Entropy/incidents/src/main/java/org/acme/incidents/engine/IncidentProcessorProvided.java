@@ -16,7 +16,7 @@ public class IncidentProcessorProvided {
 
     Logger log = LoggerFactory.getLogger(IncidentProcessorProvided.class);
 
-    public List<ProcessedIncident> process(
+    public List<ProcessedIncident> processOne(
             List<Incident> incidents,
             Predicate<Incident> suppressionRule,
             Function<Incident, TriageDecision> escalationPolicy,
@@ -30,6 +30,34 @@ public class IncidentProcessorProvided {
             if (suppressed) {
                 processedIncidents.add(ProcessedIncident.suppressed(incident));
                 log.info("Suppressed incident {}", incident.getId());
+                continue;
+            }
+            TriageDecision decision = escalationPolicy.apply(incident);
+            Team team = routingPolicy.apply(incident);
+            NextStep nextStep = followUp.apply(incident);
+            action.accept(incident);
+            ProcessedIncident processedIncident = new ProcessedIncident(incident, decision, team, nextStep, false);
+            if (log.isInfoEnabled()) {
+                log.info("    -> {}", processedIncident.logLine());
+            }
+            processedIncidents.add(processedIncident);
+        }
+        return processedIncidents;
+    }
+
+    public List<ProcessedIncident> processTwo(
+            List<Incident> incidents,
+            Predicate<Incident> firstSuppressionRule,
+            Function<Incident, TriageDecision> escalationPolicy,
+            Function<Incident, Team> routingPolicy,
+            Function<Incident, NextStep> followUp,
+            Consumer<Incident> action){
+        log.trace("IncidentProcessorProvided::process2");
+        List<ProcessedIncident> processedIncidents = new ArrayList<>();
+        for (Incident incident : incidents) {
+            boolean suppressed = firstSuppressionRule.test(incident);
+            if (suppressed) {
+                processedIncidents.add(ProcessedIncident.suppressed(incident));
                 continue;
             }
             TriageDecision decision = escalationPolicy.apply(incident);

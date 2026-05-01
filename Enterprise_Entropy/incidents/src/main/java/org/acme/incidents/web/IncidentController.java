@@ -28,13 +28,25 @@ public class IncidentController {
     @PostMapping("/report1")
     public List<ProcessedIncident> report1(@RequestBody List<Incident> incidents) {
         log.trace("IncidentController::report1");
-        return processOne.process(incidents);
+        return processOne.processOne(incidents);
+    }
+
+    @PostMapping("/report1b")
+    public List<ProcessedIncident> report1b(@RequestBody List<Incident> incidents) {
+        log.trace("IncidentController::report1");
+        return processOne.processTwo(incidents);
     }
 
     @PostMapping("/report2")
     public List<ProcessedIncident> report2(@RequestBody List<Incident> incidents) {
         log.trace("IncidentController::report2");
-        return processOneProvided.process(incidents);
+        return processOneProvided.processOne(incidents);
+    }
+
+    @PostMapping("/report2b")
+    public List<ProcessedIncident> report2b(@RequestBody List<Incident> incidents) {
+        log.trace("IncidentController::report2b");
+        return processOneProvided.processTwo(incidents);
     }
 
 }

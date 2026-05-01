@@ -1,6 +1,10 @@
 package org.acme.incidents.api;
 
+import org.acme.incidents.dto.NamedPredicate;
 import org.acme.incidents.model.Incident;
+
+import java.util.List;
+import java.util.Optional;
 import java.util.function.Predicate;
 
 public final class SuppressionRulesProvided {
@@ -19,5 +23,13 @@ public final class SuppressionRulesProvided {
             "prod".equalsIgnoreCase(incident.getEnvironment())
                     && incident.getSeverityScore() < 6
                     && !incident.isCustomerImpact();
+
+
+   public static List<NamedPredicate<Incident>> suppressionRules = List.of(
+            new NamedPredicate<>("dev healthcheck noise", devHealthcheckNoise),
+            new NamedPredicate<>("test SAP transient noise", testSapTransientNoise),
+            new NamedPredicate<>("legacy ghost call noise", legacyGhostCallNoise)
+   );
+
 
 }

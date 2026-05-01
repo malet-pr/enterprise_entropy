@@ -1,6 +1,12 @@
 package org.acme.incidents.engine;
 
-import org.acme.incidents.api.*;
+import org.acme.incidents.api.SuppressionRule;
+import org.acme.incidents.api.EscalationPolicy;
+import org.acme.incidents.api.RoutingPolicy;
+import org.acme.incidents.api.FollowUp;
+import org.acme.incidents.api.IncidentAction;
+import org.acme.incidents.api.SupressionRulesDomain;
+import org.acme.incidents.dto.NamedSuppressionRule;
 import org.acme.incidents.dto.ProcessedIncident;
 import org.acme.incidents.model.Incident;
 import org.acme.incidents.model.NextStep;
@@ -10,16 +16,19 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import java.util.List;
+import java.util.Optional;
+
+import static org.acme.incidents.api.SuppressionRulesProvided.suppressionRules;
 
 @Service
 public class ProcessOne {
 
     Logger log = LoggerFactory.getLogger(ProcessOne.class);
 
-    public List<ProcessedIncident> process(List<Incident> incidents) {
+    public List<ProcessedIncident> processOne(List<Incident> incidents) {
         IncidentProcessor processor = new IncidentProcessor();
         log.trace("Processing Incidents in ProcessOne: {}", incidents.stream().map(Incident::getId).toList());
-        return processor.process(
+        return processor.processOne(
                 incidents,
                 suppressionRule,
                 escalationPolicy,
@@ -29,10 +38,32 @@ public class ProcessOne {
         );
     }
 
-    SuppressionRule suppressionRule = incident ->
-            "dev".equalsIgnoreCase(incident.getEnvironment())
-                    && incident.getMessage().toLowerCase().contains("healthcheck failed")
-                    && incident.getOccurrences() < 3;
+    public List<ProcessedIncident> processTwo(List<Incident> incidents) {
+        IncidentProcessor processor = new IncidentProcessor();
+        log.trace("Processing Incidents in ProcessTwo: {}", incidents.stream().map(Incident::getId).toList());
+        return processor.processTwo(
+                incidents,
+                firstSuppressionRule,
+                escalationPolicy,
+                routingPolicy,
+                followUp,
+                action
+        );
+    }
+
+    SuppressionRule suppressionRule = SupressionRulesDomain.devHealthcheckNoise;
+
+    SuppressionRule firstSuppressionRule = incident -> {
+        Optional<NamedSuppressionRule> matchedRule =
+                SupressionRulesDomain.firstSuppressionRule.stream()
+                        .filter(rule -> rule.shouldSuppress(incident))
+                        .findFirst();
+        matchedRule.ifPresent(p -> log.info("Suppressed incident {} by rule '{}'",
+                incident.getId(), p.name()));
+        return matchedRule
+                .map(incidentNamedPredicate -> incidentNamedPredicate.shouldSuppress(incident))
+                .orElse(false);
+    };
 
     EscalationPolicy escalationPolicy = incident -> {
         boolean prod = "prod".equalsIgnoreCase(incident.getEnvironment());

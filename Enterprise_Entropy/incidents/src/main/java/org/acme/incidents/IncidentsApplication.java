@@ -37,7 +37,7 @@ public class IncidentsApplication  implements CommandLineRunner {
 
         Supplier<List<Incident>> incidentSupplier = SampleIncidents.sampleData();
         List<Incident> incidents = incidentSupplier.get();
-        processOne.process(incidents);
+        processOne.processTwo(incidents);
 
         log.info("\n\nIncident Triage Application Runner Finished...\n");
     }
