@@ -1,5 +1,5 @@
-open Model
-open Utils
+open Engine.Model
+open Engine.Strings
 
 
 let print_meeting_duration meeting =

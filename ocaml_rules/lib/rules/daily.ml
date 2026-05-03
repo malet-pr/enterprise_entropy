@@ -1,4 +1,4 @@
-open Model
+open Engine.Model
 
 (*
 Rule 1 — Curiosity Spiral

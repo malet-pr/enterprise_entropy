@@ -1,11 +1,10 @@
 open Ocaml_rules
-open Model
-open Rules_daily
-open Rules_planning
-open Rules_debug
-open Evaluator
-open Printer
-open Integration
+open Engine
+open Rules.Daily
+open Rules.Planning
+open Rules.Debug
+open Integration.Formatters.Printer
+open Integration.Runners
 open Yojson.Safe
 open Yojson.Safe.Util
 
@@ -41,5 +40,4 @@ let () =
   | Failure msg -> print_endline ("Failure: " ^ msg)
   | Yojson.Json_error msg -> print_endline ("JSON error: " ^ msg)
   | Yojson.Safe.Util.Type_error (msg, _) -> print_endline ("Type error: " ^ msg) *)
-
 

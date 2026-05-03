@@ -1,4 +1,4 @@
-open Model
+open Engine.Model
 
 (*
 Rule P1 — Ignored Issue

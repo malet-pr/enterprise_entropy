@@ -1,8 +1,8 @@
 open Model
 open Conditions
 open Actions
-open Printer
-open Utils
+open Strings
+
 
 let evaluate_meeting_condition (s:simulation_state)(mc:meeting_condition): bool = 
   let m = s.meeting in

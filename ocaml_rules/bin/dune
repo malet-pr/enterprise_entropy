@@ -1,4 +1,4 @@
 (executable
  (public_name ocaml_rules)
  (name main)
- (libraries ocaml_rules))
+ (libraries ocaml_rules dream yojson))
