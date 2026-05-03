@@ -72,5 +72,21 @@ let run_from_file filename rules =
   | Yojson.Json_error msg ->
       InputError { run_id = "unknown"; message = "JSON error: " ^ msg }
   | Sys_error msg ->
-      InputError { run_id = "unknown"; message = "File error: " ^ msg }
+      InputError { run_id = "unknown"; message = "File error: " ^ msg } 
+
+let run_from_json json rules =
+  let run_id = run_id_or_unknown json in
+  try
+    let input = input_of_yojson json in
+    let state = state_of_input input in
+    let final_state = run_multiple_rules state rules in
+    Success {
+      run_id;
+      final_state;
+    }
+  with
+  | Failure msg ->
+      InputError { run_id; message = msg }
+  | Yojson.Safe.Util.Type_error (msg, _) ->
+      InputError { run_id; message = "Type error: " ^ msg }
 
