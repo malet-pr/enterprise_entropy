@@ -46,7 +46,7 @@ ocaml_rules/*.exe
 ocaml_rules/.dune/
 
 # OCaml/Python interface
-prueba/
+EFSM/
 
 # OCaml state machine project
 ocaml_state_machine/_build/

@@ -1,0 +1,4 @@
+(executable
+ (public_name ocaml_pipelines)
+ (name main)
+ (libraries ocaml_pipelines))
