@@ -62,8 +62,10 @@ _opam/
 # Python state machine cli
 python_state_machine/.env
 python_state_machine/dist/
+python_state_machine/build/
 python_state_machine/src/state_machine/output-files/
 python_state_machine/src/state_machine/__init__.py
 python_state_machine/pruebas/
 python_state_machine/src/state_machine/files/
 python_state_machine/logs
+python_state_machine/*.spec

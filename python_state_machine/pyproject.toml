@@ -6,9 +6,9 @@ description = ""
 authors = [
     {name = "Nuria Malet Quintar",email = "maletq.pr@gmail.com"}
 ]
-requires-python = ">=3.12"
+
+requires-python = ">=3.12,<3.15"
 dependencies = [
-    "pathlib (>=1.0.1,<2.0.0)",
     "dotenv (>=0.9.9,<0.10.0)",
     "logging (>=0.4.9.6,<0.5.0.0)",
     "argparse (>=1.4.0,<2.0.0)",
@@ -17,7 +17,15 @@ dependencies = [
     "pathvalidate (>=3.3.1,<4.0.0)"
 ]
 
+[project.scripts]
+state-machine-cli = "state_machine.cli.main:main"
+state-machine-tui = "state_machine.tui.app:main"
 
 [build-system]
 requires = ["poetry-core>=2.0.0,<3.0.0"]
 build-backend = "poetry.core.masonry.api"
+
+[dependency-groups]
+dev = [
+    "pyinstaller (>=6.20.0,<7.0.0)"
+]

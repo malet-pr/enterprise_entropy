@@ -16,7 +16,7 @@ OCAML_PATH = os.getenv('OCAML_PATH')
 
 # Logging config
 logging.basicConfig(
-    filename="../logs/state-machine.log",
+    filename="./logs/state-machine.log",
     level=logging.INFO,
     format="%(asctime)s | %(name)s | %(levelname)s | %(message)s"
 )

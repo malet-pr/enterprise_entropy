@@ -32,7 +32,9 @@ def read_machine_result (filename=None):
     
 def call_ocaml():
     logger.info(f'Sending to ocaml...')
-    subprocess.run(['dune', 'exec', 'ocaml_state_machine', scenario_path, result_path],  cwd=machine_path)
+    #subprocess.run(['dune', 'exec', 'ocaml_state_machine', scenario_path, result_path],  cwd=machine_path)
+    subprocess.run([machine_path, scenario_path, result_path],check=True)
+   
 
 def call_ocaml_multiple(scenarios: list[Scenario]) -> None:
     logger.info(f'Sending multiple scenarios to ocaml...')
@@ -40,7 +42,8 @@ def call_ocaml_multiple(scenarios: list[Scenario]) -> None:
     for scenario in scenarios:
         logger.info(f"Sending scenario {scenario["scenario_id"]}")
         create_scenario(scenario,None)
-        subprocess.run(['dune', 'exec', 'ocaml_state_machine', scenario_path, result_path],  cwd=machine_path)
+        #subprocess.run(['dune', 'exec', 'ocaml_state_machine', scenario_path, result_path],  cwd=machine_path)
+        subprocess.run([machine_path, scenario_path, result_path],check=True)
         data = read_machine_result()
         logger.info(f"Data: {data}")
         result.append(data.copy())   

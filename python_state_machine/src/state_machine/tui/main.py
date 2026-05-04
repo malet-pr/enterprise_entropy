@@ -7,11 +7,11 @@ from .render import *
 from .input import *
 from .integration import *
 
-logger = logging.getLogger("state_machine.tui.app")
+logger = logging.getLogger("state_machine.tui.main")
 
 term = Terminal()
 
-def run_tui():
+def main():
     selected_index = 0
     selected_item = ""
     current_screen = "menu"
@@ -46,9 +46,9 @@ def run_tui():
                     scenario = run_create_scenario_flow(term)
                     if scenario:
                         render_message_screen(
-                            f"Scenario created:\n\nID: {scenario.scenario_id}\nInitial State: {scenario.initial_state}\nSelected Events: {scenario.events_list}\nInitial Context: {scenario.initial_context}"
+                            f"Scenario created:\n\nID: {scenario['scenario_id']}\nInitial State: {scenario['initial_state']}\nSelected Events: {scenario['events']}\nInitial Context: {scenario['initial_context']}"
                         )   
-                        logger.info(f"[create_scenario] Scenario created: [{scenario.scenario_id},{scenario.initial_state},{scenario.events_list},{scenario.initial_context}]")
+                        logger.info(f"[create_scenario] Scenario created: [{scenario['scenario_id']},{scenario['initial_state']},{scenario['events']},{scenario['initial_context']}]")
                     else:
                         render_message_screen('Something went wrong with scenario creation.')    
                         logger.info('Error creating or saving scenario')
@@ -89,4 +89,4 @@ def run_create_scenario_flow(term) -> json:
     return scenario_payload
 
 if __name__ == "__main__":
-    run_tui()
+    main()

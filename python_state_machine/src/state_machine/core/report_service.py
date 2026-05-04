@@ -52,13 +52,13 @@ def create_report(file,json_data):
         file = os.path.join(get_report_full_path(), get_file_name_report())  
         logger.info(f"Will use default path: {file}")
     try:
-        list = json.loads(json_data)
-        if len(list) == 1:
+        data = json.loads(json_data)
+        if isinstance(data, dict):
             instance = State.model_validate_json(json_data)  
             logger.info(f"Scenario: {instance.scenario_id} parsed.")
             lines = create_md(instance)    
             store_report(file, lines)
-        elif len(list) > 1:
+        elif isinstance(data, list):
             for scenario in list:
                 instance = State.model_validate_json(json.dumps(scenario))  
                 logger.info(f"Scenario: {instance.scenario_id} parsed.")
