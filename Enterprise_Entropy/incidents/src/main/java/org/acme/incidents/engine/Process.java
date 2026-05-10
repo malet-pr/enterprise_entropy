@@ -51,29 +51,30 @@ public class Process {
     public List<ProcessedIncident> processThree(List<Incident> incidents) {
         IncidentProcessor processor = new IncidentProcessor();
         log.trace("Processing Incidents in ProcessTwo: {}", incidents.stream().map(Incident::getId).toList());
-        return processor.processTwo(
+        return processor.processThree(
                 incidents,
                 firstSuppressionRule,
                 firstProceedingRule,
                 escalationPolicy,
                 routingPolicy,
-                followUp,
+                nextStepResolver,
                 action
         );
     }
 
     SuppressionRule suppressionRule = SupressionRulesDomain.devHealthcheckNoise;
 
+    Optional<NamedSuppressionRule> findFirstSuppressionRule(Incident incident) {
+        return SupressionRulesDomain.firstSuppressionRule.stream()
+                .filter(rule -> rule.shouldSuppress(incident))
+                .findFirst();
+    }
+
     SuppressionRule firstSuppressionRule = incident -> {
-        Optional<NamedSuppressionRule> matchedRule =
-                SupressionRulesDomain.firstSuppressionRule.stream()
-                        .filter(rule -> rule.shouldSuppress(incident))
-                        .findFirst();
+        Optional<NamedSuppressionRule> matchedRule = findFirstSuppressionRule(incident);
         matchedRule.ifPresent(p -> log.info("Suppressed incident {} by rule '{}'",
                 incident.getId(), p.name()));
-        return matchedRule
-                .map(incidentNamedPredicate -> incidentNamedPredicate.shouldSuppress(incident))
-                .orElse(false);
+        return matchedRule.isPresent();
     };
 
     EscalationPolicy escalationPolicy = incident -> {
@@ -136,15 +137,16 @@ public class Process {
 
     ProceedingRule proceedingRule = wakeWhenTeamUnknown;
 
+    Optional<NamedProceedingRules> findFirstProceedingRule(TriageDecision decision, Team team) {
+        return ProceedingRulesDomain.proceedingRules.stream()
+                .filter(rule -> rule.shouldBlock(decision,team))
+                .findFirst();
+    }
+
     ProceedingRule firstProceedingRule = (decision,team) -> {
-        Optional<NamedProceedingRules> matchedRule =
-                proceedingRules.stream()
-                        .filter(rule -> rule.shouldBlock(decision, team))
-                        .findFirst();
+        Optional<NamedProceedingRules> matchedRule = findFirstProceedingRule(decision, team);
         matchedRule.ifPresent(p -> log.info("Blocked action by rule '{}'", p.name()));
-        return matchedRule
-                .map(rule -> rule.shouldBlock(decision, team))
-                .orElse(false);
+        return matchedRule.isPresent();
     };
 
     IncidentAction action = incident ->
