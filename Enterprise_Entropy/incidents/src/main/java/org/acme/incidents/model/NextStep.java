@@ -6,5 +6,6 @@ public enum NextStep {
     WRITE_A_TICKET,
     ALL_HANDS_ON_DECK,
     INVESTIGATE_AND_FIX,
+    FIND_SOMEONE_TO_HELP,
     ALL_DONE
 }

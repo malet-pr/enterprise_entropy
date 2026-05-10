@@ -1,5 +1,6 @@
 package org.acme.incidents.engine;
 
+import org.acme.incidents.dto.NamedBiPredicate;
 import org.acme.incidents.dto.NamedPredicate;
 import org.acme.incidents.dto.ProcessedIncident;
 import org.acme.incidents.model.*;
@@ -8,16 +9,15 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
-import java.util.function.Consumer;
-import java.util.function.Function;
-import java.util.function.Predicate;
+import java.util.function.*;
+import static org.acme.incidents.api.ProceedingRulesProvided.*;
 import static org.acme.incidents.api.SuppressionRulesProvided.*;
 
 
 @Service
-public class ProcessOneProvided {
+public class ProcessProvided {
 
-    Logger log = LoggerFactory.getLogger(ProcessOneProvided.class);
+    Logger log = LoggerFactory.getLogger(ProcessProvided.class);
 
     public List<ProcessedIncident> processOne(List<Incident> incidents) {
         log.trace("Processing Incidents in ProcessOneProvider: {}", incidents.stream().map(Incident::getId).toList());
@@ -25,6 +25,7 @@ public class ProcessOneProvided {
         return processor.processOne(
                 incidents,
                 suppressionRule,
+                proceedingRule,
                 escalationPolicy,
                 routingPolicy,
                 followUp,
@@ -38,9 +39,24 @@ public class ProcessOneProvided {
         return processor.processTwo(
                 incidents,
                 firstSuppressionRule,
+                proceedingRule,
                 escalationPolicy,
                 routingPolicy,
                 followUp,
+                action
+        );
+    }
+
+    public List<ProcessedIncident> processThree(List<Incident> incidents) {
+        log.trace("Processing Incidents in ProcessOneProvider with First Suppression Rule: {}", incidents.stream().map(Incident::getId).toList());
+        IncidentProcessorProvided processor = new IncidentProcessorProvided();
+        return processor.processThree(
+                incidents,
+                firstSuppressionRule,
+                firstProceedingRule,
+                escalationPolicy,
+                routingPolicy,
+                nextStepResolver,
                 action
         );
     }
@@ -97,6 +113,39 @@ public class ProcessOneProvided {
             return NextStep.INVESTIGATE_AND_FIX;
         }
         return NextStep.ALL_DONE;
+    };
+
+    BiFunction<Incident, TriageDecision, NextStep> nextStepResolver =
+        (incident, decision) -> {
+            String service = incident.getService().toLowerCase();
+            if (service.contains("gateway") && incident.isCustomerImpact()) {
+                return NextStep.INVESTIGATE_AND_FIX;
+            }
+            if (decision == TriageDecision.WAKE_SOMEONE_UP) {
+                return NextStep.ALL_HANDS_ON_DECK;
+            }
+            if (decision == TriageDecision.WE_SHOULD_TELL_SOMEONE
+                    && incident.isCustomerImpact()) {
+                return NextStep.INVESTIGATE_AND_FIX;
+            }
+            if (decision == TriageDecision.WE_SHOULD_PROBABLY_LOOK_AT_THIS
+                    && incident.getOccurrences() >= 5) {
+                return NextStep.WRITE_A_TICKET;
+            }
+            return NextStep.ALL_DONE;
+        };
+
+    BiPredicate<TriageDecision, Team> proceedingRule = wakeWhenTeamUnknown;
+
+    BiPredicate<TriageDecision, Team>  firstProceedingRule = (decision,team) -> {
+        Optional<NamedBiPredicate<TriageDecision, Team>> matchedRule =
+                proceedingRules.stream()
+                        .filter(rule -> rule.test(decision, team))
+                        .findFirst();
+        matchedRule.ifPresent(p -> log.info("Blocked action by rule '{}'", p.name()));
+        return matchedRule
+                .map(rule -> rule.test(decision, team))
+                .orElse(false);
     };
 
     Consumer<Incident> action = incident ->

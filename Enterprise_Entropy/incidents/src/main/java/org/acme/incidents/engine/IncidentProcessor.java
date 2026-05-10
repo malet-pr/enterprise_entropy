@@ -9,7 +9,6 @@ import org.acme.incidents.dto.ProcessedIncident;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,11 +20,12 @@ public class IncidentProcessor {
     public List<ProcessedIncident> processOne(
             List<Incident> incidents,
             SuppressionRule suppressionRule,
+            ProceedingRule proceedingRule,
             EscalationPolicy escalationPolicy,
             RoutingPolicy routingPolicy,
             FollowUp followUp,
             IncidentAction action) {
-        log.trace("IncidentProcessor::process1");
+        log.trace("IncidentProcessor::process1a");
         List<ProcessedIncident> processedIncidents = new ArrayList<>();
         for (Incident incident : incidents) {
             boolean suppressed = suppressionRule.shouldSuppress(incident);
@@ -37,8 +37,14 @@ public class IncidentProcessor {
             TriageDecision decision = escalationPolicy.decide(incident);
             Team team = routingPolicy.route(incident);
             NextStep nextStep = followUp.decide(incident);
+            boolean blockedExecution = proceedingRule.shouldBlock(decision, team);
+            if (blockedExecution) {
+                processedIncidents.add(ProcessedIncident.blockedExecution(incident));
+                log.info("    -> Incident blocked: {}", incident.getId());
+                continue;
+            }
             action.execute(incident);
-            ProcessedIncident processedIncident = new ProcessedIncident(incident, decision, team, nextStep, false);
+            ProcessedIncident processedIncident = new ProcessedIncident(incident, decision, team, nextStep, false,false);
             if (log.isInfoEnabled()) {
                 log.info("    -> {}", processedIncident.logLine());
             }
@@ -50,11 +56,12 @@ public class IncidentProcessor {
     public List<ProcessedIncident> processTwo(
             List<Incident> incidents,
             SuppressionRule firstSuppressionRule,
+            ProceedingRule firstProceedingRule,
             EscalationPolicy escalationPolicy,
             RoutingPolicy routingPolicy,
             FollowUp followUp,
             IncidentAction action) {
-        log.trace("IncidentProcessor::process2");
+        log.trace("IncidentProcessor::process1b");
         List<ProcessedIncident> processedIncidents = new ArrayList<>();
         for (Incident incident : incidents) {
             boolean suppressed = firstSuppressionRule.shouldSuppress(incident);
@@ -65,8 +72,49 @@ public class IncidentProcessor {
             TriageDecision decision = escalationPolicy.decide(incident);
             Team team = routingPolicy.route(incident);
             NextStep nextStep = followUp.decide(incident);
+            boolean blockedExecution = firstProceedingRule.shouldBlock(decision, team);
+            if (blockedExecution) {
+                processedIncidents.add(ProcessedIncident.blockedExecution(incident));
+                log.info("    -> Incident blocked: {}", incident.getId());
+                continue;
+            }
             action.execute(incident);
-            ProcessedIncident processedIncident = new ProcessedIncident(incident, decision, team, nextStep, false);
+            ProcessedIncident processedIncident = new ProcessedIncident(incident, decision, team, nextStep, false,false);
+            if (log.isInfoEnabled()) {
+                log.info("    -> {}", processedIncident.logLine());
+            }
+            processedIncidents.add(processedIncident);
+        }
+        return processedIncidents;
+    }
+
+    public List<ProcessedIncident> processThree(
+            List<Incident> incidents,
+            SuppressionRule firstSuppressionRule,
+            ProceedingRule firstProceedingRule,
+            EscalationPolicy escalationPolicy,
+            RoutingPolicy routingPolicy,
+            DecisionAwareFollowUp nextStepResolver,
+            IncidentAction action) {
+        log.trace("IncidentProcessor::process1c");
+        List<ProcessedIncident> processedIncidents = new ArrayList<>();
+        for (Incident incident : incidents) {
+            boolean suppressed = firstSuppressionRule.shouldSuppress(incident);
+            if (suppressed) {
+                processedIncidents.add(ProcessedIncident.suppressed(incident));
+                continue;
+            }
+            TriageDecision decision = escalationPolicy.decide(incident);
+            Team team = routingPolicy.route(incident);
+            NextStep nextStep = nextStepResolver.decide(incident, decision);
+            boolean blockedExecution = firstProceedingRule.shouldBlock(decision, team);
+            if (blockedExecution) {
+                processedIncidents.add(ProcessedIncident.blockedExecution(incident));
+                log.info("    -> Incident blocked: {}", incident.getId());
+                continue;
+            }
+            action.execute(incident);
+            ProcessedIncident processedIncident = new ProcessedIncident(incident, decision, team, nextStep, false,false);
             if (log.isInfoEnabled()) {
                 log.info("    -> {}", processedIncident.logLine());
             }

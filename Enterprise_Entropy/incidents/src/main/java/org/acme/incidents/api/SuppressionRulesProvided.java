@@ -2,9 +2,7 @@ package org.acme.incidents.api;
 
 import org.acme.incidents.dto.NamedPredicate;
 import org.acme.incidents.model.Incident;
-
 import java.util.List;
-import java.util.Optional;
 import java.util.function.Predicate;
 
 public final class SuppressionRulesProvided {
@@ -30,6 +28,5 @@ public final class SuppressionRulesProvided {
             new NamedPredicate<>("test SAP transient noise", testSapTransientNoise),
             new NamedPredicate<>("legacy ghost call noise", legacyGhostCallNoise)
    );
-
 
 }
