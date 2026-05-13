@@ -1,6 +1,6 @@
-package org.acme.incidents.api;
+package org.acme.incidents.api.built;
 
-import org.acme.incidents.dto.NamedBiPredicate;
+import org.acme.incidents.dto.built.NamedBiPredicate;
 import org.acme.incidents.model.Team;
 import org.acme.incidents.model.TriageDecision;
 import java.util.List;

@@ -1,6 +1,6 @@
-package org.acme.incidents.dto;
+package org.acme.incidents.dto.domain;
 
-import org.acme.incidents.api.SuppressionRule;
+import org.acme.incidents.api.domain.interfaces.SuppressionRule;
 import org.acme.incidents.model.Incident;
 
 public record NamedSuppressionRule(

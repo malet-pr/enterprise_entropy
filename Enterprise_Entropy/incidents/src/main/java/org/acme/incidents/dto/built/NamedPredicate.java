@@ -1,4 +1,4 @@
-package org.acme.incidents.dto;
+package org.acme.incidents.dto.built;
 
 import java.util.function.Predicate;
 

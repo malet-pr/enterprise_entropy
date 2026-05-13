@@ -1,7 +1,7 @@
-package org.acme.incidents.engine;
+package org.acme.incidents.utils;
 
-import org.acme.incidents.dto.NamedProceedingRules;
-import org.acme.incidents.dto.NamedSuppressionRule;
+import org.acme.incidents.dto.domain.NamedProceedingRules;
+import org.acme.incidents.dto.domain.NamedSuppressionRule;
 import java.util.Optional;
 
 public class TestingHelpers {

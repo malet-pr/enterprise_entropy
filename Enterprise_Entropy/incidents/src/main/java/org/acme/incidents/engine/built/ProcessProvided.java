@@ -1,7 +1,7 @@
-package org.acme.incidents.engine;
+package org.acme.incidents.engine.built;
 
-import org.acme.incidents.dto.NamedBiPredicate;
-import org.acme.incidents.dto.NamedPredicate;
+import org.acme.incidents.dto.built.NamedBiPredicate;
+import org.acme.incidents.dto.built.NamedPredicate;
 import org.acme.incidents.dto.ProcessedIncident;
 import org.acme.incidents.model.*;
 import org.slf4j.Logger;
@@ -10,8 +10,8 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.*;
-import static org.acme.incidents.api.ProceedingRulesProvided.*;
-import static org.acme.incidents.api.SuppressionRulesProvided.*;
+import static org.acme.incidents.api.built.ProceedingRulesProvided.*;
+import static org.acme.incidents.api.built.SuppressionRulesProvided.*;
 
 
 @Service

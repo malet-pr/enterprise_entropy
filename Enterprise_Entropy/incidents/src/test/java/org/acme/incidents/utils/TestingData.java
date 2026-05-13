@@ -1,4 +1,4 @@
-package org.acme.incidents.engine;
+package org.acme.incidents.utils;
 
 import org.acme.incidents.model.Incident;
 
@@ -20,6 +20,18 @@ public class TestingData {
     "INC-003", "billing-service", "prod",
     "Time out", 2,
     2, false, 14
+    );
+
+    public static final Incident incident4 = new Incident(
+            "INC-003", "billing-service", "prod",
+            "Time out", 8,
+            2, false, 14
+    );
+
+    public static final Incident incident5 = new Incident(
+            "INC-003", "billing-service", "prod",
+            "Time out", 6,
+            2, false, 14
     );
 
 

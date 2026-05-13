@@ -1,11 +1,11 @@
-package org.acme.incidents.engine;
+package org.acme.incidents.engine.domain;
 
-import org.acme.incidents.api.*;
+import org.acme.incidents.api.domain.interfaces.*;
+import org.acme.incidents.dto.ProcessedIncident;
 import org.acme.incidents.model.Incident;
 import org.acme.incidents.model.NextStep;
 import org.acme.incidents.model.Team;
 import org.acme.incidents.model.TriageDecision;
-import org.acme.incidents.dto.ProcessedIncident;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -23,7 +23,6 @@ public class IncidentProcessor {
             ProceedingRule proceedingRule,
             EscalationPolicy escalationPolicy,
             RoutingPolicy routingPolicy,
-            FollowUp followUp,
             IncidentAction action) {
         log.trace("IncidentProcessor::process1a");
         List<ProcessedIncident> processedIncidents = new ArrayList<>();
@@ -36,7 +35,7 @@ public class IncidentProcessor {
             }
             TriageDecision decision = escalationPolicy.decide(incident);
             Team team = routingPolicy.route(incident);
-            NextStep nextStep = followUp.decide(incident);
+            NextStep nextStep = null;
             boolean blockedExecution = proceedingRule.shouldBlock(decision, team);
             if (blockedExecution) {
                 processedIncidents.add(ProcessedIncident.blockedExecution(incident));
@@ -59,7 +58,6 @@ public class IncidentProcessor {
             ProceedingRule firstProceedingRule,
             EscalationPolicy escalationPolicy,
             RoutingPolicy routingPolicy,
-            FollowUp followUp,
             IncidentAction action) {
         log.trace("IncidentProcessor::process1b");
         List<ProcessedIncident> processedIncidents = new ArrayList<>();
@@ -71,7 +69,7 @@ public class IncidentProcessor {
             }
             TriageDecision decision = escalationPolicy.decide(incident);
             Team team = routingPolicy.route(incident);
-            NextStep nextStep = followUp.decide(incident);
+            NextStep nextStep = null;
             boolean blockedExecution = firstProceedingRule.shouldBlock(decision, team);
             if (blockedExecution) {
                 processedIncidents.add(ProcessedIncident.blockedExecution(incident));
@@ -94,7 +92,7 @@ public class IncidentProcessor {
             ProceedingRule firstProceedingRule,
             EscalationPolicy escalationPolicy,
             RoutingPolicy routingPolicy,
-            DecisionAwareFollowUp nextStepResolver,
+            FollowUp nextStepResolver,
             IncidentAction action) {
         log.trace("IncidentProcessor::process1c");
         List<ProcessedIncident> processedIncidents = new ArrayList<>();

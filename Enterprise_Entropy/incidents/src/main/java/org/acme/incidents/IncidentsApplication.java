@@ -1,7 +1,7 @@
 package org.acme.incidents;
 
 import org.acme.incidents.demo.SampleIncidents;
-import org.acme.incidents.engine.Process;
+import org.acme.incidents.engine.domain.Process;
 import org.acme.incidents.model.Incident;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

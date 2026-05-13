@@ -1,6 +1,6 @@
-package org.acme.incidents.dto;
+package org.acme.incidents.dto.domain;
 
-import org.acme.incidents.api.ProceedingRule;
+import org.acme.incidents.api.domain.interfaces.ProceedingRule;
 import org.acme.incidents.model.Team;
 import org.acme.incidents.model.TriageDecision;
 

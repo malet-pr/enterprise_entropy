@@ -1,6 +1,6 @@
-package org.acme.incidents.api;
+package org.acme.incidents.api.built;
 
-import org.acme.incidents.dto.NamedPredicate;
+import org.acme.incidents.dto.built.NamedPredicate;
 import org.acme.incidents.model.Incident;
 import java.util.List;
 import java.util.function.Predicate;

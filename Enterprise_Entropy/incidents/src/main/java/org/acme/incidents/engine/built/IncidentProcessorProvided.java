@@ -1,6 +1,5 @@
-package org.acme.incidents.engine;
+package org.acme.incidents.engine.built;
 
-import org.acme.incidents.dto.NamedBiPredicate;
 import org.acme.incidents.dto.ProcessedIncident;
 import org.acme.incidents.model.*;
 import org.slf4j.Logger;

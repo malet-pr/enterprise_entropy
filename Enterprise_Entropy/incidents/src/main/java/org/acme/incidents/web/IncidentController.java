@@ -1,8 +1,8 @@
 package org.acme.incidents.web;
 
 import org.acme.incidents.dto.ProcessedIncident;
-import org.acme.incidents.engine.Process;
-import org.acme.incidents.engine.ProcessProvided;
+import org.acme.incidents.engine.domain.Process;
+import org.acme.incidents.engine.built.ProcessProvided;
 import org.acme.incidents.model.Incident;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
