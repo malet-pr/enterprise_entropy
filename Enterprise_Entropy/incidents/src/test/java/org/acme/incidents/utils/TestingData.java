@@ -17,9 +17,9 @@ public class TestingData {
     );
 
     public static final Incident incident3 = new Incident(
-    "INC-003", "billing-service", "prod",
+    "INC-003", "auth-service", "prod",
     "Time out", 2,
-    2, false, 14
+    6, false, 14
     );
 
     public static final Incident incident4 = new Incident(
@@ -29,9 +29,15 @@ public class TestingData {
     );
 
     public static final Incident incident5 = new Incident(
-            "INC-003", "billing-service", "prod",
+            "INC-003", "kafka-service", "prod",
             "Time out", 6,
             2, false, 14
+    );
+
+    public static final Incident incident6 = new Incident(
+            "INC-003", "api-gateway", "prod",
+            "Time out", 6,
+            2, true, 14
     );
 
 

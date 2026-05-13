@@ -1,6 +1,5 @@
 package org.acme.incidents.api.domain;
 
-import org.acme.incidents.api.domain.interfaces.EscalationPolicy;
 import org.acme.incidents.api.domain.interfaces.RoutingPolicy;
 import org.acme.incidents.model.Incident;
 import org.acme.incidents.model.Team;

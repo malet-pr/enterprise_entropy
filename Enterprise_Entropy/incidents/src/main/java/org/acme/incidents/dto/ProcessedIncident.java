@@ -11,9 +11,9 @@ public record ProcessedIncident(
         Incident incident,
         TriageDecision decision,
         Team team,
-        NextStep nextStep,
+        NextStep nextStep,  // remove this one
         boolean suppressed,
-        boolean blockedExecution
+        boolean blockedExecution    // remove this one
 ) {
     public ProcessedIncident {
         if (incident == null) {

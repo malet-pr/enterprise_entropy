@@ -11,7 +11,6 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.stream.Stream;
-
 import static org.acme.incidents.api.domain.EscalationPolicyDomain.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -29,7 +28,7 @@ class EscalationPoliciesTest {
         return Stream.of(
                 // Description, Incident, Expected Output
                 Arguments.of("shouldWakeSomeone", TestingData.incident1, TriageDecision.WAKE_SOMEONE_UP),
-                Arguments.of("shouldNotEscalate", TestingData.incident2,TriageDecision.FORGET_IT),
+                Arguments.of("shouldNotEscalate", TestingData.incident2, TriageDecision.FORGET_IT),
                 Arguments.of("shouldTellSomeone", TestingData.incident4, TriageDecision.WE_SHOULD_TELL_SOMEONE),
                 Arguments.of("shouldNotEscalate", TestingData.incident5, TriageDecision.WE_SHOULD_PROBABLY_LOOK_AT_THIS)
         );
