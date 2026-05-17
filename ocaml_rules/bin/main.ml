@@ -9,4 +9,4 @@ let start_server (source : source) =
   @@ Dream.router (Ocaml_rules.Integration.Http.Routes.routes source)
 
 let () = 
-  start_server Memory
+  start_server DB

@@ -1,6 +1,16 @@
 (include_subdirs qualified)
 (library
  (name ocaml_rules)
- (libraries yojson dream lwt lwt.unix)
+ (libraries
+  yojson
+  dream
+  lwt
+  lwt.unix
+  caqti
+  caqti-lwt
+  caqti-lwt.unix
+  caqti-driver-postgresql
+  uri
+ ) 
  (preprocess (pps lwt_ppx))
 )

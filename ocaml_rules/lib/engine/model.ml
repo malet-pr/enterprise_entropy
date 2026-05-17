@@ -166,3 +166,8 @@ type rule_candidate = {
 
 (**********************************************************************)
 
+type rule_group =
+  | Daily
+  | Planning
+  | Debug
+  | All

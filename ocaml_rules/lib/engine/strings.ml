@@ -108,11 +108,18 @@ let string_of_issue (i:issue):string =
 let string_of_simulation_state (s: simulation_state) = string_of_meeting s.meeting
 
 
+let category_to_string = function
+  | Daily -> "DAILY"
+  | Planning -> "PLANNING"
+  | Debug -> "DEBUG"
+  | All -> "ALL"
+
 
 
 (****************************** FROM_STRING ***********************************)
 
-let meeting_type_of_string = function
+let meeting_type_of_string (s:string):meeting_type =
+  match s with
   | "Daily" -> Daily 
   | "Planning" -> Planning
   | "CollectiveDebuggingInEnvironment" -> failwith "Use environment to construct this meeting type"
