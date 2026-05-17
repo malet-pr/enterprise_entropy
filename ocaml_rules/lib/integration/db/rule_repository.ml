@@ -31,5 +31,25 @@ let load_rules group =
   | Error err ->
       Lwt.return (Error err)      
 
+let select_rule_jsons =
+  Caqti_request.(
+    Caqti_type.string ->* Caqti_type.string
+  )
+    {|
+      SELECT rule_json::text
+      FROM ocaml.rule_definition
+      WHERE category = ?
+        AND active = true
+      ORDER BY priority, rule_name
+    |}
 
+let load_rule_jsons category =
+  let%lwt conn_result = Connection.connect () in
+  match conn_result with
+  | Error err ->
+      Lwt.return (Error (Caqti_error.show err))
+
+  | Ok (module Db : Caqti_lwt.CONNECTION) ->
+      Db.collect_list select_rule_jsons category
+      |> Lwt.map (Result.map_error Caqti_error.show)
 

@@ -43,23 +43,20 @@ module Data_base_rule_source : Rule_source = struct
     | Debug -> "DEBUG"
     | All -> "ALL"
 
-  let load_rules group =
-    let category = category_to_string group in
+let load_rules group =
+  let category = category_to_string group in
+  let%lwt result = Db.Rule_repository.load_rule_jsons category in
 
-    let%lwt result =
-      Db.Rule_repository.load_rule_names category
-    in
+  match result with
+  | Ok jsons ->
+      List.iter
+        (fun json -> Printf.printf "Loaded JSON from DB: %s\n%!" json)
+        jsons;
 
-    match result with
-    | Ok names ->
-        List.iter
-          (fun name -> Printf.printf "Loaded from DB: %s\n%!" name)
-          names;
+      let rules = List.map placeholder_rule jsons in
+      Lwt.return (Ok rules)
 
-        let rules = List.map placeholder_rule names in
-        Lwt.return (Ok rules)
-
-    | Error err ->
-        Lwt.return (Error err)
+  | Error err ->
+      Lwt.return (Error err)
 end
 
