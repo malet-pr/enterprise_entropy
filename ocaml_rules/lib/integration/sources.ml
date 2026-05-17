@@ -10,6 +10,13 @@ module type Rule_source = sig
   val load_rules : rule_group -> (rule_candidate list, string) result Lwt.t
 end
 
+
+type rule_source = {
+  load_rules :
+    rule_group ->
+    (rule_candidate list, string) result Lwt.t;
+}
+
 module In_memory_rule_source : Rule_source = struct
   let load_rules group =
     let rules =
@@ -25,7 +32,7 @@ end
 module Data_base_rule_source : Rule_source = struct
   let test = [{
     rule_name =  "test rule";
-    conditions = Atom (Participants (ParticipantCountAtLeast 2)); 
+    conditions = Atom (Meeting (MeetingTypeIs (CollectiveDebuggingInEnvironment Testing))); 
     actions =  [IssueAction ([SetIssueStage Ignored])];
   }]
   let load_rules group =
@@ -38,3 +45,11 @@ module Data_base_rule_source : Rule_source = struct
     in
     Lwt.return (Ok rules)
 end
+
+let memory_source = {
+  load_rules = In_memory_rule_source.load_rules;
+}
+
+let db_source = {
+  load_rules = Data_base_rule_source.load_rules;
+}

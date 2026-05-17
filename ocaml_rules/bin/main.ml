@@ -1,5 +1,6 @@
 open Ocaml_rules
 open Integration.Http.Routes
+open Integration.Sources
 
 
 let start_server (source : source) =
@@ -7,5 +8,5 @@ let start_server (source : source) =
   @@ Dream.logger
   @@ Dream.router (Ocaml_rules.Integration.Http.Routes.routes source)
 
-let () = start_server Memory
-
+let () = 
+  start_server Memory
