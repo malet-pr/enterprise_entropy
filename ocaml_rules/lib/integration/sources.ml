@@ -30,26 +30,36 @@ module In_memory_rule_source : Rule_source = struct
 end
 
 module Data_base_rule_source : Rule_source = struct
-  let test = [{
-    rule_name =  "test rule";
-    conditions = Atom (Meeting (MeetingTypeIs (CollectiveDebuggingInEnvironment Testing))); 
-    actions =  [IssueAction ([SetIssueStage Ignored])];
-  }]
+  let placeholder_rule name = {
+    rule_name = name;
+    conditions =
+      Atom (Meeting (MeetingTypeIs (CollectiveDebuggingInEnvironment Testing)));
+    actions =
+      [IssueAction ([SetIssueStage Ignored])];
+  }
+  let category_to_string = function
+    | Daily -> "DAILY"
+    | Planning -> "PLANNING"
+    | Debug -> "DEBUG"
+    | All -> "ALL"
+
   let load_rules group =
-    let rules =
-      match group with
-      | Daily -> test
-      | Planning -> test
-      | Debug -> test
-      | All -> test
+    let category = category_to_string group in
+
+    let%lwt result =
+      Db.Rule_repository.load_rule_names category
     in
-    Lwt.return (Ok rules)
+
+    match result with
+    | Ok names ->
+        List.iter
+          (fun name -> Printf.printf "Loaded from DB: %s\n%!" name)
+          names;
+
+        let rules = List.map placeholder_rule names in
+        Lwt.return (Ok rules)
+
+    | Error err ->
+        Lwt.return (Error err)
 end
 
-let memory_source = {
-  load_rules = In_memory_rule_source.load_rules;
-}
-
-let db_source = {
-  load_rules = Data_base_rule_source.load_rules;
-}

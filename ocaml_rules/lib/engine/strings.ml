@@ -72,7 +72,7 @@ let string_of_environment_option = function
       | Testing -> "Testing"
       | UAT -> "UAT"
 
-let string_of_meeting_type mt = 
+let string_of_meeting_type (mt:meeting_type):string = 
   match mt with
   | Daily -> "Daily"
   | Planning -> "Planning"
