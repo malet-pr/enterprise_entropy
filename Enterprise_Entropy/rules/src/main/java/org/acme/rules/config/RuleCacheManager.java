@@ -148,7 +148,7 @@ public class RuleCacheManager {
         drlBuilder.append("package rules.").append(category).append(";\n\n");
 
         // Add imports
-        drlBuilder.append("import org.acme.rules.model.*;\n");
+        drlBuilder.append("import org.acme.rules.domain.*;\n");
         drlBuilder.append("import java.util.*;\n\n");
 
         // Add globals if needed

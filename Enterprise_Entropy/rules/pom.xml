@@ -98,13 +98,13 @@
             <artifactId>caffeine</artifactId>
         </dependency>
 
-        <!-- Drools 10 Core - Executable model is automatically enabled -->
+        <!-- Drools 10 Core - Executable domain is automatically enabled -->
         <dependency>
             <groupId>org.drools</groupId>
             <artifactId>drools-engine</artifactId>
         </dependency>
 
-        <!-- Required for executable model compilation -->
+        <!-- Required for executable domain compilation -->
         <dependency>
             <groupId>org.drools</groupId>
             <artifactId>drools-model-compiler</artifactId>
@@ -122,7 +122,7 @@
             </exclusions>
         </dependency>
 
-        <!-- Memory compiler for executable model -->
+        <!-- Memory compiler for executable domain -->
         <dependency>
             <groupId>org.kie</groupId>
             <artifactId>kie-memory-compiler</artifactId>

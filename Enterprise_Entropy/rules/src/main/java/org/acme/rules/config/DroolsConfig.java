@@ -40,7 +40,7 @@ public class DroolsConfig {
             kieFileSystem.write(ResourceFactory.newClassPathResource(path));
         }
 
-        // Build the kie container with executable model (no MVEL)
+        // Build the kie container with executable domain (no MVEL)
         KieBuilder kieBuilder = kieServices.newKieBuilder(kieFileSystem);
         kieBuilder.buildAll(ExecutableModelProject.class);
 
@@ -56,7 +56,7 @@ public class DroolsConfig {
                 }
                 log.error("---");
             });
-            throw new RuntimeException("Error building KieContainer with executable model");
+            throw new RuntimeException("Error building KieContainer with executable domain");
         }
 
         // Log successful compilation
@@ -68,7 +68,7 @@ public class DroolsConfig {
 
         // Get the KieContainer
         KieContainer kieContainer = kieServices.newKieContainer(kieServices.getRepository().getDefaultReleaseId());
-        log.info("KieContainer initialized successfully with executable model");
+        log.info("KieContainer initialized successfully with executable domain");
 
         return kieContainer;
     }
