@@ -27,7 +27,7 @@ public class RoutingRulesTest {
     private static Stream<Arguments> provideIncidents1() {
         return Stream.of(
                 // Description, Incident, Expected Output
-                Arguments.of("shouldRouteToWhereIsMyMoney", TestingData.incident1, Team.WHERE_IS_MY_MONEY),
+                Arguments.of("shouldRouteToWhereIsMyMoney", TestingData.incident4, Team.WHERE_IS_MY_MONEY),
                 Arguments.of("shouldRouteToMachinesAndStuff", TestingData.incident6, Team.MACHINES_AND_STUFF),
                 Arguments.of("shouldRouteToThisGateIsClose", TestingData.incident3, Team.THIS_GATE_IS_CLOSED),
                 Arguments.of("shouldRouteToTalkAmongYourselves", TestingData.incident5, Team.TALK_AMONG_YOURSELVES),

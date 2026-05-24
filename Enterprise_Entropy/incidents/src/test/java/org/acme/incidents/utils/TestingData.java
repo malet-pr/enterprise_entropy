@@ -1,11 +1,12 @@
 package org.acme.incidents.utils;
 
 import org.acme.incidents.model.Incident;
+import java.util.List;
 
 public class TestingData {
 
     public static final Incident incident1 = new Incident(
-    "INC-001", "billing-service", "prod",
+    "INC-001", "unknown", "prod",
     "NullPointerException while search for account", 9,
     5, true, 14
     );
@@ -39,6 +40,8 @@ public class TestingData {
             "Time out", 6,
             2, true, 14
     );
+
+    public static List<Incident> incidents = List.of(incident1,incident2,incident3,incident4,incident5,incident6);
 
 
 }

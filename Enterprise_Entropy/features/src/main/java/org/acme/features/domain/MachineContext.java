@@ -15,5 +15,5 @@ public class MachineContext {
     @Builder.Default
     private int qaRejections = 0;
     @Builder.Default
-    private int springsIgnored = 0;
+    private int sprintsIgnored = 0;
 }
