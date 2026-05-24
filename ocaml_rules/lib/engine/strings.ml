@@ -64,7 +64,8 @@ let string_of_environment e =
   | Testing -> "Testing"
   | UAT -> "UAT"
 
-let string_of_environment_option = function
+let string_of_environment_option (env: environment option):string = 
+  match env with
   | None -> "not specified"
   | Some x -> 
       match x with
@@ -114,6 +115,11 @@ let category_to_string = function
   | Debug -> "DEBUG"
   | All -> "ALL"
 
+let string_of_condition = function
+  | Atom _  -> "Atom"
+  | And _ -> "And"
+  | Or _ -> "Or"
+  | None -> "None" 
 
 
 (****************************** FROM_STRING ***********************************)

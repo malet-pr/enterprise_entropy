@@ -4,7 +4,7 @@ open Types
 open Yojson.Safe
 open Yojson.Safe.Util
 
-let environment_of_yojson json =
+let environment_of_yojson (json: Yojson.Safe.t):environment option =
   match json with
   | `Null -> None
   | `String "Development" -> Some Development
@@ -13,7 +13,7 @@ let environment_of_yojson json =
   | `String s -> failwith ("Unknown environment: " ^ s)
   | _ -> failwith "environment must be string or null"
 
-let risk_of_yojson json =
+let risk_of_yojson (json: Yojson.Safe.t):risk option =
   match json with
   | `Null -> None
   | `String "WillBreakProduction" -> Some WillBreakProduction
@@ -64,3 +64,62 @@ let simulation_state_to_yojson state =
     ("meeting", string_of_meeting state.meeting);
     ("issue", string_of_issue state.issue);
   ]
+
+(****************************************************************************************)  
+
+let action_list_of_json json =
+  let outer_actions = json |> member "actions" |> to_list in
+  match outer_actions with
+  | [
+      `Assoc [
+        ("type", `String "IssueAction");
+        ("actions", `List [
+          `Assoc [
+            ("type", `String "SetIssueStage");
+            ("value", `String "Ignored")
+          ]
+        ])
+      ]
+    ] ->
+      [IssueAction [SetIssueStage Ignored]]
+  | _ ->
+      []
+  
+let condition_expr_of_json json =
+  match json with
+  | `Assoc fields ->
+      begin
+        match
+          List.assoc_opt "type" fields,
+          List.assoc_opt "condition" fields,
+          List.assoc_opt "value" fields
+        with
+        | Some (`String "Participants"),
+          Some (`String "ParticipantCountAtLeast"),
+          Some (`Int n) ->
+              Ok (Atom (Participants (ParticipantCountAtLeast n)))
+        | _ ->
+              Error "Unsupported condition"
+      end
+  | _ ->
+      Error "Expected condition object"  
+    
+let rule_of_json json = 
+  let rule_name = json |> member "rule_name" |> to_string in
+  let actions = json |> action_list_of_json in
+  let conditions =
+    json
+    |> member "conditions" 
+    |> condition_expr_of_json
+    |> fun c ->
+      match c with
+      | Ok cond -> cond
+      | Error _ -> None
+    in    
+  {
+    rule_name;
+    actions;
+    conditions;
+  }
+
+

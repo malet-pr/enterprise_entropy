@@ -88,5 +88,6 @@ let run_from_json json rules =
   | Failure msg ->
       InputError { run_id; message = msg }
   | Yojson.Safe.Util.Type_error (msg, _) ->
-      InputError { run_id; message = "Type error: " ^ msg }
+      InputError { run_id; message = "Type error: " ^ msg }  
+
 

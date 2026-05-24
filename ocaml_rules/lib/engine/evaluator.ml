@@ -51,6 +51,7 @@ let rec evaluate_condition_expr s = function
   | Atom x -> evaluate_predicate s x
   | And xt -> List.for_all (evaluate_condition_expr s) xt
   | Or xt -> List.exists (evaluate_condition_expr s) xt
+  | None -> true
 
 let apply_meeting_action (s: simulation_state)(ma: meeting_action): simulation_state = 
   match ma with 

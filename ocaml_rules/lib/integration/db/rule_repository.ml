@@ -38,9 +38,9 @@ let select_rule_jsons =
     {|
       SELECT rule_json::text
       FROM ocaml.rule_definition
-      WHERE category = ?
+      WHERE category = $1::text
         AND active = true
-      ORDER BY priority, rule_name
+      ORDER BY priority, rule_name 
     |}
 
 let load_rule_jsons category =
