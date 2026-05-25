@@ -84,7 +84,56 @@ let action_list_of_json json =
       [IssueAction [SetIssueStage Ignored]]
   | _ ->
       []
-  
+
+let issue_action_of_json json =
+  let issue_key = json |> member "type" |> to_string in
+  let value = json |> member "value" |> to_string in
+  match issue_key with
+  | "SetIssueStage" -> Some (SetIssueStage (stage_of_string value))
+  | "SetIssueRisk" -> Some (SetIssueRisk (risk_of_string value))
+  | _ -> None  
+
+let meeting_action_of_json json =
+  let action_key = json |> member "type" |> to_string in
+  match action_key with
+  | "ExtendMeetingBy" ->
+      let value = json |> member "value" |> to_int in
+      Some (ExtendMeetingBy value)
+  | "SetMeetingDrift" ->
+      let value = json |> member "value" |> to_string in
+      Some (SetMeetingDrift (meeting_drift_of_string value))
+  | "SetDeepDive" ->
+      let value = json |> member "value" |> to_bool in
+      Some (SetDeepDive value)
+  | _ -> None
+
+let top_level_action_of_json json =
+  let action_type = json |> member "type" |> to_string in
+  match action_type with
+  | "IssueAction" ->
+      let issue_actions =
+        json |> member "actions" |> to_list
+      in
+      let parsed_issue_actions =
+        issue_actions |> List.filter_map issue_action_of_json
+      in
+      Some (IssueAction parsed_issue_actions)
+  | "MeetingAction" ->
+      let meeting_actions =
+        json |> member "actions" |> to_list
+      in
+      let parsed_meeting_actions =
+        meeting_actions |> List.filter_map meeting_action_of_json
+      in
+      Some (MeetingAction parsed_meeting_actions)
+  | _ -> None
+
+let action_list_prueba json =
+  json
+  |> member "actions"
+  |> to_list
+  |> List.filter_map top_level_action_of_json    
+       
 let condition_expr_of_json json =
   match json with
   | `Assoc fields ->
@@ -106,7 +155,7 @@ let condition_expr_of_json json =
     
 let rule_of_json json = 
   let rule_name = json |> member "rule_name" |> to_string in
-  let actions = json |> action_list_of_json in
+  let actions = json |> action_list_prueba in
   let conditions =
     json
     |> member "conditions" 
