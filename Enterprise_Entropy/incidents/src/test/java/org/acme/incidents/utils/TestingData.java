@@ -41,7 +41,13 @@ public class TestingData {
             2, true, 14
     );
 
-    public static List<Incident> incidents = List.of(incident1,incident2,incident3,incident4,incident5,incident6);
+    public static final Incident incident7 = new Incident(
+            "INC-001", "unknown", "prod",
+            "Time out", 3,
+            5, false, 14
+    );
+
+    public static List<Incident> incidents = List.of(incident1,incident2,incident3,incident4,incident5,incident6,incident7);
 
 
 }
