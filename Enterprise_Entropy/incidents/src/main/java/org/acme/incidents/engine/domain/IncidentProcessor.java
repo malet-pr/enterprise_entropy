@@ -1,11 +1,14 @@
 package org.acme.incidents.engine.domain;
 
+import org.acme.incidents.api.domain.PostProcessIncidentDomain;
 import org.acme.incidents.api.domain.interfaces.*;
 import org.acme.incidents.dto.ProcessedIncident;
+import org.acme.incidents.dto.ProcessedIncidentFull;
 import org.acme.incidents.model.Incident;
 import org.acme.incidents.model.NextStep;
 import org.acme.incidents.model.Team;
 import org.acme.incidents.model.TriageDecision;
+import static org.acme.incidents.api.domain.NormalizeIDDomain.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -20,7 +23,6 @@ public class IncidentProcessor {
     public List<ProcessedIncident> processOne(
             List<Incident> incidents,
             SuppressionRule suppressionRule,
-            ProceedingRule proceedingRule,
             EscalationPolicy escalationPolicy,
             RoutingPolicy routingPolicy,
             IncidentAction action) {
@@ -36,14 +38,8 @@ public class IncidentProcessor {
             TriageDecision decision = escalationPolicy.decide(incident);
             Team team = routingPolicy.route(incident);
             NextStep nextStep = null;
-            boolean blockedExecution = proceedingRule.shouldBlock(decision, team);
-            if (blockedExecution) {
-                processedIncidents.add(ProcessedIncident.blockedExecution(incident));
-                log.info("    -> Incident blocked: {}", incident.getId());
-                continue;
-            }
             action.execute(incident);
-            ProcessedIncident processedIncident = new ProcessedIncident(incident, decision, team, nextStep, false,false);
+            ProcessedIncident processedIncident = new ProcessedIncident(incident, decision, team,  false);
             if (log.isInfoEnabled()) {
                 log.info("    -> {}", processedIncident.logLine());
             }
@@ -52,54 +48,22 @@ public class IncidentProcessor {
         return processedIncidents;
     }
 
-    public List<ProcessedIncident> processTwo(
-            List<Incident> incidents,
-            SuppressionRule firstSuppressionRule,
-            ProceedingRule firstProceedingRule,
-            EscalationPolicy escalationPolicy,
-            RoutingPolicy routingPolicy,
-            IncidentAction action) {
-        log.trace("IncidentProcessor::process1b");
-        List<ProcessedIncident> processedIncidents = new ArrayList<>();
-        for (Incident incident : incidents) {
-            boolean suppressed = firstSuppressionRule.shouldSuppress(incident);
-            if (suppressed) {
-                processedIncidents.add(ProcessedIncident.suppressed(incident));
-                continue;
-            }
-            TriageDecision decision = escalationPolicy.decide(incident);
-            Team team = routingPolicy.route(incident);
-            NextStep nextStep = null;
-            boolean blockedExecution = firstProceedingRule.shouldBlock(decision, team);
-            if (blockedExecution) {
-                processedIncidents.add(ProcessedIncident.blockedExecution(incident));
-                log.info("    -> Incident blocked: {}", incident.getId());
-                continue;
-            }
-            action.execute(incident);
-            ProcessedIncident processedIncident = new ProcessedIncident(incident, decision, team, nextStep, false,false);
-            if (log.isInfoEnabled()) {
-                log.info("    -> {}", processedIncident.logLine());
-            }
-            processedIncidents.add(processedIncident);
-        }
-        return processedIncidents;
-    }
-
-    public List<ProcessedIncident> processThree(
+    public List<ProcessedIncidentFull> processTwo(
             List<Incident> incidents,
             SuppressionRule firstSuppressionRule,
             ProceedingRule firstProceedingRule,
             EscalationPolicy escalationPolicy,
             RoutingPolicy routingPolicy,
             FollowUp nextStepResolver,
-            IncidentAction action) {
-        log.trace("IncidentProcessor::process1c");
-        List<ProcessedIncident> processedIncidents = new ArrayList<>();
+            IncidentAction action,
+            NotifyTeam notify){
+        log.trace("IncidentProcessor::process1b");
+        List<ProcessedIncidentFull> processedIncidents = new ArrayList<>();
         for (Incident incident : incidents) {
+            normalizeID(incident);
             boolean suppressed = firstSuppressionRule.shouldSuppress(incident);
             if (suppressed) {
-                processedIncidents.add(ProcessedIncident.suppressed(incident));
+                processedIncidents.add(ProcessedIncidentFull.suppressed(incident));
                 continue;
             }
             TriageDecision decision = escalationPolicy.decide(incident);
@@ -107,15 +71,18 @@ public class IncidentProcessor {
             NextStep nextStep = nextStepResolver.decide(incident, decision);
             boolean blockedExecution = firstProceedingRule.shouldBlock(decision, team);
             if (blockedExecution) {
-                processedIncidents.add(ProcessedIncident.blockedExecution(incident));
+                processedIncidents.add(ProcessedIncidentFull.blockedExecution(incident));
                 log.info("    -> Incident blocked: {}", incident.getId());
                 continue;
             }
+            PostProcessIncident postProcess = PostProcessIncidentDomain::moveToWarRoom;
             action.execute(incident);
-            ProcessedIncident processedIncident = new ProcessedIncident(incident, decision, team, nextStep, false,false);
+            notify.accept(incident,team);
+            ProcessedIncidentFull processedIncident = new ProcessedIncidentFull(incident, decision, team, nextStep, false,false);
             if (log.isInfoEnabled()) {
                 log.info("    -> {}", processedIncident.logLine());
             }
+            processedIncident = postProcess.postProcess(processedIncident);
             processedIncidents.add(processedIncident);
         }
         return processedIncidents;

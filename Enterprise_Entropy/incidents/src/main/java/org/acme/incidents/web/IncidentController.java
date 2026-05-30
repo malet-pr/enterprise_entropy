@@ -1,6 +1,7 @@
 package org.acme.incidents.web;
 
 import org.acme.incidents.dto.ProcessedIncident;
+import org.acme.incidents.dto.ProcessedIncidentFull;
 import org.acme.incidents.engine.domain.Process;
 import org.acme.incidents.engine.built.ProcessProvided;
 import org.acme.incidents.model.Incident;
@@ -32,15 +33,9 @@ public class IncidentController {
     }
 
     @PostMapping("/report1b")
-    public List<ProcessedIncident> report1b(@RequestBody List<Incident> incidents) {
+    public List<ProcessedIncidentFull> report1b(@RequestBody List<Incident> incidents) {
         log.trace("IncidentController::report1b");
         return process.processTwo(incidents);
-    }
-
-    @PostMapping("/report1c")
-    public List<ProcessedIncident> report1c(@RequestBody List<Incident> incidents) {
-        log.trace("IncidentController::report1c");
-        return process.processThree(incidents);
     }
 
     @PostMapping("/report2")
@@ -50,15 +45,9 @@ public class IncidentController {
     }
 
     @PostMapping("/report2b")
-    public List<ProcessedIncident> report2b(@RequestBody List<Incident> incidents) {
+    public List<ProcessedIncidentFull> report2b(@RequestBody List<Incident> incidents) {
         log.trace("IncidentController::report2b");
         return processProvided.processTwo(incidents);
-    }
-
-    @PostMapping("/report2c")
-    public List<ProcessedIncident> report2c(@RequestBody List<Incident> incidents) {
-        log.trace("IncidentController::report2c");
-        return processProvided.processThree(incidents);
     }
 
 }

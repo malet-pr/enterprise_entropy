@@ -26,8 +26,8 @@ public record ProcessedIncidentFull(@JsonIncludeProperties({"id"})
 
     public boolean isBlockedExecution() { return blockedExecution;}
 
-    public static ProcessedIncident suppressed(Incident incident) {
-        return new ProcessedIncident(
+    public static ProcessedIncidentFull suppressed(Incident incident) {
+        return new ProcessedIncidentFull(
                 incident,
                 TriageDecision.FORGET_IT,
                 Team.WHAT_IS_THIS,
@@ -37,8 +37,8 @@ public record ProcessedIncidentFull(@JsonIncludeProperties({"id"})
         );
     }
 
-    public static ProcessedIncident blockedExecution(Incident incident) {
-        return new ProcessedIncident(
+    public static ProcessedIncidentFull blockedExecution(Incident incident) {
+        return new ProcessedIncidentFull(
                 incident,
                 null,
                 null,

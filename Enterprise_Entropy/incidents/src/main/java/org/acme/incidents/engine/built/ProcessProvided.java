@@ -1,5 +1,6 @@
 package org.acme.incidents.engine.built;
 
+import org.acme.incidents.dto.ProcessedIncidentFull;
 import org.acme.incidents.dto.built.NamedBiPredicate;
 import org.acme.incidents.dto.built.NamedPredicate;
 import org.acme.incidents.dto.ProcessedIncident;
@@ -33,24 +34,10 @@ public class ProcessProvided {
         );
     }
 
-    public List<ProcessedIncident> processTwo(List<Incident> incidents) {
+    public List<ProcessedIncidentFull> processTwo(List<Incident> incidents) {
         log.trace("Processing Incidents in ProcessOneProvider with First Suppression Rule: {}", incidents.stream().map(Incident::getId).toList());
         IncidentProcessorProvided processor = new IncidentProcessorProvided();
         return processor.processTwo(
-                incidents,
-                firstSuppressionRule,
-                proceedingRule,
-                escalationPolicy,
-                routingPolicy,
-                followUp,
-                action
-        );
-    }
-
-    public List<ProcessedIncident> processThree(List<Incident> incidents) {
-        log.trace("Processing Incidents in ProcessOneProvider with First Suppression Rule: {}", incidents.stream().map(Incident::getId).toList());
-        IncidentProcessorProvided processor = new IncidentProcessorProvided();
-        return processor.processThree(
                 incidents,
                 firstSuppressionRule,
                 firstProceedingRule,

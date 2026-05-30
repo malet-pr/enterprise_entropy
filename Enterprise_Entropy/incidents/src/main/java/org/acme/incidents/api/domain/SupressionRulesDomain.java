@@ -35,4 +35,11 @@ public final class SupressionRulesDomain {
                 .findFirst();
     }
 
+    public static class NormalizeIncidentDomain {
+
+        String normalizeID (Incident incident) {
+            return incident.getId().toUpperCase();
+        }
+
+    }
 }

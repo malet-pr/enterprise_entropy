@@ -6,5 +6,6 @@ public enum Team {
     TALK_AMONG_YOURSELVES,
     THIS_GATE_IS_CLOSED,
     REAL_WORLDS_THINGS,
-    WHAT_IS_THIS
+    WHAT_IS_THIS,
+    WAR_ROOM
 }

@@ -11,9 +11,7 @@ public record ProcessedIncident(
         Incident incident,
         TriageDecision decision,
         Team team,
-        NextStep nextStep,  // remove this one
-        boolean suppressed,
-        boolean blockedExecution    // remove this one
+        boolean suppressed
 ) {
     public ProcessedIncident {
         if (incident == null) {
@@ -25,16 +23,13 @@ public record ProcessedIncident(
         return suppressed;
     }
 
-    public boolean isBlockedExecution() { return blockedExecution;}
 
     public static ProcessedIncident suppressed(Incident incident) {
         return new ProcessedIncident(
             incident,
             TriageDecision.FORGET_IT,
             Team.WHAT_IS_THIS,
-            NextStep.ALL_DONE,
-            true,
-            false
+            true
         );
     }
 
@@ -43,19 +38,16 @@ public record ProcessedIncident(
             incident,
             null,
             null,
-            NextStep.FIND_SOMEONE_TO_HELP,
-            false,
-            true
+            false
         );
     }
 
     public String logLine() {
         return String.format(
-            "service=%s | decision=%s | team=%s | nextStep=%s",
+            "service=%s | decision=%s | team=%s",
             incident.getService(),
             decision,
-            team,
-            nextStep
+            team
         );
     }
 

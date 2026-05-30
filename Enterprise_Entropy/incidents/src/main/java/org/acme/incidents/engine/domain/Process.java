@@ -1,6 +1,7 @@
 package org.acme.incidents.engine.domain;
 
 import org.acme.incidents.api.domain.interfaces.*;
+import org.acme.incidents.dto.ProcessedIncidentFull;
 import org.acme.incidents.dto.domain.NamedProceedingRules;
 import org.acme.incidents.dto.domain.NamedSuppressionRule;
 import org.acme.incidents.dto.ProcessedIncident;
@@ -28,14 +29,13 @@ public class Process {
         return processor.processOne(
                 incidents,
                 suppressionRule,
-                proceedingRule,
                 escalationPolicy,
                 routingPolicy,
                 action
         );
     }
 
-    public List<ProcessedIncident> processTwo(List<Incident> incidents) {
+    public List<ProcessedIncidentFull> processTwo(List<Incident> incidents) {
         IncidentProcessor processor = new IncidentProcessor();
         log.trace("Processing Incidents in ProcessTwo: {}", incidents.stream().map(Incident::getId).toList());
         return processor.processTwo(
@@ -44,21 +44,9 @@ public class Process {
                 firstProceedingRule,
                 escalationPolicy,
                 routingPolicy,
-                action
-        );
-    }
-
-    public List<ProcessedIncident> processThree(List<Incident> incidents) {
-        IncidentProcessor processor = new IncidentProcessor();
-        log.trace("Processing Incidents in ProcessTwo: {}", incidents.stream().map(Incident::getId).toList());
-        return processor.processThree(
-                incidents,
-                firstSuppressionRule,
-                firstProceedingRule,
-                escalationPolicy,
-                routingPolicy,
                 nextStepResolver,
-                action
+                action,
+                notify
         );
     }
 
@@ -88,5 +76,9 @@ public class Process {
 
     IncidentAction action = incident ->
             log.info("Action executed for {}", incident.getId());
+
+    NotifyTeam notify = (incident, team) ->
+            log.info("Notify team {} that they where assigned incident {} with severity {}.",
+                    team.name(), incident.getId(), incident.getSeverityScore());
 
 }

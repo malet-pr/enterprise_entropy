@@ -1,6 +1,7 @@
 package org.acme.incidents.engine.built;
 
 import org.acme.incidents.dto.ProcessedIncident;
+import org.acme.incidents.dto.ProcessedIncidentFull;
 import org.acme.incidents.model.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,7 +42,7 @@ public class IncidentProcessorProvided {
                 continue;
             }
             action.accept(incident);
-            ProcessedIncident processedIncident = new ProcessedIncident(incident, decision, team, nextStep, false,false);
+            ProcessedIncident processedIncident = new ProcessedIncident(incident, decision, team, false);
             if (log.isInfoEnabled()) {
                 log.info("    -> {}", processedIncident.logLine());
             }
@@ -50,42 +51,7 @@ public class IncidentProcessorProvided {
         return processedIncidents;
     }
 
-    public List<ProcessedIncident> processTwo(
-            List<Incident> incidents,
-            Predicate<Incident> firstSuppressionRule,
-            BiPredicate<TriageDecision, Team> proceedingRule,
-            Function<Incident, TriageDecision> escalationPolicy,
-            Function<Incident, Team> routingPolicy,
-            Function<Incident, NextStep> followUp,
-            Consumer<Incident> action){
-        log.trace("IncidentProcessorProvided::process2b");
-        List<ProcessedIncident> processedIncidents = new ArrayList<>();
-        for (Incident incident : incidents) {
-            boolean suppressed = firstSuppressionRule.test(incident);
-            if (suppressed) {
-                processedIncidents.add(ProcessedIncident.suppressed(incident));
-                continue;
-            }
-            TriageDecision decision = escalationPolicy.apply(incident);
-            Team team = routingPolicy.apply(incident);
-            NextStep nextStep = followUp.apply(incident);
-            boolean blockedExecution = proceedingRule.test(decision, team);
-            if (blockedExecution) {
-                processedIncidents.add(ProcessedIncident.blockedExecution(incident));
-                log.info("    -> Incident blocked: {}", incident.getId());
-                continue;
-            }
-            action.accept(incident);
-            ProcessedIncident processedIncident = new ProcessedIncident(incident, decision, team, nextStep, false,false);
-            if (log.isInfoEnabled()) {
-                log.info("    -> {}", processedIncident.logLine());
-            }
-            processedIncidents.add(processedIncident);
-        }
-        return processedIncidents;
-    }
-
-    public List<ProcessedIncident> processThree(
+    public List<ProcessedIncidentFull> processTwo(
             List<Incident> incidents,
             Predicate<Incident> firstSuppressionRule,
             BiPredicate<TriageDecision, Team> firstProceedingRule,
@@ -93,12 +59,12 @@ public class IncidentProcessorProvided {
             Function<Incident, Team> routingPolicy,
             BiFunction<Incident,TriageDecision, NextStep> nextStepResolver,
             Consumer<Incident> action){
-        log.trace("IncidentProcessorProvided::process2c");
-        List<ProcessedIncident> processedIncidents = new ArrayList<>();
+        log.trace("IncidentProcessorProvided::process2b");
+        List<ProcessedIncidentFull> processedIncidents = new ArrayList<>();
         for (Incident incident : incidents) {
             boolean suppressed = firstSuppressionRule.test(incident);
             if (suppressed) {
-                processedIncidents.add(ProcessedIncident.suppressed(incident));
+                processedIncidents.add(ProcessedIncidentFull.suppressed(incident));
                 continue;
             }
             TriageDecision decision = escalationPolicy.apply(incident);
@@ -106,12 +72,12 @@ public class IncidentProcessorProvided {
             NextStep nextStep = nextStepResolver.apply(incident, decision);
             boolean blockedExecution = firstProceedingRule.test(decision, team);
             if (blockedExecution) {
-                processedIncidents.add(ProcessedIncident.blockedExecution(incident));
+                processedIncidents.add(ProcessedIncidentFull.blockedExecution(incident));
                 log.info("    -> Incident blocked: {}", incident.getId());
                 continue;
             }
             action.accept(incident);
-            ProcessedIncident processedIncident = new ProcessedIncident(incident, decision, team, nextStep, false,false);
+            ProcessedIncidentFull processedIncident = new ProcessedIncidentFull(incident, decision, team,nextStep,false,false);
             if (log.isInfoEnabled()) {
                 log.info("    -> {}", processedIncident.logLine());
             }
