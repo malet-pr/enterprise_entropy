@@ -67,24 +67,6 @@ let simulation_state_to_yojson state =
 
 (****************************************************************************************)  
 
-let action_list_of_json json =
-  let outer_actions = json |> member "actions" |> to_list in
-  match outer_actions with
-  | [
-      `Assoc [
-        ("type", `String "IssueAction");
-        ("actions", `List [
-          `Assoc [
-            ("type", `String "SetIssueStage");
-            ("value", `String "Ignored")
-          ]
-        ])
-      ]
-    ] ->
-      [IssueAction [SetIssueStage Ignored]]
-  | _ ->
-      []
-
 let issue_action_of_json json =
   let issue_key = json |> member "type" |> to_string in
   let value = json |> member "value" |> to_string in
@@ -128,34 +110,130 @@ let top_level_action_of_json json =
       Some (MeetingAction parsed_meeting_actions)
   | _ -> None
 
-let action_list_prueba json =
+let action_list_of_json json =
   json
   |> member "actions"
   |> to_list
   |> List.filter_map top_level_action_of_json    
        
+let parse_meeting_condition (name: string) (json: Yojson.Safe.t) =
+  match name with
+  | "MeetingDriftIs" -> 
+      let drift = json |> member "value" |> to_string |> meeting_drift_of_string in
+      MeetingDriftIs drift
+  | "DeepDiveIs" -> 
+      let boolean = json |> member "value" |> to_bool in
+      DeepDiveIs boolean
+  | "DurationGreaterThan" -> 
+      let duration = json |> member "value" |> to_int in
+      DurationGreaterThan duration
+  | "DurationAtLeast" -> 
+      let duration = json |> member "value" |> to_int in
+      DurationAtLeast duration
+  | "DurationAtMost" -> 
+      let duration = json |> member "value" |> to_int in
+      DurationAtMost duration
+  | "MeetingTypeIs" -> 
+      let meeting_type_str = json |> member "value" |> to_string in
+      let env = json |> member "environment" |> environment_of_yojson in
+        begin
+        match meeting_type_str with
+        | "CollectiveDebuggingInEnvironment" ->
+            (match env with
+            | Some e -> MeetingTypeIs (CollectiveDebuggingInEnvironment e)
+            | None -> failwith "CollectiveDebuggingInEnvironment requires environment")
+        | _ -> MeetingTypeIs (meeting_type_of_string meeting_type_str )  
+        end  
+  | _ -> failwith "Unknown condition"
+
+let parse_issue_condition (name: string) (json: Yojson.Safe.t) =
+  match name with
+  | "IssueStageIs" ->
+      let stage = json |> member "value" |> to_string |> stage_of_string in
+      IssueStageIs stage
+  | "IssueRiskIs" ->
+      let risk = json |> member "value" |> to_string |> risk_of_string in
+      begin
+        match risk with
+        | Some r -> IssueRiskIs r
+        | None -> failwith "A value is required for the risk"
+      end
+  | "IssuePriorityIs" ->  
+      let issue_priority = json |> member "value" |> to_string |> issue_priority_of_string in
+      IssuePriorityIs issue_priority  
+  | "IssuePriorityIn" -> 
+      let issue_priority_list = json |> member "value" |> to_list |> List.map to_string |> issue_priority_of_string_list in
+      IssuePriorityIn issue_priority_list
+  | "IssueUnderstoodOnlyBy" -> 
+      let understanding = json |> member "value" |> to_string |> understanding_of_string in
+      IssueUnderstoodOnlyBy understanding  
+  | "IssueUnderstoodByList" -> 
+      let understood_list = json |> member "value" |> to_list |> List.map to_string |> understanding_of_string_list in
+      IssueUnderstoodByList  understood_list
+  | _ -> failwith "Unknown condition"
+
+let parse_participants_condition (name: string) (json: Yojson.Safe.t) =
+  match name with
+  | "ParticipantCountAtLeast" ->
+    let count = json |> member "value" |> to_int in
+    ParticipantCountAtLeast count
+  | "ParticipantCountAtMost" ->
+    let count = json |> member "value" |> to_int in
+    ParticipantCountAtMost count
+  | "UnderstandsCountAtLeast" ->
+    let count = json |> member "value" |> to_int in
+    UnderstandsCountAtLeast count
+  | "UnderstandsCountAtMost" ->
+    let count = json |> member "value" |> to_int in
+    UnderstandsCountAtMost count
+  | "ExistsParticipantWithRole" -> 
+    let role_list = json |> member "value" |> to_list |> List.map to_string |> role_of_string_list in
+    ExistsParticipantWithRole role_list
+  | "NotExistsParticipantWithRole" -> 
+    let role_list = json |> member "value" |> to_list |> List.map to_string |> role_of_string_list in
+    NotExistsParticipantWithRole role_list
+  | "ExistsInterestedParticipantWithRole" -> 
+    let role_list = json |> member "value" |> to_list |> List.map to_string |> role_of_string_list in
+    ExistsInterestedParticipantWithRole role_list
+  | "NoInterestedParticipantWithRole" -> 
+    let role_list = json |> member "value" |> to_list |> List.map to_string |> role_of_string_list in
+    NoInterestedParticipantWithRole role_list
+  | "ExistsUnderstandingParticipantWithRole" -> 
+    let role_list = json |> member "value" |> to_list |> List.map to_string |> role_of_string_list in
+    ExistsUnderstandingParticipantWithRole role_list
+  | "NotExistsUnderstandingParticipantWithRole" -> 
+    let role_list = json |> member "value" |> to_list |> List.map to_string |> role_of_string_list in
+    NotExistsUnderstandingParticipantWithRole role_list
+  | "AllParticipantsUnderstand" -> AllParticipantsUnderstand
+  | "NoParticipantUnderstands" -> NoParticipantUnderstands
+  | _ -> failwith "Unknown condition"
+
 let condition_expr_of_json json =
   match json with
   | `Assoc fields ->
       begin
         match
           List.assoc_opt "type" fields,
-          List.assoc_opt "condition" fields,
-          List.assoc_opt "value" fields
+          List.assoc_opt "condition" fields
         with
-        | Some (`String "Participants"),
-          Some (`String "ParticipantCountAtLeast"),
-          Some (`Int n) ->
-              Ok (Atom (Participants (ParticipantCountAtLeast n)))
-        | _ ->
-              Error "Unsupported condition"
+        | Some (`String cond_type), 
+          Some (`String cond_name) ->
+            begin
+              match cond_type with
+              | "Meeting" -> Ok (Atom (Meeting (parse_meeting_condition cond_name json)))
+              | "Issue" -> Ok (Atom (Issue (parse_issue_condition cond_name json)))
+              | "Participants" -> Ok(Atom (Participants (parse_participants_condition cond_name json)))
+              | _ -> Error "Unknown condition type"
+            end  
+        | _ ->  Error "Unsupported condition"
       end
   | _ ->
-      Error "Expected condition object"  
+      Error "Expected condition object"      
     
+
 let rule_of_json json = 
   let rule_name = json |> member "rule_name" |> to_string in
-  let actions = json |> action_list_prueba in
+  let actions = json |> action_list_of_json in
   let conditions =
     json
     |> member "conditions" 

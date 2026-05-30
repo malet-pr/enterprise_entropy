@@ -121,7 +121,6 @@ let string_of_condition = function
   | Or _ -> "Or"
   | None -> "None" 
 
-
 (****************************** FROM_STRING ***********************************)
 
 let meeting_type_of_string (s:string):meeting_type =
@@ -155,6 +154,9 @@ let role_of_string = function
   | "Operations" -> Operations  
   | r -> failwith ("Unknown role: " ^ r) 
 
+let role_of_string_list xs =
+  List.map(fun x -> role_of_string x) xs  
+
 let issue_priority_of_string = function
   | "Insignificant" -> Insignificant
   | "Low" -> Low
@@ -162,12 +164,18 @@ let issue_priority_of_string = function
   | "High" -> High
   | "Critical" -> Critical
   | p -> failwith ("Unknown priority: " ^ p) 
+
+let issue_priority_of_string_list xs =
+  List.map (fun x -> issue_priority_of_string x) xs  
   
 let understanding_of_string = function
   | "Functional" -> Functional
   | "Testing" -> Testing
   | "Technical" -> Technical  
   | u -> failwith ("Unknown understanding: " ^ u)   
+
+let understanding_of_string_list xs =
+  List.map (fun x -> understanding_of_string x) xs  
 
 let stage_of_string = function
   | "Open" -> Open
@@ -182,5 +190,9 @@ let risk_of_string = function
   | "UsersWillRaiseHell" -> Some UsersWillRaiseHell
   | "AuditorsWillNotBeHappy" -> Some AuditorsWillNotBeHappy
   | _ -> None
+
+
+(**********************************************************************)
+
 
 
