@@ -23,6 +23,8 @@ public class Process {
 
     Logger log = LoggerFactory.getLogger(Process.class);
 
+    public static String blockingRule = "";
+
     public List<ProcessedIncident> processOne(List<Incident> incidents) {
         IncidentProcessor processor = new IncidentProcessor();
         log.trace("Processing Incidents in Process: {}", incidents.stream().map(Incident::getId).toList());
@@ -64,7 +66,8 @@ public class Process {
 
     public ProceedingRule firstProceedingRule = (decision,team) -> {
         Optional<NamedProceedingRules> matchedRule = findFirstProceedingRule(decision, team);
-        matchedRule.ifPresent(p -> log.info("Blocked action by rule '{}'", p.name()));
+        //matchedRule.ifPresent(p -> log.info("Blocked action by rule '{}'", p.name()));
+        matchedRule.ifPresent(p -> blockingRule = "'" + p.name() + "'");
         return matchedRule.isPresent();
     };
 

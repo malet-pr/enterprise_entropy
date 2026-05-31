@@ -1,5 +1,6 @@
 package org.acme.incidents.engine.domain;
 
+import org.acme.incidents.api.domain.CombineStringsDomain;
 import org.acme.incidents.api.domain.PostProcessIncidentDomain;
 import org.acme.incidents.api.domain.interfaces.*;
 import org.acme.incidents.dto.ProcessedIncident;
@@ -70,19 +71,20 @@ public class IncidentProcessor {
             Team team = routingPolicy.route(incident);
             NextStep nextStep = nextStepResolver.decide(incident, decision);
             boolean blockedExecution = firstProceedingRule.shouldBlock(decision, team);
+            CombineStrings combineLogs = CombineStringsDomain::combineBlockedLogs;
             if (blockedExecution) {
                 processedIncidents.add(ProcessedIncidentFull.blockedExecution(incident));
-                log.info("    -> Incident blocked: {}", incident.getId());
+                log.info(combineLogs.combine(incident.getId(),Process.blockingRule));
                 continue;
             }
             PostProcessIncident postProcess = PostProcessIncidentDomain::moveToWarRoom;
-            action.execute(incident);
-            notify.accept(incident,team);
             ProcessedIncidentFull processedIncident = new ProcessedIncidentFull(incident, decision, team, nextStep, false,false);
+            processedIncident = postProcess.postProcess(processedIncident);
+            notify.accept(processedIncident.incident(),processedIncident.team());
+            action.execute(incident);
             if (log.isInfoEnabled()) {
                 log.info("    -> {}", processedIncident.logLine());
             }
-            processedIncident = postProcess.postProcess(processedIncident);
             processedIncidents.add(processedIncident);
         }
         return processedIncidents;
