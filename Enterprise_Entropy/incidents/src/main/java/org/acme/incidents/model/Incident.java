@@ -12,10 +12,14 @@ public class Incident {
     private String service;
     private String environment;
     private String message;
-    private int severityScore;
-    private int occurrences;
-    private boolean customerImpact;
-    private int hourOfDay;
+    @Builder.Default
+    private int severityScore = 1;
+    @Builder.Default
+    private int occurrences = 1;
+    @Builder.Default
+    private boolean customerImpact = false;
+    @Builder.Default
+    private int hourOfDay = 0;
 
     @Override
     public String toString() {

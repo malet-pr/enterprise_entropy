@@ -3,6 +3,7 @@ package org.acme.incidents.api.domain.interfaces;
 import org.acme.incidents.model.Team;
 import org.acme.incidents.model.TriageDecision;
 
+//BiPredicate
 @FunctionalInterface
 public interface ProceedingRule {
     boolean shouldBlock(TriageDecision decision, Team team);

@@ -2,6 +2,7 @@ package org.acme.incidents.engine.domain;
 
 import org.acme.incidents.api.domain.CombineStringsDomain;
 import org.acme.incidents.api.domain.PostProcessIncidentDomain;
+import org.acme.incidents.api.domain.SupplyDefaultDomain;
 import org.acme.incidents.api.domain.interfaces.*;
 import org.acme.incidents.dto.ProcessedIncident;
 import org.acme.incidents.dto.ProcessedIncidentFull;
@@ -61,6 +62,12 @@ public class IncidentProcessor {
         log.trace("IncidentProcessor::process1b");
         List<ProcessedIncidentFull> processedIncidents = new ArrayList<>();
         for (Incident incident : incidents) {
+            SupplyDefault severity = SupplyDefaultDomain::supplyDefaultSeverityScore;
+            SupplyDefault occurrences = SupplyDefaultDomain::supplyDefaultOccurrences;
+            SupplyDefault hourOfDay = SupplyDefaultDomain::supplyDefaultHourOfDay;
+            incident.setSeverityScore(incident.getSeverityScore() > 0 ? incident.getSeverityScore() : severity.get());
+            incident.setOccurrences(incident.getOccurrences() > 0 ? incident.getOccurrences() : occurrences.get());
+            incident.setHourOfDay(incident.getHourOfDay() > 0 ? incident.getHourOfDay() : hourOfDay.get());
             normalizeID(incident);
             boolean suppressed = firstSuppressionRule.shouldSuppress(incident);
             if (suppressed) {

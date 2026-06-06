@@ -2,6 +2,7 @@ package org.acme.incidents.api.domain.interfaces;
 
 import org.acme.incidents.model.Incident;
 
+//Predicate
 @FunctionalInterface
 public interface SuppressionRule {
     boolean shouldSuppress(Incident incident);

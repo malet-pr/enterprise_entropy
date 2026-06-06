@@ -66,7 +66,6 @@ public class Process {
 
     public ProceedingRule firstProceedingRule = (decision,team) -> {
         Optional<NamedProceedingRules> matchedRule = findFirstProceedingRule(decision, team);
-        //matchedRule.ifPresent(p -> log.info("Blocked action by rule '{}'", p.name()));
         matchedRule.ifPresent(p -> blockingRule = "'" + p.name() + "'");
         return matchedRule.isPresent();
     };
