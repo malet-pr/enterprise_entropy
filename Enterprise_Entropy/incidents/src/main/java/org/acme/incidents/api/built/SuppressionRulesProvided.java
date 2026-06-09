@@ -3,6 +3,7 @@ package org.acme.incidents.api.built;
 import org.acme.incidents.dto.built.NamedPredicate;
 import org.acme.incidents.model.Incident;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Predicate;
 
 public final class SuppressionRulesProvided {
@@ -28,5 +29,17 @@ public final class SuppressionRulesProvided {
             new NamedPredicate<>("test SAP transient noise", testSapTransientNoise),
             new NamedPredicate<>("legacy ghost call noise", legacyGhostCallNoise)
    );
+
+    public static Optional<NamedPredicate<Incident>> findFirstSuppressionRule(Incident incident) {
+        return SuppressionRulesProvided.suppressionRules.stream()
+                .filter(rule -> rule.test(incident))
+                .findFirst();
+    }
+
+    public static class NormalizeIncidentProvided {
+        String normalizeID (Incident incident) {
+            return incident.getId().toUpperCase();
+        }
+    }
 
 }
