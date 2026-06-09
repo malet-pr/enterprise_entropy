@@ -5,9 +5,9 @@ import java.util.function.Supplier;
 
 public final class SupplyDefaultProvided {
 
-    IntSupplier supplyDefaultSeverityScore = () -> 1;
-    IntSupplier supplyDefaultOccurrences = () -> 1;
-    Supplier<Integer> supplyDefaultHourOfDay = () -> java.time.LocalTime.now().getHour();
+    public static IntSupplier supplyDefaultSeverityScore = () -> 1;
+    public static IntSupplier supplyDefaultOccurrences = () -> 1;
+    public static Supplier<Integer> supplyDefaultHourOfDay = () -> java.time.LocalTime.now().getHour();
 
 }
 

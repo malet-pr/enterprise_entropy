@@ -8,7 +8,7 @@ import java.util.function.UnaryOperator;
 
 public final class PostProcessIncidentProvided {
 
-    UnaryOperator<ProcessedIncidentFull> moveToWarRoom = processed -> {
+    public static UnaryOperator<ProcessedIncidentFull> moveToWarRoom = processed -> {
         if (Team.WHAT_IS_THIS == processed.team()
                 && processed.incident().isCustomerImpact()) {
             return new ProcessedIncidentFull(

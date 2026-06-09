@@ -5,7 +5,7 @@ import java.util.function.Consumer;
 
 public final class NormalizeIDProvided {
 
-    Consumer<Incident> nomralizeID = incident ->
+    public static Consumer<Incident> normalizeID = incident ->
             incident.setId(incident.getId().toUpperCase());
 
 

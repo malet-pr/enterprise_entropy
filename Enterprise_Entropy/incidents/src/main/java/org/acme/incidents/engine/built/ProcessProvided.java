@@ -1,9 +1,11 @@
 package org.acme.incidents.engine.built;
 
+
+import org.acme.incidents.api.domain.interfaces.*;
 import org.acme.incidents.dto.ProcessedIncidentFull;
 import org.acme.incidents.dto.built.NamedBiPredicate;
-import org.acme.incidents.dto.built.NamedPredicate;
 import org.acme.incidents.dto.ProcessedIncident;
+import org.acme.incidents.dto.built.NamedPredicate;
 import org.acme.incidents.model.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,7 +13,10 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.*;
+import static org.acme.incidents.api.built.EscalationPolicyProvided.allPolicies;
+import static org.acme.incidents.api.built.FollowUpProvided.allFollowUps;
 import static org.acme.incidents.api.built.ProceedingRulesProvided.*;
+import static org.acme.incidents.api.built.RoutingPolicyProvided.allRoutings;
 import static org.acme.incidents.api.built.SuppressionRulesProvided.*;
 
 
@@ -20,23 +25,23 @@ public class ProcessProvided {
 
     Logger log = LoggerFactory.getLogger(ProcessProvided.class);
 
-    public List<ProcessedIncident> processOne(List<Incident> incidents) {
-        log.trace("Processing Incidents in ProcessOneProvider: {}", incidents.stream().map(Incident::getId).toList());
+    public static String blockingRule = "";
+
+    public List<ProcessedIncident> processProvidedOne(List<Incident> incidents) {
         IncidentProcessorProvided processor = new IncidentProcessorProvided();
+        log.trace("Processing Incidents in ProcessProvidedOne: {}", incidents.stream().map(Incident::getId).toList());
         return processor.processOne(
                 incidents,
                 suppressionRule,
-                proceedingRule,
                 escalationPolicy,
                 routingPolicy,
-                followUp,
                 action
         );
     }
 
-    public List<ProcessedIncidentFull> processTwo(List<Incident> incidents) {
-        log.trace("Processing Incidents in ProcessOneProvider with First Suppression Rule: {}", incidents.stream().map(Incident::getId).toList());
+    public List<ProcessedIncidentFull> processProvidedTwo(List<Incident> incidents) {
         IncidentProcessorProvided processor = new IncidentProcessorProvided();
+        log.trace("Processing Incidents in ProcessProvidedTwo: {}", incidents.stream().map(Incident::getId).toList());
         return processor.processTwo(
                 incidents,
                 firstSuppressionRule,
@@ -44,98 +49,42 @@ public class ProcessProvided {
                 escalationPolicy,
                 routingPolicy,
                 nextStepResolver,
-                action
+                action,
+                notify
         );
     }
 
-    Predicate<Incident> suppressionRule =
-            devHealthcheckNoise.or(testSapTransientNoise).or(legacyGhostCallNoise);
+    /////////////////////////////////////////
+    Predicate<Incident> suppressionRule = devHealthcheckNoise;
+    BiPredicate<TriageDecision, Team> proceedingRule = wakeWhenTeamUnknown;
+    //////////////////////////////////////////
 
-    Predicate<Incident> firstSuppressionRule = incident -> {
-        Optional<NamedPredicate<Incident>> matchedRule =
-                suppressionRules.stream()
-                        .filter(rule -> rule.test(incident))
-                        .findFirst();
+
+    public Predicate<Incident> firstSuppressionRule = incident -> {
+        Optional<NamedPredicate<Incident>> matchedRule = findFirstSuppressionRule(incident);
         matchedRule.ifPresent(p -> log.info("Suppressed incident {} by rule '{}'",
                 incident.getId(), p.name()));
-        return matchedRule
-                .map(incidentNamedPredicate -> incidentNamedPredicate.test(incident))
-                .orElse(false);
+        return matchedRule.isPresent();
     };
 
-    Function<Incident, TriageDecision> escalationPolicy = incident -> {
-        boolean prod = "prod".equalsIgnoreCase(incident.getEnvironment());
-        if (prod && incident.getSeverityScore() >= 9 && incident.isCustomerImpact()) {
-            return TriageDecision.WAKE_SOMEONE_UP;
-        }
-        if (prod && incident.getSeverityScore() >= 8) {
-            return TriageDecision.WE_SHOULD_TELL_SOMEONE;
-        }
-        if (incident.getSeverityScore() >= 5) {
-            return TriageDecision.WE_SHOULD_PROBABLY_LOOK_AT_THIS;
-        }
-        return TriageDecision.FORGET_IT;
+    public BiPredicate<TriageDecision, Team> firstProceedingRule = (decision, team) -> {
+        Optional<NamedBiPredicate<TriageDecision, Team>> matchedRule = findFirstProceedingRule(decision, team);
+        matchedRule.ifPresent(p -> blockingRule = "'" + p.name() + "'");
+        return matchedRule.isPresent();
     };
 
-    Function<Incident, Team> routingPolicy = incident -> {
-        String service = incident.getService().toLowerCase();
-        if (service.contains("billing")) {
-            return Team.WHERE_IS_MY_MONEY;
-        }
-        if (service.contains("gateway")) {
-            return Team.MACHINES_AND_STUFF;
-        }
-        if (service.contains("auth")) {
-            return Team.THIS_GATE_IS_CLOSED;
-        }
-        if (service.contains("sap") || service.contains("kafka")) {
-            return Team.TALK_AMONG_YOURSELVES;
-        }
-        return Team.WHAT_IS_THIS;
-    };
+    Function<Incident,TriageDecision> escalationPolicy = allPolicies;
 
-    Function<Incident, NextStep> followUp = incident -> {
-        String service = incident.getService().toLowerCase();
-        if (service.contains("gateway") && incident.isCustomerImpact()) {
-            return NextStep.INVESTIGATE_AND_FIX;
-        }
-        return NextStep.ALL_DONE;
-    };
+    Function<Incident,Team> routingPolicy = allRoutings;
 
-    BiFunction<Incident, TriageDecision, NextStep> nextStepResolver =
-        (incident, decision) -> {
-            String service = incident.getService().toLowerCase();
-            if (service.contains("gateway") && incident.isCustomerImpact()) {
-                return NextStep.INVESTIGATE_AND_FIX;
-            }
-            if (decision == TriageDecision.WAKE_SOMEONE_UP) {
-                return NextStep.ALL_HANDS_ON_DECK;
-            }
-            if (decision == TriageDecision.WE_SHOULD_TELL_SOMEONE
-                    && incident.isCustomerImpact()) {
-                return NextStep.INVESTIGATE_AND_FIX;
-            }
-            if (decision == TriageDecision.WE_SHOULD_PROBABLY_LOOK_AT_THIS
-                    && incident.getOccurrences() >= 5) {
-                return NextStep.WRITE_A_TICKET;
-            }
-            return NextStep.ALL_DONE;
-        };
-
-    BiPredicate<TriageDecision, Team> proceedingRule = wakeWhenTeamUnknown;
-
-    BiPredicate<TriageDecision, Team>  firstProceedingRule = (decision,team) -> {
-        Optional<NamedBiPredicate<TriageDecision, Team>> matchedRule =
-                proceedingRules.stream()
-                        .filter(rule -> rule.test(decision, team))
-                        .findFirst();
-        matchedRule.ifPresent(p -> log.info("Blocked action by rule '{}'", p.name()));
-        return matchedRule
-                .map(rule -> rule.test(decision, team))
-                .orElse(false);
-    };
+    BiFunction<Incident,TriageDecision,NextStep> nextStepResolver = allFollowUps;
 
     Consumer<Incident> action = incident ->
-           log.info("Action executed for {}", incident.getId());
+            log.info("Action executed for {}", incident.getId());
+
+    BiConsumer<Incident, Team>  notify = (incident, team) ->
+            log.info("Notify team {} that they where assigned incident {} with severity {}.",
+                    team.name(), incident.getId(), incident.getSeverityScore());
+
 
 }

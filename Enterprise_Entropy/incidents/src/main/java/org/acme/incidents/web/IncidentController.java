@@ -41,13 +41,13 @@ public class IncidentController {
     @PostMapping("/report2")
     public List<ProcessedIncident> report2(@RequestBody List<Incident> incidents) {
         log.trace("IncidentController::report2a");
-        return processProvided.processOne(incidents);
+        return processProvided.processProvidedOne(incidents);
     }
 
     @PostMapping("/report2b")
     public List<ProcessedIncidentFull> report2b(@RequestBody List<Incident> incidents) {
         log.trace("IncidentController::report2b");
-        return processProvided.processTwo(incidents);
+        return processProvided.processProvidedTwo(incidents);
     }
 
 }
