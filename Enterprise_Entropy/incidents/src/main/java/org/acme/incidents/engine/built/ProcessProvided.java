@@ -1,7 +1,5 @@
 package org.acme.incidents.engine.built;
 
-
-import org.acme.incidents.api.domain.interfaces.*;
 import org.acme.incidents.dto.ProcessedIncidentFull;
 import org.acme.incidents.dto.built.NamedBiPredicate;
 import org.acme.incidents.dto.ProcessedIncident;
