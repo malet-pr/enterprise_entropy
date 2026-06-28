@@ -71,12 +71,11 @@ python_state_machine/logs
 python_state_machine/*.spec
 
 # OCaml pipelines
-ocaml_state_machine/_build/
-ocaml_state_machine/*.cmx
-ocaml_state_machine/*.cmi
-ocaml_state_machine/*.cmo
-ocaml_state_machine/*.exe
-ocaml_state_machine/.dune/
-ocaml_state_machine/data/
-ocaml_state_machine/*.mmd
-_opam/
+ocaml_pipelines/_build/
+ocaml_pipelines/*.cmx
+ocaml_pipelines/*.cmi
+ocaml_pipelines/*.cmo
+ocaml_pipelines/*.exe
+ocaml_pipelines/.dune/
+ocaml_pipelines/data/
+ocaml_pipelines/*.mmd
