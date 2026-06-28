@@ -144,7 +144,6 @@ type condition_expr =
   | Atom of predicate
   | And of condition_expr list
   | Or of condition_expr list
-  | None
 
 type action =
   | MeetingAction of meeting_action list

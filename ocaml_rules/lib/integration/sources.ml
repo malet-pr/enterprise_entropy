@@ -68,13 +68,6 @@ module Data_base_rule_source : Rule_source = struct
         in
         let jsonList = List.map Yojson.Safe.from_string jsons in
         let rules = List.map rule_of_json jsonList in
-        let () =
-          let rule = List.hd rules in
-          Printf.printf
-            "Decoded rule: %s with %d actions\n%!"
-            rule.rule_name
-            (List.length rule.actions)
-        in
         Lwt.return (Ok rules)
     | Error err ->
         let () = Printf.printf "DB error: %s\n%!" err in

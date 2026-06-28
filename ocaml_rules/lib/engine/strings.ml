@@ -119,7 +119,7 @@ let string_of_condition = function
   | Atom _  -> "Atom"
   | And _ -> "And"
   | Or _ -> "Or"
-  | None -> "None" 
+
 
 (****************************** FROM_STRING ***********************************)
 

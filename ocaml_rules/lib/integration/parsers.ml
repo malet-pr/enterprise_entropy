@@ -1,6 +1,7 @@
 open Engine.Model
 open Engine.Strings
 open Types
+open Debug
 open Yojson.Safe
 open Yojson.Safe.Util
 
@@ -208,29 +209,89 @@ let parse_participants_condition (name: string) (json: Yojson.Safe.t) =
   | "NoParticipantUnderstands" -> NoParticipantUnderstands
   | _ -> failwith "Unknown condition"
 
-let condition_expr_of_json json =
+let collect_results results =
+  let rec aux acc = function
+    | [] ->
+        Ok (List.rev acc)
+    | Ok x :: rest ->
+        aux (x :: acc) rest
+    | Error err :: _ ->
+        Error err
+  in
+  aux [] results
+  
+let rec condition_expr_of_json json =
+  let () =
+    (* Printf.printf "Parsing condition JSON: %s\n%!" *)
+    Debug.logf "Parsing condition JSON: %s\n%!"
+      (Yojson.Safe.to_string json)
+  in
   match json with
   | `Assoc fields ->
       begin
-        match
-          List.assoc_opt "type" fields,
-          List.assoc_opt "condition" fields
-        with
-        | Some (`String cond_type), 
-          Some (`String cond_name) ->
+        match List.assoc_opt "type" fields with
+        | Some (`String "And") ->
+            let children =
+              json |> member "conditions" |> to_list
+            in
+            let () =
+              Debug.logf "Found AND with %d children" (List.length children)
+              (* Printf.printf "Found AND with %d children\n%!" 
+                (List.length children)*)
+            in
+            children
+            |> List.map condition_expr_of_json
+            |> collect_results
+            |> Result.map (fun exprs -> And exprs)
+        | Some (`String "Or") ->
+            let children =
+              json |> member "conditions" |> to_list
+            in
+            let () =
+(*               Printf.printf "Found OR with %d children\n%!"
+                (List.length children) *)
+              Debug.logf "Found OR with %d children" (List.length children)  
+            in            
+            children
+            |> List.map condition_expr_of_json
+            |> collect_results
+            |> Result.map (fun exprs -> Or exprs)
+        | Some (`String cond_type) ->
             begin
-              match cond_type with
-              | "Meeting" -> Ok (Atom (Meeting (parse_meeting_condition cond_name json)))
-              | "Issue" -> Ok (Atom (Issue (parse_issue_condition cond_name json)))
-              | "Participants" -> Ok(Atom (Participants (parse_participants_condition cond_name json)))
-              | _ -> Error "Unknown condition type"
-            end  
-        | _ ->  Error "Unsupported condition"
+              match List.assoc_opt "condition" fields with
+              | Some (`String cond_name) ->
+                  begin
+                    match cond_type with
+                    | "Meeting" ->
+                        let () =
+                          (* Printf.printf "Found Meeting atom: %s\n%!" cond_name *)
+                          Debug.logf "Found Meeting atom: %s\n%!" cond_name
+                        in                      
+                        Ok (Atom (Meeting (parse_meeting_condition cond_name json)))
+                    | "Issue" ->
+                        let () =
+                          (* Printf.printf "Found Issue atom: %s\n%!" cond_name *)
+                          Debug.logf "Found Issue atom: %s\n%!" cond_name
+                        in                        
+                        Ok (Atom (Issue (parse_issue_condition cond_name json)))
+                    | "Participants" ->
+                        let () =
+                          (* Printf.printf "Found Participants atom: %s\n%!" cond_name *)
+                          Debug.logf "Found Participants atom: %s\n%!" cond_name
+                        in                        
+                        Ok (Atom (Participants (parse_participants_condition cond_name json)))
+                    | _ ->
+                        Error "Unknown condition type"
+                  end
+              | _ ->
+                  Error "Unsupported atom condition"
+            end
+        | _ ->
+            Error "Unsupported condition"
       end
   | _ ->
-      Error "Expected condition object"      
+      Error "Expected condition object"  
     
-
 let rule_of_json json = 
   let rule_name = json |> member "rule_name" |> to_string in
   let actions = json |> action_list_of_json in
@@ -241,7 +302,7 @@ let rule_of_json json =
     |> fun c ->
       match c with
       | Ok cond -> cond
-      | Error _ -> None
+      | Error e -> failwith(e)
     in    
   {
     rule_name;
